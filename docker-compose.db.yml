@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: matrio-db
+    image: postgres
+    ports:
+      - 5432:3432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: matrio
+    volumes:
+      - matrio-db:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - matrio-network
+
+volumes:
+  matrio-db:
+
+
+networks:
+  matrio-network:
+
+
