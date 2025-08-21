@@ -3,6 +3,7 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
+    "emitDeclarationOnly": false,
     "incremental": false,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
@@ -13,9 +14,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2022",
+    "target": "ES2023",
     "allowJs": true,
-    "baseUrl": "src",
+    "baseUrl": "./",
     "outDir": "dist",
     "esModuleInterop": true
   },

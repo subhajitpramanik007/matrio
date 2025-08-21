@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -8,21 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  GUEST
+  USER
+  ADMIN
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  username      String?
+  id              String    @id @default(cuid())
+  role            UserRole  @default(GUEST)
+  name            String?
+  email           String?   @unique
+  emailVerified   DateTime?
+  image           String?
+  username        String?
+  isGuestUpgraded Boolean   @default(false)
 
   userPassword UserPassword?
 
-  accounts Account[]
-  sessions Session[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  accounts Account[]
+  sessions Session[]
 }
 
 model UserPassword {

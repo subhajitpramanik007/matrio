@@ -2,7 +2,11 @@
   "name": "@matrio/db",
   "version": "1.0.0",
   "description": "Matrio DB",
-  "main": "index.js",
+  "main": "dist/client.js",
+  "types": "dist/client.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
   "dependencies": {
     "@prisma/client": "^6.14.0"
   },
@@ -13,6 +17,6 @@
     "typescript": "^5.9.2"
   },
   "exports": {
-    ".": "./src/client.ts"
+    ".": "./dist/client.js"
   }
 }
