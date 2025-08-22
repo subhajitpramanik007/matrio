@@ -20,14 +20,14 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-4">
+    <div className="from-background via-background to-muted flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center max-w-2xl mx-auto"
+        className="mx-auto max-w-2xl text-center"
       >
-        <Card className="p-8 border-2 border-destructive/20 bg-card/50 backdrop-blur-sm">
+        <Card className="border-destructive/20 bg-card/50 border-2 p-8 backdrop-blur-sm">
           {/* Error icon with animation */}
           <motion.div
             initial={{ scale: 0.8 }}
@@ -47,7 +47,7 @@ export default function Error({
               }}
               className="inline-block"
             >
-              <AlertTriangle className="w-20 h-20 text-destructive mx-auto" />
+              <AlertTriangle className="text-destructive mx-auto h-20 w-20" />
             </motion.div>
           </motion.div>
 
@@ -58,26 +58,26 @@ export default function Error({
             transition={{ delay: 0.2 }}
             className="mb-8"
           >
-            <h1 className="text-3xl font-bold text-foreground mb-2">
+            <h1 className="text-foreground mb-2 text-3xl font-bold">
               Oops! Something went wrong
             </h1>
-            <p className="text-lg text-muted-foreground mb-4">
+            <p className="text-muted-foreground mb-4 text-lg">
               The game encountered an unexpected error
             </p>
 
             {/* Error details */}
-            <div className="bg-muted/50 rounded-lg p-4 border border-border/50 text-left">
-              <div className="flex items-center gap-2 mb-2">
-                <Bug className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-muted-foreground">
+            <div className="bg-muted/50 border-border/50 rounded-lg border p-4 text-left">
+              <div className="mb-2 flex items-center gap-2">
+                <Bug className="text-muted-foreground h-4 w-4" />
+                <span className="text-muted-foreground text-sm font-medium">
                   Error Details:
                 </span>
               </div>
-              <code className="text-sm text-destructive break-all">
+              <code className="text-destructive text-sm break-all">
                 {error.message || "An unexpected error occurred"}
               </code>
               {error.digest && (
-                <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-muted-foreground mt-2 text-xs">
                   Error ID: {error.digest}
                 </p>
               )}
@@ -89,10 +89,10 @@ export default function Error({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col justify-center gap-4 sm:flex-row"
           >
             <Button onClick={reset} size="lg" className="gap-2">
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="h-4 w-4" />
               Try Again
             </Button>
 
@@ -103,7 +103,7 @@ export default function Error({
               className="gap-2 bg-transparent"
             >
               <Link href="/">
-                <Home className="w-4 h-4" />
+                <Home className="h-4 w-4" />
                 Back to Home
               </Link>
             </Button>
@@ -114,9 +114,9 @@ export default function Error({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="mt-8 pt-6 border-t border-border/50"
+            className="border-border/50 mt-8 border-t pt-6"
           >
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               If this problem persists, please try refreshing the page or
               contact support.
             </p>

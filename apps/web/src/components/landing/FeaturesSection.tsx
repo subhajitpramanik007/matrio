@@ -4,21 +4,21 @@ import { Card, CardContent } from "../ui/card";
 
 export const FeaturesSection: React.FC = ({}) => {
   return (
-    <section className="container py-16 min-h-screen bg-gradient-to-tr from-primary/5 to-primary/10">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+    <section className="from-primary/5 to-primary/10 container min-h-screen bg-gradient-to-tr py-16">
+      <div className="mb-12 text-center">
+        <h2 className="mb-4 text-3xl font-bold md:text-4xl">
           Why Choose Matrio?
         </h2>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-muted-foreground text-lg">
           The perfect place for casual gaming
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 w-full max-w-7xl mx-auto px-4">
+      <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 md:grid-cols-3">
         <Card className="">
-          <CardContent className="text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <Gamepad2Icon className="w-8 h-8 text-primary" />
+          <CardContent className="space-y-4 text-center">
+            <div className="bg-primary/10 mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+              <Gamepad2Icon className="text-primary h-8 w-8" />
             </div>
             <h3 className="text-xl font-semibold">Instant Play</h3>
             <p className="text-muted-foreground">
@@ -28,9 +28,9 @@ export const FeaturesSection: React.FC = ({}) => {
         </Card>
 
         <Card className="">
-          <CardContent className="text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <Users2 className="w-8 h-8 text-primary" />
+          <CardContent className="space-y-4 text-center">
+            <div className="bg-primary/10 mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+              <Users2 className="text-primary h-8 w-8" />
             </div>
             <h3 className="text-xl font-semibold">Play with Friends</h3>
             <p className="text-muted-foreground">
@@ -40,9 +40,9 @@ export const FeaturesSection: React.FC = ({}) => {
         </Card>
 
         <Card className="">
-          <CardContent className="text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <StarsIcon className="w-8 h-8 text-primary" />
+          <CardContent className="space-y-4 text-center">
+            <div className="bg-primary/10 mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+              <StarsIcon className="text-primary h-8 w-8" />
             </div>
             <h3 className="text-xl font-semibold">Track Progress</h3>
             <p className="text-muted-foreground">

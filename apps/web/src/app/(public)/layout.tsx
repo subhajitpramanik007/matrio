@@ -8,7 +8,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="w-full min-h-screen">
+    <div className="min-h-screen w-full">
       <Header />
       <main className="min-h-screen">{children}</main>
       <Footer />

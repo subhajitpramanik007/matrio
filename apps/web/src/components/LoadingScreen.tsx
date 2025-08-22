@@ -47,7 +47,7 @@ export function LoadingScreen({
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background"
+      className="bg-background fixed inset-0 z-50 flex items-center justify-center"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
@@ -62,7 +62,7 @@ export function LoadingScreen({
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <motion.div
-            className="h-20 w-20 rounded-2xl bg-primary flex items-center justify-center relative overflow-hidden"
+            className="bg-primary relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl"
             animate={{
               boxShadow: [
                 "0 0 20px rgba(34, 197, 94, 0.3)",
@@ -73,7 +73,7 @@ export function LoadingScreen({
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
           >
             <motion.span
-              className="text-primary-foreground font-bold text-3xl"
+              className="text-primary-foreground text-3xl font-bold"
               animate={{ rotate: [0, 360] }}
               transition={{
                 duration: 3,
@@ -99,7 +99,7 @@ export function LoadingScreen({
 
         {/* Game Title */}
         <motion.div
-          className="text-center space-y-2"
+          className="space-y-2 text-center"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
@@ -119,7 +119,7 @@ export function LoadingScreen({
         >
           {/* Tic-Tac-Toe Grid */}
           <motion.div
-            className="grid grid-cols-3 gap-1 w-12 h-12"
+            className="grid h-12 w-12 grid-cols-3 gap-1"
             animate={{ rotate: [0, 5, -5, 0] }}
             transition={{
               duration: 2,
@@ -143,7 +143,7 @@ export function LoadingScreen({
 
           {/* Checkers Board */}
           <motion.div
-            className="grid grid-cols-4 gap-0.5 w-12 h-12"
+            className="grid h-12 w-12 grid-cols-4 gap-0.5"
             animate={{ rotate: [0, -5, 5, 0] }}
             transition={{
               duration: 2,
@@ -172,13 +172,13 @@ export function LoadingScreen({
 
         {/* Progress Bar */}
         <motion.div
-          className="w-64 h-2 bg-muted rounded-full overflow-hidden"
+          className="bg-muted h-2 w-64 overflow-hidden rounded-full"
           initial={{ width: 0, opacity: 0 }}
           animate={{ width: 256, opacity: 1 }}
           transition={{ delay: 0.9, duration: 0.5 }}
         >
           <motion.div
-            className="h-full bg-gradient-to-r from-primary to-secondary rounded-full relative"
+            className="from-primary to-secondary relative h-full rounded-full bg-gradient-to-r"
             style={{ width: `${progress}%` }}
             transition={{ duration: 0.1 }}
           >
@@ -196,7 +196,7 @@ export function LoadingScreen({
 
         {/* Progress Text */}
         <motion.p
-          className="text-sm text-muted-foreground font-mono"
+          className="text-muted-foreground font-mono text-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
@@ -214,7 +214,7 @@ export function LoadingScreen({
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 bg-primary rounded-full"
+              className="bg-primary h-2 w-2 rounded-full"
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.5, 1, 0.5],

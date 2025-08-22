@@ -6,13 +6,13 @@ import { Button } from "../ui/button";
 
 export const Header: React.FC = ({}) => {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40 px-8">
-      <div className="container w-full max-w-7xl mx-auto flex h-16 items-center justify-between">
+    <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/40 sticky top-0 z-50 border-b px-8 backdrop-blur">
+      <div className="container mx-auto flex h-16 w-full max-w-7xl items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">M</span>
+          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+            <span className="text-primary-foreground text-lg font-bold">M</span>
           </div>
-          <span className="font-bold text-xl">Matrio</span>
+          <span className="text-xl font-bold">Matrio</span>
         </div>
         <div className="flex items-center space-x-4">
           <Link href="/auth/signin">

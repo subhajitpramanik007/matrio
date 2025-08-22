@@ -5,17 +5,17 @@ import * as React from "react";
 
 export const Footer: React.FC = ({}) => {
   return (
-    <footer className="border-t border-border bg-muted/30">
-      <div className="container py-12 px-4 w-full max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8">
+    <footer className="border-border bg-muted/30 border-t">
+      <div className="container mx-auto w-full max-w-7xl px-4 py-12">
+        <div className="grid gap-8 md:grid-cols-4">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">
+              <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+                <span className="text-primary-foreground text-lg font-bold">
                   M
                 </span>
               </div>
-              <span className="font-bold text-xl">Matrio</span>
+              <span className="text-xl font-bold">Matrio</span>
             </div>
             <p className="text-muted-foreground">
               Your destination for classic games and endless fun.
@@ -24,7 +24,7 @@ export const Footer: React.FC = ({}) => {
 
           <div className="space-y-4">
             <h4 className="font-semibold">Games</h4>
-            <ul className="space-y-2 text-muted-foreground">
+            <ul className="text-muted-foreground space-y-2">
               <li>
                 <Link
                   href="#"
@@ -54,7 +54,7 @@ export const Footer: React.FC = ({}) => {
 
           <div className="space-y-4">
             <h4 className="font-semibold">Account</h4>
-            <ul className="space-y-2 text-muted-foreground">
+            <ul className="text-muted-foreground space-y-2">
               <li>
                 <Link
                   href="/signin"
@@ -84,7 +84,7 @@ export const Footer: React.FC = ({}) => {
 
           <div className="space-y-4">
             <h4 className="font-semibold">Support</h4>
-            <ul className="space-y-2 text-muted-foreground">
+            <ul className="text-muted-foreground space-y-2">
               <li>
                 <Link
                   href="#"
@@ -113,7 +113,7 @@ export const Footer: React.FC = ({}) => {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
+        <div className="border-border text-muted-foreground mt-8 border-t pt-8 text-center">
           <p>&copy; 2025 Matrio. All rights reserved.</p>
         </div>
       </div>

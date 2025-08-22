@@ -8,14 +8,14 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-4">
+    <div className="from-background via-background to-muted flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center max-w-2xl mx-auto"
+        className="mx-auto max-w-2xl text-center"
       >
-        <Card className="p-8 border-2 border-primary/20 bg-card/50 backdrop-blur-sm">
+        <Card className="border-primary/20 bg-card/50 border-2 p-8 backdrop-blur-sm">
           {/* Animated 404 with gaming elements */}
           <motion.div
             initial={{ scale: 0.8 }}
@@ -23,7 +23,7 @@ export default function NotFound() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mb-8"
           >
-            <div className="text-8xl font-bold text-primary mb-4 relative">
+            <div className="text-primary relative mb-4 text-8xl font-bold">
               4
               <motion.div
                 animate={{ rotate: 360 }}
@@ -32,16 +32,16 @@ export default function NotFound() {
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "linear",
                 }}
-                className="inline-block mx-2"
+                className="mx-2 inline-block"
               >
-                <Gamepad2 className="w-16 h-16 text-primary" />
+                <Gamepad2 className="text-primary h-16 w-16" />
               </motion.div>
               4
             </div>
-            <div className="text-2xl font-semibold text-muted-foreground mb-2">
+            <div className="text-muted-foreground mb-2 text-2xl font-semibold">
               Game Over!
             </div>
-            <div className="text-lg text-muted-foreground">
+            <div className="text-muted-foreground text-lg">
               The page you're looking for doesn't exist
             </div>
           </motion.div>
@@ -53,14 +53,14 @@ export default function NotFound() {
             transition={{ delay: 0.4 }}
             className="mb-8 space-y-4"
           >
-            <div className="bg-muted/50 rounded-lg p-4 border border-border/50">
-              <p className="text-sm text-muted-foreground">
+            <div className="bg-muted/50 border-border/50 rounded-lg border p-4">
+              <p className="text-muted-foreground text-sm">
                 🎮 <strong>Player Status:</strong> Lost in the digital maze
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 🎯 <strong>Mission:</strong> Find your way back to the game
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 ⭐ <strong>Hint:</strong> Try the navigation buttons below
               </p>
             </div>
@@ -71,11 +71,11 @@ export default function NotFound() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col justify-center gap-4 sm:flex-row"
           >
             <Button asChild size="lg" className="gap-2">
               <Link href="/">
-                <Home className="w-4 h-4" />
+                <Home className="h-4 w-4" />
                 Back to Home
               </Link>
             </Button>
@@ -87,7 +87,7 @@ export default function NotFound() {
               className="gap-2 bg-transparent"
             >
               <Link href="/dashboard">
-                <Gamepad2 className="w-4 h-4" />
+                <Gamepad2 className="h-4 w-4" />
                 Game Dashboard
               </Link>
             </Button>
@@ -98,7 +98,7 @@ export default function NotFound() {
               className="gap-2"
               onClick={() => window.history.back()}
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="h-4 w-4" />
               Go Back
             </Button>
           </motion.div>
@@ -108,12 +108,12 @@ export default function NotFound() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="mt-8 pt-6 border-t border-border/50"
+            className="border-border/50 mt-8 border-t pt-6"
           >
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-muted-foreground mb-4 text-sm">
               Or try these popular destinations:
             </p>
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="flex flex-wrap justify-center gap-2">
               <Button asChild variant="link" size="sm">
                 <Link href="/games/tic-tac-toe">Tic-Tac-Toe</Link>
               </Button>
