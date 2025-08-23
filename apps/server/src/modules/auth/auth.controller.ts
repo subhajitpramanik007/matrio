@@ -9,10 +9,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 
 import { JwtAccessGuard } from './guards';
-import { successResponse } from '@/common/response';
-import { Cookies, ZodBody, ZodQuery } from '@/common/decorators';
+import { Cookies, ZodBody } from '@/common/decorators';
+import { BaseController } from '@/common/base/base.controller';
 
 import {
   type TUserSignin,
@@ -23,30 +24,25 @@ import {
   EmailVerificationSchema,
   type TResendVerificationEmail,
   ResendVerificationEmailSchema,
-} from './schemas';
-import { AUTH_COOKIE_REFRESH_TOKEN } from './constant';
-import { Throttle } from '@nestjs/throttler';
-import { DAY, HOUR } from '@/common/rate-limiter/constant';
+} from '@matrio/shared/schemas';
+import { AUTH_COOKIE_REFRESH_TOKEN, AUTH_RATE_LIMITS } from './constant';
 
 @Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+export class AuthController extends BaseController {
+  constructor(private readonly authService: AuthService) {
+    super();
+  }
 
-  @Throttle({ default: { ttl: HOUR * 3, limit: 1 } })
+  @Throttle(AUTH_RATE_LIMITS.guest)
   @Post('guest')
   @HttpCode(HttpStatus.CREATED)
   async guest(@Res({ passthrough: true }) res: Response) {
-    const guest = await this.authService.createGuest();
-    const tokens = await this.authService.issueAuthTokens(guest);
+    const { accessToken } = await this.authService.createGuest(res);
 
-    this.authService.setAuthCookies(res, tokens.accessToken, tokens.refreshToken, true);
-
-    await this.authService.createSession(guest.id, tokens.refreshToken);
-
-    return successResponse({ accessToken: tokens.accessToken }, 'Guest created');
+    return this.success({ accessToken }, 'Guest created');
   }
 
-  @Throttle({ default: { ttl: HOUR / 2, limit: 5 } })
+  @Throttle(AUTH_RATE_LIMITS.signup)
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(
@@ -54,57 +50,44 @@ export class AuthController {
     @Cookies(AUTH_COOKIE_REFRESH_TOKEN) token: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = await this.authService.signup(data, token);
+    const { accessToken } = await this.authService.signup(res, data, token);
 
-    const { accessToken, refreshToken } = await this.authService.issueAuthTokens(user);
-    await this.authService.setAuthCookies(res, accessToken, refreshToken, false);
-    await this.authService.createSession(user.id, refreshToken);
-
-    return successResponse({ accessToken }, 'User signed up successfully');
+    return this.success({ accessToken }, 'User signed up successfully');
   }
 
-  @Throttle({ default: { ttl: HOUR, limit: 3 } })
+  @Throttle(AUTH_RATE_LIMITS.emailVerify)
   @Post('email-verify')
   @HttpCode(HttpStatus.OK)
   async emailVerify(
-    @ZodQuery(EmailVerificationSchema) data: TEmailVerification,
+    @ZodBody(EmailVerificationSchema) data: TEmailVerification,
+    @Cookies(AUTH_COOKIE_REFRESH_TOKEN) refreshToken: string | undefined,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.authService.verifyEmail(data.email, data.token);
-    const user = await this.authService.getUserByEmail(data.email);
-    if (!user) throw new BadRequestException('User not found');
-    const { accessToken, refreshToken } = await this.authService.issueAuthTokens(user);
+    const { accessToken } = await this.authService.verifyEmail(res, data, refreshToken);
 
-    await this.authService.setAuthCookies(res, accessToken, refreshToken, false);
-    await this.authService.updateSessionByToken(data.token, refreshToken);
-
-    return successResponse({ accessToken }, 'Email verified successfully');
+    return this.success({ accessToken }, 'Email verified successfully');
   }
 
-  @Throttle({ default: { ttl: HOUR, limit: 3 } })
+  @Throttle(AUTH_RATE_LIMITS.resendVerificationEmail)
   @Post('resend-verification-email')
   @HttpCode(HttpStatus.OK)
   async resendVerificationEmail(
     @ZodBody(ResendVerificationEmailSchema) data: TResendVerificationEmail,
   ) {
     await this.authService.resendVerificationEmail(data.email);
-    return { message: 'Verification email sent successfully' };
+    return this.success('Verification email sent successfully');
   }
 
-  @Throttle({ default: { ttl: HOUR / 2, limit: 3 } })
+  @Throttle(AUTH_RATE_LIMITS.signin)
   @Post('signin')
   @HttpCode(HttpStatus.OK)
   async signin(
     @ZodBody(UserSigninSchema) data: TUserSignin,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = await this.authService.signin(data);
-    const { accessToken, refreshToken } = await this.authService.issueAuthTokens(user);
+    const { accessToken } = await this.authService.signin(res, data);
 
-    this.authService.setAuthCookies(res, accessToken, refreshToken, false);
-    await this.authService.createSession(user.id, refreshToken);
-
-    return successResponse({ accessToken: accessToken }, 'User signed in successfully');
+    return this.success({ accessToken }, 'User signed in successfully');
   }
 
   @Post('signout')
@@ -115,7 +98,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.signout(res, refreshToken);
-    return { message: 'User signed out successfully' };
+    return this.success('User signed out successfully');
   }
 
   @Post('refresh')
@@ -126,13 +109,13 @@ export class AuthController {
   ) {
     const { accessToken } = await this.authService.refreshUser(res, token);
 
-    return successResponse({ accessToken }, 'Token refreshed');
+    return this.success({ accessToken }, 'Token refreshed');
   }
 
   @Post('check')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAccessGuard)
   async verify() {
-    return { success: true };
+    return this.success('Session is valid');
   }
 }
