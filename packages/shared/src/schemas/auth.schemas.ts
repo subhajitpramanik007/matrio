@@ -2,17 +2,35 @@ import z from "zod";
 
 const UserSignupSchema = z.object({
   email: z.email({ message: "Invalid email" }),
-  password: z.string({ message: "Password is required" }).min(6).max(32),
+  password: z
+    .string({ message: "Password is required" })
+    .min(6, { message: "Password must be at least 6 characters" })
+    .max(32, { message: "Password must be at most 32 characters" }),
   username: z
     .string({ message: "Username is required" })
     .min(3)
     .max(32)
     .optional(),
+  termsAndConditions: z
+    .boolean({
+      message: "Terms and conditions should be accepted",
+    })
+    .refine((value) => value, {
+      message: "Terms and conditions should be accepted",
+    }),
 });
 
 const UserSigninSchema = z.object({
-  emailOrUsername: z.string({ message: "Email or username is required" }),
-  password: z.string({ message: "Password is required" }).min(6).max(32),
+  emailOrUsername: z.union([
+    z.email({ message: "Invalid email" }),
+    z
+      .string({ message: "Username is required" })
+      .min(1, { message: "Username or email is required" }),
+  ]),
+  password: z
+    .string({ message: "Password is required" })
+    .min(1, { message: "Password is required" }),
+  rememberMe: z.boolean({ message: "Remember me is required" }).optional(),
 });
 
 const EmailVerificationSchema = z.object({
