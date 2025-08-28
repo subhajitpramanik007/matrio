@@ -16,9 +16,17 @@ export class ApiErrorResponse extends Error {
   error?: string;
   status: number = 500;
   data?: never;
-  constructor(status: number, message?: string, error?: string) {
+  constructor(
+    status: number,
+    message?: string,
+    error?: string,
+    cause?: string,
+  ) {
     super(message);
     this.error = error;
     this.status = status;
+    if (cause) this.cause = cause;
   }
 }
+
+export type TResponse<T> = ApiResponse<T> | ApiErrorResponse;
