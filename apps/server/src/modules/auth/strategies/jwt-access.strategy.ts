@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
@@ -28,8 +28,10 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   validate(payload: UserJWTPayload) {
     // TODO: if have email but not verified, throw error
-    if (payload.email && !payload.emailVerified) {
-      throw new BadRequestException('Email not verified');
+    if (payload.email && !payload.emailVerified && payload.role === 'USER') {
+      throw new UnauthorizedException('Email not verified', {
+        cause: 'EMAIL_NOT_VERIFIED',
+      });
     }
 
     return payload;

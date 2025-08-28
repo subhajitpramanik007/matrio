@@ -25,15 +25,26 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getResponse()
         : new InternalServerErrorException().getResponse();
+    const cause = exception instanceof HttpException ? exception.cause : undefined;
 
     this.logger.error('Unhandled Exception', {
       status,
-      response: responseMessage,
+      response: {
+        message:
+          typeof responseMessage === 'string' ? responseMessage : (responseMessage as any)?.message,
+        cause,
+      },
       path: request.url,
       method: request.method,
       stack: exception instanceof Error ? exception.stack : null,
     });
 
-    response.status(status).json(responseMessage);
+    response
+      .status(status)
+      .json(
+        typeof responseMessage === 'string'
+          ? { message: responseMessage }
+          : { ...responseMessage, cause },
+      );
   }
 }

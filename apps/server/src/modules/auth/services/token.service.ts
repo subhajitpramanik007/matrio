@@ -32,7 +32,7 @@ export class TokenService {
   }
 
   async createEmailVerificationToken(email: string) {
-    const token = crypto.randomBytes(16).toString('hex');
+    const token = crypto.randomBytes(16).toString('hex').slice(0, 6);
 
     await this.client.verificationToken.create({
       data: {
