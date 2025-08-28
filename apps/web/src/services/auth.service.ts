@@ -44,4 +44,4 @@ export class AuthService extends ApiClient {
   }
 }
 
-export const authService = new AuthService();
+export const authService = new AuthService({});

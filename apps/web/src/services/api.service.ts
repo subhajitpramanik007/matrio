@@ -19,14 +19,14 @@ export abstract class ApiClient {
 
   constructor({
     baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1",
-    addOptions,
+    options,
   }: {
     baseUrl?: string;
-    addOptions?: Partial<IRequestInit>;
+    options?: Partial<IRequestInit>;
   }) {
     this.baseUrl = baseUrl;
-    if (addOptions) {
-      this.defaultOptions = this.mergeOptions({ method: "GET", ...addOptions });
+    if (options) {
+      this.defaultOptions = this.mergeOptions({ method: "GET", ...options });
     }
   }
 
@@ -57,23 +57,24 @@ export abstract class ApiClient {
   private async request<T>(
     path: string,
     options?: IRequestInit,
-  ): Promise<ApiResponse<T> | ApiErrorResponse> {
+  ): Promise<ApiResponse<T>> {
     try {
       const res = await fetch(path, this.mergeOptions(options));
 
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        return new ApiErrorResponse(
+        throw new ApiErrorResponse(
           res.status,
           data?.message || data?.error,
           data?.error || res.statusText,
+          data?.cause,
         );
       }
 
       return new ApiResponse(res.status, data?.data as T, data?.message);
     } catch (err: any) {
-      return new ApiErrorResponse(500, err.message, err.message);
+      throw new ApiErrorResponse(500, err.message, err.message, err?.cause);
     }
   }
 
@@ -119,7 +120,15 @@ export abstract class ApiClient {
     });
   }
 
-  protected healthCheck<T>() {
+  healthCheck<T>() {
     return this.request<T>(this.buildUrl("/health"), { method: "GET" });
   }
 }
+
+class BaseApi extends ApiClient {
+  constructor() {
+    super({ baseUrl: process.env.NEXT_PUBLIC_API_URL });
+  }
+}
+
+export const api = new BaseApi();
