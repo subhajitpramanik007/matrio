@@ -2,3 +2,8 @@ export * from "./AuthWrapper";
 export * from "./PlayAsGuestOption";
 export * from "./Signin";
 export * from "./Signup";
+export * from "./PasswordInput";
+export * from "./SessionProvider";
+export * from "./UnauthorizedLayout";
+export * from "./EmailVerificationCard";
+export * from "./AuthorizedLayout";

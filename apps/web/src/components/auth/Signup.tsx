@@ -22,12 +22,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PasswordInput } from "@/components/auth/PasswordInput";
+import { ButtonLoader } from "../ButtonLoader";
+import { useSignup } from "@/hooks/auth";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { TUserSignup, UserSignupSchema } from "@matrio/shared/schemas";
-
-export const SignupCard: React.FC<{}> = ({}) => {
+export const SignupCard: React.FC = () => {
   return (
     <Card>
       <CardHeader>
@@ -43,20 +41,8 @@ export const SignupCard: React.FC<{}> = ({}) => {
   );
 };
 
-export const SignupForm: React.FC = ({}) => {
-  const form = useForm({
-    resolver: zodResolver(UserSignupSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      username: "",
-      termsAndConditions: false,
-    },
-  });
-
-  const onSubmit = (data: TUserSignup) => {
-    console.log(data);
-  };
+export const SignupForm: React.FC = () => {
+  const { form, isPending, onSubmit } = useSignup();
 
   return (
     <Form {...form}>
@@ -136,8 +122,11 @@ export const SignupForm: React.FC = ({}) => {
           type="submit"
           size="lg"
           className="w-full"
-          disabled={form.formState.isDirty && !form.formState.isValid}
+          disabled={
+            isPending || (form.formState.isDirty && !form.formState.isValid)
+          }
         >
+          <ButtonLoader isLoading={isPending} />
           Sign In
         </Button>
       </form>

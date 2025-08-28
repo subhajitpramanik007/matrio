@@ -23,9 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { TUserSignin, UserSigninSchema } from "@matrio/shared/schemas";
+import { useSignin } from "@/hooks/auth";
+import { ButtonLoader } from "@/components/ButtonLoader";
 
 export const SigninCard: React.FC = () => {
   return (
@@ -44,18 +43,7 @@ export const SigninCard: React.FC = () => {
 };
 
 export const SigninForm: React.FC = () => {
-  const form = useForm({
-    resolver: zodResolver(UserSigninSchema),
-    defaultValues: {
-      emailOrUsername: "",
-      password: "",
-      rememberMe: false,
-    },
-  });
-
-  const onSubmit = (data: TUserSignin) => {
-    console.log(data);
-  };
+  const { form, isPending, onSubmit } = useSignin();
 
   return (
     <Form {...form}>
@@ -115,8 +103,11 @@ export const SigninForm: React.FC = () => {
           type="submit"
           size="lg"
           className="w-full"
-          disabled={form.formState.isDirty && !form.formState.isValid}
+          disabled={
+            (form.formState.isDirty && !form.formState.isValid) || isPending
+          }
         >
+          <ButtonLoader isLoading={isPending} />
           Sign In
         </Button>
       </form>
