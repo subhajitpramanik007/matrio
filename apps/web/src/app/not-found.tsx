@@ -42,7 +42,7 @@ export default function NotFound() {
               Game Over!
             </div>
             <div className="text-muted-foreground text-lg">
-              The page you're looking for doesn't exist
+              The page you are looking for does not exist
             </div>
           </motion.div>
 

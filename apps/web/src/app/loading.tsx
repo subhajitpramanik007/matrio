@@ -10,5 +10,5 @@ export default function LoadingPage() {
     router.push("/dashboard");
   };
 
-  return <LoadingScreen onComplete={handleLoadingComplete} duration={4000} />;
+  return <LoadingScreen onComplete={handleLoadingComplete} duration={2000} />;
 }

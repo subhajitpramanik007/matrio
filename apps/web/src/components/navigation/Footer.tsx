@@ -3,7 +3,7 @@
 import Link from "next/link";
 import * as React from "react";
 
-export const Footer: React.FC = ({}) => {
+export const Footer: React.FC = () => {
   return (
     <footer className="border-border bg-muted/30 border-t">
       <div className="container mx-auto w-full max-w-7xl px-4 py-12">
@@ -27,7 +27,7 @@ export const Footer: React.FC = ({}) => {
             <ul className="text-muted-foreground space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/games/tic-tac-toe"
                   className="hover:text-foreground transition-colors"
                 >
                   Tic-Tac-Toe
@@ -35,7 +35,7 @@ export const Footer: React.FC = ({}) => {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/games/checkers"
                   className="hover:text-foreground transition-colors"
                 >
                   Checkers
@@ -57,7 +57,7 @@ export const Footer: React.FC = ({}) => {
             <ul className="text-muted-foreground space-y-2">
               <li>
                 <Link
-                  href="/signin"
+                  href="/auth/signin"
                   className="hover:text-foreground transition-colors"
                 >
                   Sign In
@@ -65,7 +65,7 @@ export const Footer: React.FC = ({}) => {
               </li>
               <li>
                 <Link
-                  href="/signup"
+                  href="/auth/signup"
                   className="hover:text-foreground transition-colors"
                 >
                   Sign Up
@@ -73,7 +73,7 @@ export const Footer: React.FC = ({}) => {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/profile"
                   className="hover:text-foreground transition-colors"
                 >
                   Profile

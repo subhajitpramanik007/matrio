@@ -4,6 +4,7 @@ import "./globals.css";
 
 import App from "./_app";
 import WatchPage from "@/components/watchPage";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,9 @@ export default function RootLayout({
         cz-shortcut-listen="true"
       >
         <App>
-          <WatchPage />
+          <Suspense fallback={null}>
+            <WatchPage />
+          </Suspense>
           {children}
         </App>
       </body>

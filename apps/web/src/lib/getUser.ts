@@ -17,7 +17,7 @@ export const getUser = async (): Promise<IUser | null> => {
       new TextEncoder().encode(process.env.JWT_SECRET),
     );
     return payload as unknown as IUser;
-  } catch (error) {
+  } catch {
     return null;
   }
 };

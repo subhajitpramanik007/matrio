@@ -3,21 +3,28 @@
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 
+const MINIMUM_DURATION = 2000;
+
 interface LoadingScreenProps {
   onComplete?: () => void;
   duration?: number;
   children?: React.ReactNode;
+  forceComplete?: boolean;
 }
 
 export function LoadingScreen({
   onComplete,
-  duration = 3000,
+  duration = MINIMUM_DURATION,
   children,
+  forceComplete,
 }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
 
   useEffect(() => {
+    setStartTime(Date.now());
+
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -26,12 +33,44 @@ export function LoadingScreen({
           setTimeout(() => onComplete?.(), 500);
           return 100;
         }
-        return prev + 2;
+
+        // Random increment between 1 and 5
+        const increment = Math.floor(Math.random() * 5) + 1;
+        const nextProgress = Math.min(prev + increment, 100);
+
+        if (nextProgress >= 100) {
+          clearInterval(interval);
+          setIsComplete(true);
+          setTimeout(() => onComplete?.(), 500);
+        }
+
+        return nextProgress;
       });
-    }, duration / 50);
+    }, duration / 50); // Run every (duration / 50) ms
 
     return () => clearInterval(interval);
   }, [duration, onComplete]);
+
+  useEffect(() => {
+    if (!forceComplete || isComplete || startTime === null) return;
+
+    const now = Date.now();
+    const elapsed = now - startTime;
+    const remaining = MINIMUM_DURATION - elapsed;
+
+    const complete = () => {
+      setProgress(100);
+      setIsComplete(true);
+      setTimeout(() => onComplete?.(), 500);
+    };
+
+    if (elapsed >= MINIMUM_DURATION) {
+      complete();
+    } else {
+      const timeout = setTimeout(complete, remaining);
+      return () => clearTimeout(timeout);
+    }
+  }, [forceComplete, isComplete, startTime, onComplete]);
 
   if (isComplete) {
     return (

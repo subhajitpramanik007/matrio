@@ -44,7 +44,7 @@ export function useResendEmail(email?: string, onSuccess?: () => void) {
     if (email) {
       form.setValue("email", email);
     }
-  }, [email]);
+  }, [email, form]);
 
   return { form, isResending, onSubmit };
 }

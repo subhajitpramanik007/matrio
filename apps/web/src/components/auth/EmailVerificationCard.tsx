@@ -34,7 +34,7 @@ export const EmailVerificationCard: React.FC = () => {
 
   useEffect(() => {
     if (user && user.email) form.setValue("email", user?.email);
-  }, [user]);
+  }, [user, form]);
 
   useToRedirect(
     {

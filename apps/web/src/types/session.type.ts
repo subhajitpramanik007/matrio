@@ -22,7 +22,9 @@ export interface SessionState {
   user: IUser | null;
 }
 
-export interface SessionStore extends SessionState, AuthState {
+export interface SessionStore
+  extends Omit<SessionState, "isPending">,
+    AuthState {
   setUser: (user: IUser) => void;
   signout: () => void;
   clear: () => void;

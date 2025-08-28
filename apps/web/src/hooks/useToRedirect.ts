@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import toast from "react-hot-toast";
 
 export const useToRedirect = (
   {
@@ -34,5 +33,5 @@ export const useToRedirect = (
     }
 
     return () => clearTimeout(timeout);
-  }, [condition, to, delay, router, ...(deps || [])]);
+  }, [condition, to, delay, router, callback, ...(deps || [])]);
 };

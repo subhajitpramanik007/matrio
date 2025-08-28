@@ -48,13 +48,13 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     } else {
       useSessionStore.getState().clear();
     }
-  }, [data]);
+  }, [data, isSuccess]);
 
   React.useEffect(() => {
     if (error?.cause) {
       router.push(`${pathname}?error=${error.cause}`);
     }
-  }, [error?.cause]);
+  }, [error?.cause, pathname, router]);
 
   return (
     <SessionContext.Provider
