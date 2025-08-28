@@ -34,12 +34,12 @@ const UserSigninSchema = z.object({
 });
 
 const EmailVerificationSchema = z.object({
-  email: z.string({ message: "Email is required" }),
-  token: z.string({ message: "Token is required" }),
+  email: z.email({ message: "Email is required" }).min(1, "Email is required"),
+  token: z.string({ message: "Token is required" }).min(1, "Token is required"),
 });
 
 const ResendVerificationEmailSchema = z.object({
-  email: z.string({ message: "Email is required" }),
+  email: z.email({ message: "Email is required" }).min(1, "Email is required"),
 });
 
 type TUserSignup = z.infer<typeof UserSignupSchema>;
