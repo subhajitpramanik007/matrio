@@ -83,7 +83,7 @@ export const AuthWrapperFooter: React.FC<AuthWrapperFooterProps> = ({
         {text}{" "}
         <Link
           href={linkHref!}
-          className="text-accent hover:text-accent/80 font-medium transition-colors"
+          className="text-secondary-foreground hover:text-secondary-foreground/80 font-medium transition-colors"
         >
           {linkText}
         </Link>

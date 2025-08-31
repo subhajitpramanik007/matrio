@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Play } from "next/font/google";
 import "./globals.css";
 
 import App from "./_app";
 import WatchPage from "@/components/watchPage";
 import { Suspense } from "react";
+
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +16,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const play = Play({
+  variable: "--font-play",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -30,17 +38,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${play.variable} antialiased`}
         cz-shortcut-listen="true"
       >
-        <App>
-          <Suspense fallback={null}>
-            <WatchPage />
-          </Suspense>
-          {children}
-        </App>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <App>
+            <Suspense fallback={null}>
+              <WatchPage />
+            </Suspense>
+            {children}
+          </App>
+        </ThemeProvider>
       </body>
     </html>
   );
