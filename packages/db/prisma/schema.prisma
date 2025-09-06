@@ -7,29 +7,118 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/**
+ * * ENUMS **
+ */
 enum UserRole {
   GUEST
   USER
   ADMIN
 }
 
+enum GameName {
+  CHECKERS
+  TIC_TAC_TOE
+  SUDOKU
+  CHESS
+}
+
+enum Theme {
+  system
+  light
+  dark
+}
+
+enum Locale {
+  en
+  es
+  in
+  fr
+}
+
+enum GameSessionStatus {
+  PENDING
+  ACTIVE
+  FINISHED
+  CANCELLED
+}
+
+enum GameResult {
+  WIN
+  LOSS
+  TIE
+  PENDING
+  ABANDONED
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  BLOCKED
+}
+
+enum NotificationType {
+  GAME
+  UPDATE
+  ACHIEVEMENT
+  FRIEND
+  MESSAGE
+  INVITE
+  REQUEST
+  CHALLENGE
+  CLAIM
+}
+
+enum CoinTransactionType {
+  PURCHASE // buy coins with real money
+  REWARD // reward coins for game progress/achievements
+  COUPON // Redeem a coupon
+  GIFT // gift coins to another user
+  SPEND // spend coins for own purposes
+  REFUND // refund coins 
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+/**
+ * Core models
+ */
 model User {
-  id              String    @id @default(cuid())
+  id              String    @id @default(uuid())
   role            UserRole  @default(GUEST)
-  name            String?
   email           String?   @unique
   emailVerified   DateTime?
   image           String?
-  username        String?
+  username        String?   @unique
   isGuestUpgraded Boolean   @default(false)
+  isBanned        Boolean   @default(false)
 
   userPassword UserPassword?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  avatarId String?
+  avatar   Avatar? @relation(fields: [avatarId], references: [id], onDelete: SetNull)
 
-  accounts Account[]
-  sessions Session[]
+  achievedAt DateTime?
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  accounts          Account[]
+  sessions          Session[]
+  profile           Profile[]
+  gameStats         GameStats[]
+  achievements      UserAchievement[]
+  gameSessions      GameSessionPlayer[]
+  notifications     Notification[]
+  payments          Payment[]
+  coinsTransactions CoinsTransaction[]
+  couponRedemptions CouponRedemption[]
 }
 
 model UserPassword {
@@ -78,4 +167,510 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+/**
+ * Avatars & store
+ */
+model Avatar {
+  id String @id @default(cuid())
+
+  name      String
+  url       String
+  publicId  String
+  isDefault Boolean @default(false)
+  isPremium Boolean @default(false)
+  coins     Float   @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users    User[]
+  profiles Profile[]
+
+  @@unique([publicId])
+}
+
+/**
+ * User avatars collection
+ */
+model UserAvatarCollection {
+  id String @id @default(cuid())
+
+  profileId String
+  avatarId  String
+
+  createdAt DateTime @default(now())
+
+  @@unique([profileId, avatarId])
+}
+
+/**
+ * Profile & XP levels & User settings
+ */
+model Profile {
+  id           String  @id @default(uuid())
+  name         String?
+  bio          String?
+  favoriteGame String?
+
+  coins      Int       @default(1000)
+  joinDate   String
+  lastOnline DateTime?
+
+  level        Int   @default(1)
+  xp           Int   @default(0)
+  xpMultiplier Json?
+  rank         Int?
+
+  avatarId String?
+  userId   String
+
+  levelData XpLevel       @relation(fields: [level], references: [level])
+  avatar    Avatar?       @relation(fields: [avatarId], references: [id], onDelete: SetNull)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  settings  UserSettings?
+
+  // friends relationships
+  friends    Friend[] @relation("ProfileFriends")
+  friendedBy Friend[] @relation("ProfileFriendOf")
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId])
+  @@index([userId])
+}
+
+model XpLevel {
+  id         Int     @id @default(autoincrement())
+  level      Int     @unique
+  xpRequired Int
+  xpToNext   Int
+  rewardName String?
+
+  reward Reward? @relation(fields: [rewardName], references: [name], onDelete: NoAction)
+
+  profile Profile[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([level])
+}
+
+model UserSettings {
+  id String @id @default(cuid())
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  theme           Theme   @default(system)
+  locale          Locale  @default(en)
+  sound           Boolean @default(true)
+  notification    Boolean @default(true)
+  showOnlineStats Boolean @default(true)
+  autoSave        Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([profileId])
+  @@index([profileId])
+}
+
+/**
+ * GAMES, STATS
+ */
+model Game {
+  id          String    @id @default(cuid())
+  name        GameName  @unique
+  description String
+  tagline     String
+  tag         String
+  genre       String?
+  platform    String?
+  released    DateTime?
+
+  stats        GameStats[]
+  achievements GameAchievement[]
+  sessions     GameSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model GameStats {
+  id String @id @default(uuid())
+
+  wins       Int   @default(0)
+  losses     Int   @default(0)
+  ties       Int   @default(0)
+  totalGames Int   @default(0)
+  winRate    Float @default(0)
+
+  highestWinStreak Int   @default(0)
+  currentWinStreak Int   @default(0)
+  hoursPlayed      Float @default(0)
+
+  gameName GameName
+  game     Game     @relation(fields: [gameName], references: [name])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // self relationship for other games
+  specificStatsId   String?
+  specificStats     GameStats?  @relation("GameStatsHierarchy", fields: [specificStatsId], references: [id])
+  specificGameStats GameStats[] @relation("GameStatsHierarchy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, gameName])
+}
+
+/**
+ * Achievements for a game, for a user
+ */
+model GameAchievement {
+  id String @id @default(cuid())
+
+  title       String  @unique
+  description String
+  imageUrl    String?
+  condition   Json?
+  rewardName  String?
+  type        String
+
+  reward   Reward?   @relation(fields: [rewardName], references: [name], onDelete: NoAction)
+  gameName GameName?
+  game     Game?     @relation(fields: [gameName], references: [name])
+
+  userAchievements UserAchievement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([gameName])
+  @@index([gameName, type])
+}
+
+model UserAchievement {
+  id String @id @default(cuid())
+
+  unlocked   Boolean   @default(false)
+  unlockedAt DateTime?
+
+  completedCondition Json?
+  progress           Int   @default(0)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  achievementId String
+  achievement   GameAchievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, achievementId])
+}
+
+/**
+ * GAME SESSIONS, PLAYERS, DETAILS
+ */
+model GameSession {
+  id String @id @default(uuid())
+
+  status      GameSessionStatus @default(PENDING)
+  startedAt   DateTime?
+  endedAt     DateTime?
+  durationSec Int?              @default(0)
+  xpTotal     Int               @default(0)
+  // token being used for the game
+  coinsTotal  Int               @default(0)
+  isFriendly  Boolean           @default(false)
+
+  gameName GameName
+  game     Game     @relation(fields: [gameName], references: [name], onDelete: Cascade)
+
+  hostId String
+  host   GameSessionPlayer @relation("GameSessionHost", fields: [hostId], references: [id], onDelete: Cascade)
+
+  players GameSessionPlayer[]
+  details GameSessionDetail[]
+
+  // next session from this one
+  nextSessionId String?
+  nextSession   GameSession? @relation("GameSessionNext", fields: [nextSessionId], references: [id], onDelete: SetNull)
+
+  // previous session from this one
+  previousSessionId String?
+  previousSession   GameSession? @relation("GameSessionPrevious", fields: [previousSessionId], references: [id], onDelete: SetNull)
+
+  nextSessions     GameSession[] @relation("GameSessionNext")
+  previousSessions GameSession[] @relation("GameSessionPrevious")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([gameName, hostId])
+  @@index([gameName])
+}
+
+model GameSessionPlayer {
+  id        String      @id @default(uuid())
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  xpGained     Int        @default(0)
+  result       GameResult @default(PENDING)
+  isHost       Boolean    @default(false)
+  opponentType String?
+  durationSec  Int?
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  hosts     GameSession[] @relation("GameSessionHost")
+
+  @@unique([sessionId, userId])
+  @@index([userId])
+}
+
+model GameSessionDetail {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  type GameName
+  data Json // game-specific details (moves, scores, etc.)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/**
+ * FRIENDS & FRIEND REQUESTS
+ */
+model FriendRequest {
+  id String @id @default(uuid())
+
+  senderId   String
+  receiverId String
+  status     FriendRequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([senderId, receiverId])
+}
+
+model Friend {
+  id String @id @default(uuid())
+
+  profileId       String
+  friendProfileId String
+
+  profile       Profile @relation("ProfileFriends", fields: [profileId], references: [userId], onDelete: Cascade)
+  friendProfile Profile @relation("ProfileFriendOf", fields: [friendProfileId], references: [userId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([profileId, friendProfileId])
+}
+
+/**
+ * NOTIFICATIONS
+ */
+
+model Notification {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title      String
+  message    String
+  link       String?
+  isRead     Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  type NotificationType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+/**
+ * COINS TRANSACTIONS, PAYMENTS
+ */
+model CoinsTransaction {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount    Int
+  type      CoinTransactionType
+  reference String?
+  note      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount   Decimal @db.Decimal(10, 2) // real money
+  currency String
+  coins    Int
+
+  status    PaymentStatus @default(PENDING)
+  provider  String?
+  reference String?
+  note      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+/**
+ * COUPONS, COUPON REDEMPTION
+ */
+model Coupon {
+  id   String @id @default(uuid())
+  code String @unique
+
+  name        String
+  description String?
+  amount      Int?
+  coins       Int
+  limit       Int?
+  isOneTime   Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  expiresAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CouponRedemption {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  couponId String
+
+  createdAt DateTime @default(now())
+}
+
+/**
+ * CHALLENGES
+ */
+model ChallengeBattle {
+  id String @id @default(uuid())
+
+  gameSessionId String
+  challengeById String
+  challengeToId String
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+}
+
+/**
+ * STORES
+ */
+model AvatarStore {
+  id String @id @default(nanoid())
+
+  coins          Int    @default(0)
+  avatarName     String
+  avatarUrl      String
+  avatarPublicId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CoinsStore {
+  id String @id @default(nanoid())
+
+  coins       Int
+  amount      Int
+  imageUrl    String
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Share the game for new users
+model GameShare {
+  id String @id @default(uuid())
+
+  userId      String
+  code        String  @unique
+  isUsed      Boolean @default(false)
+  rewardCoins Int     @default(500)
+
+  joinedAt     DateTime?
+  joinedUserId String?
+
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+/**
+ * * REWARDS **
+ */
+model Reward {
+  id String @id @default(cuid())
+
+  name            String  @unique
+  description     String?
+  image           String?
+  coins           Int?
+  avatarId        String?
+  xp              Int?
+  xpMultiplierAdd Json?
+  type            String?
+
+  xpLevel      XpLevel[]
+  achievements GameAchievement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RewardCollection {
+  id String @id @default(cuid())
+
+  rewardId  String
+  userId    String
+  isClaimed Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@unique([rewardId, userId])
+  @@index([userId])
 }
