@@ -11,6 +11,7 @@ import { UserService } from './services/user.service';
 import { TokenService } from './services/token.service';
 import { SessionService } from './services/session.service';
 import { AuthCookiesService } from './services/auth-cookies.service';
+import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
     private readonly sessions: SessionService,
     private readonly users: UserService,
     private readonly tokens: TokenService,
+    private readonly client: PrismaService,
   ) {}
 
   /**
@@ -173,5 +175,34 @@ export class AuthService {
     this.cookies.set(res, accessToken, refreshToken, user.isGuestUpgraded);
 
     return { accessToken };
+  }
+
+  /**
+   * Get session data
+   */
+  async getSessionData(id: string) {
+    const user = await this.client.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+        avatar: { select: { url: true, id: true, name: true } },
+        createdAt: true,
+        profile: { select: { name: true, level: true, coins: true } },
+      },
+    });
+
+    if (!user) throw new BadRequestException('User not found');
+
+    const { profile, ...rest } = user;
+
+    return {
+      ...rest,
+      name: profile?.name ?? null,
+      coins: profile?.coins ?? 0,
+      level: profile?.level,
+    };
   }
 }

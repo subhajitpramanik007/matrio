@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { User } from '@matrio/db';
 import { TUserSignup } from '@matrio/shared/schemas';
@@ -29,14 +29,27 @@ export class UserService extends UserQueryService {
   }
 
   async createUser(data: TUserSignup): Promise<User> {
-    return this.client.user.create({
-      data: {
-        email: data.email,
-        username: data.username || this.generateUsername(),
-        role: 'USER',
-        userPassword: { create: { hash: await bcrypt.hash(data.password, 10) } },
-      },
-    });
+    try {
+      return await this.client.user.create({
+        data: {
+          email: data.email,
+          username: data.username || this.generateUsername(),
+          role: 'USER',
+          userPassword: { create: { hash: await bcrypt.hash(data.password, 10) } },
+          profile: {
+            create: {
+              rank: 0,
+              joinDate: new Date().toISOString(),
+              lastOnline: new Date().toISOString(),
+              bio: 'Hey there! I am using Matrio!',
+              settings: { create: {} },
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException('Failed to create user');
+    }
   }
 
   async upgradeUser(userId: string, data: TUserSignup): Promise<User> {
@@ -48,6 +61,15 @@ export class UserService extends UserQueryService {
         role: 'USER',
         isGuestUpgraded: true,
         userPassword: { create: { hash: await bcrypt.hash(data.password, 10) } },
+        profile: {
+          create: {
+            rank: 0,
+            joinDate: new Date().toISOString(),
+            lastOnline: new Date().toISOString(),
+            bio: 'Hey there! I am using Matrio!',
+            settings: { create: {} },
+          },
+        },
       },
     });
   }

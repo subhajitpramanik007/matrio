@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import {
   BadRequestException,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -12,7 +13,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 
 import { JwtAccessGuard } from './guards';
-import { Cookies, ZodBody } from '@/common/decorators';
+import { Cookies, GetUser, ZodBody } from '@/common/decorators';
 import { BaseController } from '@/common/base/base.controller';
 
 import {
@@ -112,10 +113,19 @@ export class AuthController extends BaseController {
     return this.success({ accessToken }, 'Token refreshed');
   }
 
-  @Post('check')
+  @Get('session')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAccessGuard)
-  async verify() {
+  async session(@GetUser('id') userId: string) {
+    const user = await this.authService.getSessionData(userId);
+
+    return this.success({ user });
+  }
+
+  @Post('session/check')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAccessGuard)
+  verify() {
     return this.success('Session is valid');
   }
 }

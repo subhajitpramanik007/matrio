@@ -56,6 +56,12 @@ importers:
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
+      class-validator:
+        specifier: ^0.14.2
+        version: 0.14.2
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -9030,8 +9036,7 @@ snapshots:
 
   '@types/uuid@9.0.8': {}
 
-  '@types/validator@13.15.3':
-    optional: true
+  '@types/validator@13.15.3': {}
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -9724,15 +9729,13 @@ snapshots:
 
   cjs-module-lexer@2.1.0: {}
 
-  class-transformer@0.5.1:
-    optional: true
+  class-transformer@0.5.1: {}
 
   class-validator@0.14.2:
     dependencies:
       '@types/validator': 13.15.3
       libphonenumber-js: 1.12.15
       validator: 13.15.15
-    optional: true
 
   class-variance-authority@0.7.1:
     dependencies:
@@ -11704,8 +11707,7 @@ snapshots:
       libqp: 2.1.1
     optional: true
 
-  libphonenumber-js@1.12.15:
-    optional: true
+  libphonenumber-js@1.12.15: {}
 
   libqp@2.1.1:
     optional: true
@@ -13731,8 +13733,7 @@ snapshots:
   valid-data-url@3.0.1:
     optional: true
 
-  validator@13.15.15:
-    optional: true
+  validator@13.15.15: {}
 
   vary@1.1.2: {}
 

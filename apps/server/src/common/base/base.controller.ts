@@ -9,9 +9,9 @@ export abstract class BaseController {
     value: T,
     message?: string,
     success: boolean = true,
-  ) {
+  ): SuccessResponse<any> {
     if (typeof value === 'string') {
-      return new SuccessResponse(undefined, value as string, success);
+      return new SuccessResponse<null>(null, value, success);
     }
 
     return new SuccessResponse(value, message, success);
