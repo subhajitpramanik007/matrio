@@ -2,9 +2,15 @@ export interface IUser {
   id: string;
   name?: string;
   email?: string;
-  image?: string;
-  emailVerified?: Date;
   createdAt: Date;
   username: string;
-  role: "USER" | "ADMIN" | "GUEST";
+  role: "USER" | "GUEST";
+  avatar?: {
+    id: string;
+    name: string;
+    url: string;
+  };
+  bio?: string;
+  coins: number;
+  level: number;
 }

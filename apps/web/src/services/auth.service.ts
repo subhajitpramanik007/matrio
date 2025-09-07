@@ -1,3 +1,4 @@
+import { IUser } from "@/types";
 import { ApiClient } from "./api.service";
 import {
   TUserSignup,
@@ -39,8 +40,12 @@ export class AuthService extends ApiClient {
     return this.post<TAuthResponse>("/auth/refresh");
   }
 
+  async session() {
+    return this.get<{ user: IUser }>("/auth/session");
+  }
+
   async checkSession() {
-    return this.post("/auth/check");
+    return this.post("/auth/session/check");
   }
 }
 

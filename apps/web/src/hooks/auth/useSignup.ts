@@ -10,6 +10,8 @@ import { authService } from "@/services/auth.service";
 
 import { useSessionStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
+import React from "react";
+import { getUser } from "@/lib/getUser";
 
 export const useSignup = () => {
   const router = useRouter();
@@ -35,6 +37,14 @@ export const useSignup = () => {
       },
     });
   }
+
+  React.useEffect(() => {
+    getUser().then((user) => {
+      if (user) {
+        form.setValue("username", user.username);
+      }
+    });
+  }, [form]);
 
   return {
     form,
