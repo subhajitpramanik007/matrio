@@ -7,10 +7,14 @@ import { AuthorizedLayout, UnauthorizedLayout } from "@/components/auth";
 import { UserButton } from "./UserButton";
 import { AppLogo } from "@/components/AppLogo";
 import { ThemeToggle } from "./ThemeToggle";
+import { useSession } from "@/hooks/auth";
+import { ShowCoins } from "./ShowCoins";
 
 export const Header: React.FC<{
   children?: React.ReactNode;
 }> = ({ children }) => {
+  const { user } = useSession();
+
   return (
     <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/40 sticky top-0 z-50 border-b px-8 backdrop-blur">
       <div className="container mx-auto flex h-16 w-full max-w-7xl items-center justify-between">
@@ -27,8 +31,9 @@ export const Header: React.FC<{
               </Link>
             </div>
           </UnauthorizedLayout>
-          <AuthorizedLayout>
-            <UserButton />
+          <AuthorizedLayout className="flex gap-4">
+            <ShowCoins coins={user?.coins || 0} />
+            <UserButton user={user} />
           </AuthorizedLayout>
         </div>
       </div>

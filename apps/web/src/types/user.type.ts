@@ -10,7 +10,6 @@ export interface IUser {
     name: string;
     url: string;
   };
-  bio?: string;
   coins: number;
   level: number;
 }
