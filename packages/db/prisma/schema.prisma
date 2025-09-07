@@ -101,8 +101,10 @@ model User {
 
   userPassword UserPassword?
 
-  avatarId String?
-  avatar   Avatar? @relation(fields: [avatarId], references: [id], onDelete: SetNull)
+  avatarId  Int      @default(1)
+  avatar    Avatar   @relation(fields: [avatarId], references: [id], onDelete: SetDefault)
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
 
   achievedAt DateTime?
   deletedAt  DateTime?
@@ -111,7 +113,6 @@ model User {
 
   accounts          Account[]
   sessions          Session[]
-  profile           Profile[]
   gameStats         GameStats[]
   achievements      UserAchievement[]
   gameSessions      GameSessionPlayer[]
@@ -173,7 +174,7 @@ model VerificationToken {
  * Avatars & store
  */
 model Avatar {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
 
   name      String
   url       String
@@ -185,8 +186,7 @@ model Avatar {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users    User[]
-  profiles Profile[]
+  users User[]
 
   @@unique([publicId])
 }
@@ -223,13 +223,9 @@ model Profile {
   xpMultiplier Json?
   rank         Int?
 
-  avatarId String?
-  userId   String
-
   levelData XpLevel       @relation(fields: [level], references: [level])
-  avatar    Avatar?       @relation(fields: [avatarId], references: [id], onDelete: SetNull)
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   settings  UserSettings?
+  users     User[]
 
   // friends relationships
   friends    Friend[] @relation("ProfileFriends")
@@ -238,9 +234,6 @@ model Profile {
   deletedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-
-  @@unique([userId])
-  @@index([userId])
 }
 
 model XpLevel {
@@ -478,8 +471,8 @@ model Friend {
   profileId       String
   friendProfileId String
 
-  profile       Profile @relation("ProfileFriends", fields: [profileId], references: [userId], onDelete: Cascade)
-  friendProfile Profile @relation("ProfileFriendOf", fields: [friendProfileId], references: [userId], onDelete: Cascade)
+  profile       Profile @relation("ProfileFriends", fields: [profileId], references: [id], onDelete: Cascade)
+  friendProfile Profile @relation("ProfileFriendOf", fields: [friendProfileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
