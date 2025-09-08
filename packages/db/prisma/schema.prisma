@@ -309,8 +309,8 @@ model GameStats {
   currentWinStreak Int   @default(0)
   hoursPlayed      Float @default(0)
 
-  gameName GameName
-  game     Game     @relation(fields: [gameName], references: [name])
+  gameName GameName?
+  game     Game?     @relation(fields: [gameName], references: [name])
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -322,8 +322,6 @@ model GameStats {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([userId, gameName])
 }
 
 /**

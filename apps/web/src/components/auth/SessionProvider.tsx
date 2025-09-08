@@ -6,14 +6,10 @@ import { SessionState } from "@/types/session.type";
 
 import { useGetMe } from "@/hooks/useGetMe";
 import { useCreateGuest, useRefreshToken } from "@/hooks/auth";
-import { usePathname, useRouter } from "next/navigation";
 
 export const SessionContext = React.createContext<SessionState>(undefined!);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const pathname = usePathname();
-
   const { isAuthenticated, isGuest, user } = useSessionStore();
 
   const { data, isSuccess, isPending, error } = useGetMe();
@@ -49,12 +45,6 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       useSessionStore.getState().clear();
     }
   }, [data, isSuccess]);
-
-  React.useEffect(() => {
-    if (error?.cause) {
-      router.push(`${pathname}?error=${error.cause}`);
-    }
-  }, [error?.cause, pathname, router]);
 
   return (
     <SessionContext.Provider

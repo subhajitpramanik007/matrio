@@ -127,7 +127,7 @@ export const SignupForm: React.FC = () => {
           }
         >
           <ButtonLoader isLoading={isPending} />
-          Sign In
+          Create new account
         </Button>
       </form>
     </Form>
