@@ -9,35 +9,81 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Settings } from "lucide-react";
+import { SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IProfileSettings } from "@/types";
+import { Settings } from "@/types";
+import { useSettings } from "@/hooks/profile/useSettings";
 
-interface UserSettingsProps {
-  settings: IProfileSettings;
-  handleSettingChange: (
-    setting: keyof IProfileSettings,
-    value: boolean,
-  ) => void;
-}
+// TODO: Update settings
+export const UserSettings: React.FC = ({}) => {
+  const { data } = useSettings();
 
-export const UserSettings: React.FC<UserSettingsProps> = ({
-  settings,
-  handleSettingChange,
-}) => {
+  const [settings, setSettings] = React.useState<Settings>(data.data.settings);
+
+  function handleSettingChange<T extends keyof Settings>(
+    setting: T,
+    value: Settings[T],
+  ) {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      [setting]: value,
+    }));
+  }
+
+  function handleSaveSettings() {
+    // TODO: Save settings
+    console.log(settings);
+  }
+
+  function isSettingsChanged() {
+    return JSON.stringify(settings) !== JSON.stringify(data.data.settings);
+  }
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Settings className="mr-2 h-5 w-5" />
+            <SettingsIcon className="mr-2 h-5 w-5" />
             Game Settings
           </CardTitle>
           <CardDescription>Customize your gaming experience</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Theme */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="theme">Theme</Label>
+              <p className="text-muted-foreground text-sm">
+                Choose your preferred theme
+              </p>
+            </div>
+            <Select
+              value={settings.theme}
+              onValueChange={(value) =>
+                handleSettingChange("theme", value as any)
+              }
+            >
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder="Select a theme" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="system">System</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="sound-effects">Sound Effects</Label>
@@ -47,9 +93,9 @@ export const UserSettings: React.FC<UserSettingsProps> = ({
             </div>
             <Switch
               id="sound-effects"
-              checked={settings.soundEffects}
+              checked={settings.sound}
               onCheckedChange={(checked) =>
-                handleSettingChange("soundEffects", checked)
+                handleSettingChange("sound", checked)
               }
             />
           </div>
@@ -63,9 +109,9 @@ export const UserSettings: React.FC<UserSettingsProps> = ({
             </div>
             <Switch
               id="notifications"
-              checked={settings.notifications}
+              checked={settings.notification}
               onCheckedChange={(checked) =>
-                handleSettingChange("notifications", checked)
+                handleSettingChange("notification", checked)
               }
             />
           </div>
@@ -95,12 +141,24 @@ export const UserSettings: React.FC<UserSettingsProps> = ({
             </div>
             <Switch
               id="online-status"
-              checked={settings.showOnlineStatus}
+              checked={settings.showOnlineStats}
               onCheckedChange={(checked) =>
-                handleSettingChange("showOnlineStatus", checked)
+                handleSettingChange("showOnlineStats", checked)
               }
             />
           </div>
+
+          {isSettingsChanged() ? (
+            <div className="flex justify-end">
+              <Button
+                onClick={handleSaveSettings}
+                disabled={!isSettingsChanged()}
+                className=""
+              >
+                Save Settings
+              </Button>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 

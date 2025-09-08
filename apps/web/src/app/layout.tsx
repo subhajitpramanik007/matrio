@@ -3,8 +3,6 @@ import { Geist, Geist_Mono, Play } from "next/font/google";
 import "./globals.css";
 
 import App from "./_app";
-import WatchPage from "@/components/watchPage";
-import { Suspense } from "react";
 
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -49,12 +47,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <App>
-            <Suspense fallback={null}>
-              <WatchPage />
-            </Suspense>
-            {children}
-          </App>
+          <App>{children}</App>
         </ThemeProvider>
       </body>
     </html>
