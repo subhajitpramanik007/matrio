@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetMe = () => {
   return useQuery({
-    queryKey: ["auth", "session"],
+    queryKey: ["user", "me"],
     queryFn: () => authService.session(),
     enabled: useSessionStore.getState().isTokenAuthenticated,
   });

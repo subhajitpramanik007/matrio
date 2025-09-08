@@ -36,3 +36,25 @@ export interface IGameRecentActivity {
   date: string;
   xpGained: number;
 }
+
+// Game Stats
+export type TGameName = "TIC_TAC_TOE" | "CHECKERS" | "CHESS" | "SUDOKU";
+
+export interface IGameStatsData {
+  id: string;
+  wins: number;
+  losses: number;
+  ties: number;
+  totalGames: number;
+  winRate: number;
+  highestWinStreak: number;
+  currentWinStreak: number;
+  hoursPlayed: number;
+  specificGameStats?: ISpecificGameStatsData[];
+  userId?: string;
+}
+
+export interface ISpecificGameStatsData
+  extends Omit<IGameStatsData, "specificGameStats" | "userId"> {
+  gameName: TGameName;
+}

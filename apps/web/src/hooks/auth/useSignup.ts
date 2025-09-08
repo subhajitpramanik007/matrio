@@ -33,7 +33,7 @@ export const useSignup = () => {
       onSuccess: () => {
         form.reset();
 
-        router.push("/profile");
+        router.push("/auth/email-verification");
       },
     });
   }

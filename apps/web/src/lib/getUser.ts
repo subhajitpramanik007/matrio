@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 import { IUser } from "@/types/user.type";
 
-export const getUser = async (): Promise<IUser | null> => {
+export const getUser = async (): Promise<any> => {
   const cookie = await cookies();
 
   const accessToken = cookie.get("__matrio.atk")?.value;
