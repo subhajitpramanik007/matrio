@@ -23,11 +23,14 @@ import { SpecificGameStatsBar } from "./_components/SpecificGameStatsBar";
 import { useGameStats } from "@/hooks/profile/useGameStats";
 
 import { motion } from "motion/react";
+import ProfileStatsLoading from "./loading";
 
 export default function ProfileGameStats() {
-  const { data } = useGameStats();
+  const { data, isLoading, error, isError } = useGameStats();
 
-  const stats = data.data.stats;
+  if (isLoading) return <ProfileStatsLoading />;
+
+  const stats = data?.data.stats;
 
   return (
     <div className="space-y-6">
@@ -40,7 +43,7 @@ export default function ProfileGameStats() {
         >
           <StatsItemCard>
             <div>
-              <StatsItemCardData>{stats.totalGames}</StatsItemCardData>
+              <StatsItemCardData>{stats?.totalGames}</StatsItemCardData>
               <StatsItemCardDescription>Total Games</StatsItemCardDescription>
             </div>
             <StatsItemCardIcon icon={GamepadIcon} />
@@ -50,7 +53,7 @@ export default function ProfileGameStats() {
         {/* Total Wins */}
         <StatsItemCard>
           <div>
-            <StatsItemCardData>{stats.wins}</StatsItemCardData>
+            <StatsItemCardData>{stats?.wins}</StatsItemCardData>
             <StatsItemCardDescription>Total Wins</StatsItemCardDescription>
           </div>
           <StatsItemCardIcon icon={TrophyIcon} />
@@ -59,7 +62,7 @@ export default function ProfileGameStats() {
         {/* Win Rate */}
         <StatsItemCard>
           <div>
-            <StatsItemCardData>{stats.winRate}%</StatsItemCardData>
+            <StatsItemCardData>{stats?.winRate}%</StatsItemCardData>
             <StatsItemCardDescription>Win Rate</StatsItemCardDescription>
           </div>
           <StatsItemCardIcon icon={TrendingUpIcon} />
@@ -68,7 +71,7 @@ export default function ProfileGameStats() {
         {/* Time Played */}
         <StatsItemCard>
           <div>
-            <StatsItemCardData>{stats.hoursPlayed}</StatsItemCardData>
+            <StatsItemCardData>{stats?.hoursPlayed}</StatsItemCardData>
             <StatsItemCardDescription>Time Played</StatsItemCardDescription>
           </div>
           <StatsItemCardIcon icon={ClockIcon} />
@@ -83,7 +86,7 @@ export default function ProfileGameStats() {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {stats.specificGameStats?.map((gameStats, index) => (
+            {stats?.specificGameStats?.map((gameStats, index) => (
               <SpecificGameStatsBar key={index} {...gameStats} />
             ))}
           </div>

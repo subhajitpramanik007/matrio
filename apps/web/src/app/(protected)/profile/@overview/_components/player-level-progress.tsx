@@ -5,12 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { XPInfo } from "@/types";
 import { Zap } from "lucide-react";
 
-export function PlayerLevelProgress({
-  level,
-  xp,
-  xpRequired,
-  xpToNext,
-}: XPInfo) {
+export function PlayerLevelProgress({ level, xp, xpToNext }: XPInfo) {
   return (
     <Card>
       <CardHeader>

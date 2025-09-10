@@ -1,18 +1,24 @@
 "use client";
 
-import { useProfile } from "@/hooks/profile/useProfile";
-import { gameStats, recentActivity } from "../dummy-data";
-import React from "react";
 import { ProfileInfo } from "./_components/profile-info";
-import { PlayerLevelProgress } from "./_components/player-level-progress";
 import { PlayerQuickStats } from "./_components/player-quick-stats";
 import { PlayerFavoriteGames } from "./_components/player-fav-games";
+import { PlayerLevelProgress } from "./_components/player-level-progress";
 import { PlayerRecentActivity } from "./_components/player-recent-activity";
+
+import { useGameStats } from "@/hooks/profile/useGameStats";
+import { useProfile } from "@/hooks/profile/useProfile";
+import { useGameActivities } from "@/hooks/profile/useGameActivities";
 
 export default function ProfileOverview() {
   const { data } = useProfile();
+  const { data: statsData } = useGameStats();
+  const { data: recentActivitiesData } = useGameActivities();
+
+  const recentActivities = recentActivitiesData?.data.gameHistory;
 
   const profile = data?.data.profile;
+  const stats = statsData?.data.stats;
 
   return (
     <div className="grid gap-8 lg:grid-cols-3">
@@ -22,11 +28,11 @@ export default function ProfileOverview() {
           profileData={profile}
           // TODO: Add onSaveProfile and hoursPlayed add to gameStats
           onSaveProfile={() => {}}
-          hoursPlayed={0}
+          hoursPlayed={stats.hoursPlayed}
         />
 
         {/* Recent Activity */}
-        <PlayerRecentActivity recentActivity={recentActivity} />
+        <PlayerRecentActivity recentActivity={recentActivities} />
       </div>
 
       {/* Sidebar */}
@@ -35,7 +41,7 @@ export default function ProfileOverview() {
         <PlayerLevelProgress {...profile.xpInfo} />
 
         {/* Quick Stats */}
-        <PlayerQuickStats gameStats={gameStats} />
+        <PlayerQuickStats gameStats={stats} />
 
         {/* Favorite Game */}
         <PlayerFavoriteGames favoriteGame={profile.favoriteGame} />

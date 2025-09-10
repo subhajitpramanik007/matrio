@@ -1,10 +1,10 @@
 "use client";
 
-import { IGameStats } from "@/types";
+import { IGameStatsData } from "@/types";
 import { TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function PlayerQuickStats({ gameStats }: { gameStats: IGameStats }) {
+export function PlayerQuickStats({ gameStats }: { gameStats: IGameStatsData }) {
   return (
     <Card>
       <CardHeader>
@@ -24,11 +24,11 @@ export function PlayerQuickStats({ gameStats }: { gameStats: IGameStats }) {
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Current Streak</span>
-          <span className="font-bold">{gameStats.currentStreak}</span>
+          <span className="font-bold">{gameStats.currentWinStreak}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Best Streak</span>
-          <span className="font-bold">{gameStats.longestWinStreak}</span>
+          <span className="font-bold">{gameStats.highestWinStreak}</span>
         </div>
       </CardContent>
     </Card>

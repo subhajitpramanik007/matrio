@@ -1,4 +1,10 @@
+import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "The profile page of the matrio game platform",
+};
 
 export default function ProfileLayout({
   overview,
@@ -22,7 +28,6 @@ export default function ProfileLayout({
               <TabsTrigger value="achievements">Achievements</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
-            {/* {children} */}
             <TabsContent value="overview" className="space-y-8">
               {overview}
             </TabsContent>

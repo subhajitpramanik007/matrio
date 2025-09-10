@@ -41,7 +41,7 @@ export const AchievementsDetails: React.FC = () => {
       </CardHeader>
       <CardContent>
         <div className="grid gap-4 md:grid-cols-2">
-          {achievementsData.map((achievement, idx) => (
+          {achievementsData?.map((achievement, idx) => (
             <AchievementRewardDetailsTooltip
               key={idx}
               rewardData={achievement.reward}
