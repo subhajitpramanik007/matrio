@@ -28,7 +28,7 @@ export function useSignout() {
       queryClient.resetQueries();
       queryClient.invalidateQueries({ queryKey: ["user", "me"] });
 
-      router.push("/");
+      router.push("/auth/signin");
     },
     onError: (error) => {
       toast.error(error.message);

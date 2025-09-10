@@ -5,32 +5,22 @@ import { useSessionStore } from "@/lib/store";
 import { SessionState } from "@/types/session.type";
 
 import { useGetMe } from "@/hooks/useGetMe";
-import { useCreateGuest, useRefreshToken } from "@/hooks/auth";
+import { useRefreshSession } from "@/hooks/auth";
 
 export const SessionContext = React.createContext<SessionState>(undefined!);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
+  const [isMounted, setIsMounted] = React.useState(false);
   const { isAuthenticated, isGuest, user } = useSessionStore();
 
-  const { data, isSuccess, isPending, error } = useGetMe();
-  const { mutateAsync: createGuest } = useCreateGuest();
-  const { mutateAsync: refreshTokenMutate } = useRefreshToken();
+  const { isSuccess: isRefreshSuccess } = useRefreshSession();
+  const { data, isSuccess, isPending } = useGetMe({
+    enabled: isMounted || isRefreshSuccess,
+  });
 
+  // Ensure hydration compatibility
   React.useEffect(() => {
-    refreshTokenMutate(undefined, {
-      onError: () => {
-        createGuest();
-      },
-    });
-
-    const interval = setInterval(
-      () => {
-        refreshTokenMutate();
-      },
-      15 * 60 * 1000,
-    );
-
-    return () => clearInterval(interval);
+    setIsMounted(true);
   }, []);
 
   React.useEffect(() => {

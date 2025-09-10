@@ -2,12 +2,19 @@
 
 import { useSessionStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-export const useGetMe = () => {
+type UseGetMeOptions = Partial<UseQueryOptions<any, any, any, string[]>>;
+
+export const useGetMe = (options: UseGetMeOptions = {}) => {
+  const isTokenAuthenticated = useSessionStore(
+    (state) => state.isTokenAuthenticated,
+  );
+
   return useQuery({
     queryKey: ["user", "me"],
     queryFn: () => authService.session(),
-    enabled: useSessionStore.getState().isTokenAuthenticated,
+    enabled: isTokenAuthenticated && options.enabled !== false,
+    ...options,
   });
 };

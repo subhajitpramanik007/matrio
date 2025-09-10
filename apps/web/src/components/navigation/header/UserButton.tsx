@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, useSignout } from "@/hooks/auth";
+import { useSignout } from "@/hooks/auth";
 
 import {
   DropdownMenu,

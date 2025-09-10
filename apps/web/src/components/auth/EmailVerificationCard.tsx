@@ -1,6 +1,5 @@
 "use client";
 
-import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 
 import {
@@ -23,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import { ButtonLoader } from "../ButtonLoader";
 import { ResendEmailDialog } from "./ResendEmailDialog";
 
-import { useToRedirect } from "@/hooks/useToRedirect";
 import { useEmailVerification, useGetUser } from "@/hooks/auth";
 
 export const EmailVerificationCard: React.FC = () => {
@@ -35,18 +33,6 @@ export const EmailVerificationCard: React.FC = () => {
   useEffect(() => {
     if (user && user.email) form.setValue("email", user?.email);
   }, [user, form]);
-
-  useToRedirect(
-    {
-      condition: !!user?.emailVerified,
-      to: "/dashboard",
-      delay: 1000,
-      callback() {
-        toast.success("Email already verified!");
-      },
-    },
-    [user?.emailVerified],
-  );
 
   return (
     <Card>
