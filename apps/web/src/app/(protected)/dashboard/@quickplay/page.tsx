@@ -1,8 +1,5 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
 
 import {
   Card,
@@ -34,13 +31,9 @@ const Games = [
   },
 ];
 
-export function QuickPlaySection() {
+export default function QuickPlaySection() {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
-    >
+    <>
       <h2 className="mb-6 text-2xl font-bold">Quick Play</h2>
       <div className="grid gap-6 md:grid-cols-2">
         {Games.map((game, index) => (
@@ -64,6 +57,6 @@ export function QuickPlaySection() {
           </Card>
         ))}
       </div>
-    </motion.section>
+    </>
   );
 }
