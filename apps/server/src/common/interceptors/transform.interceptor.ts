@@ -1,6 +1,7 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
 import { plainToInstance } from 'class-transformer';
+import { SuccessResponse } from '../response';
 
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor {
@@ -8,10 +9,14 @@ export class TransformInterceptor<T> implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map((data) =>
-        plainToInstance(this.dto, data, {
-          excludeExtraneousValues: true,
-        }),
+      map(
+        (data) =>
+          new SuccessResponse(
+            plainToInstance(this.dto, data, {
+              excludeExtraneousValues: true,
+            }),
+            data?.message,
+          ),
       ),
     );
   }

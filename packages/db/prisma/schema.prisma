@@ -389,8 +389,8 @@ model GameSession {
   gameName GameName
   game     Game     @relation(fields: [gameName], references: [name], onDelete: Cascade)
 
-  hostId String
-  host   GameSessionPlayer @relation("GameSessionHost", fields: [hostId], references: [id], onDelete: Cascade)
+  hostId String?
+  host   GameSessionPlayer? @relation("GameSessionHost", fields: [hostId], references: [id], onDelete: Cascade)
 
   players GameSessionPlayer[]
   details GameSessionDetail[]
