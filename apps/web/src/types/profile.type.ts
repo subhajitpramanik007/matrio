@@ -104,3 +104,26 @@ export interface XPMultiplierAdd {
   expirationLimit?: number;
   isPermanent?: boolean;
 }
+
+// recent activity on profile
+export interface IProfileRecentActivity {
+  gameHistory: ProfileGameHistory[];
+}
+
+export interface ProfileGameHistory {
+  id: string;
+  game: string;
+  result: string;
+  xpGained: number;
+  opponentType: string;
+  players: ProfileGameHistoryPlayer[] | string;
+  playedAt: Date;
+}
+
+export interface ProfileGameHistoryPlayer {
+  id: string;
+  username: string;
+  avatar: string;
+  isHost: boolean;
+  isMe: boolean;
+}

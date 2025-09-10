@@ -1,3 +1,5 @@
+"use client";
+
 import { profileService } from "@/services/profile.service";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

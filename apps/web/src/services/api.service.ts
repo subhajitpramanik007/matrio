@@ -1,4 +1,5 @@
 import { ApiResponse, ApiErrorResponse } from "@/lib/response";
+import { useSessionStore } from "@/lib/store";
 
 type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -59,22 +60,29 @@ export abstract class ApiClient {
     options?: IRequestInit,
   ): Promise<ApiResponse<T>> {
     try {
-      const res = await fetch(path, this.mergeOptions(options));
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      const timeout = setTimeout(() => {
+        controller.abort();
+      }, 10000);
+
+      const res = await fetch(path, { ...this.mergeOptions(options), signal });
+      clearTimeout(timeout);
 
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        throw new ApiErrorResponse(
-          res.status,
-          data?.message || data?.error,
-          data?.error || res.statusText,
-          data?.cause,
-        );
+        const errMsg = data?.message || data?.error || res.statusText;
+        throw new Error(errMsg);
       }
 
       return new ApiResponse(res.status, data?.data as T, data?.message);
     } catch (err: any) {
-      throw new ApiErrorResponse(500, err.message, err.message, err?.cause);
+      if (err.name === "AbortError") {
+        throw new Error("Request timeout");
+      }
+      throw new Error(err.message ?? "Something went wrong");
     }
   }
 
@@ -131,4 +139,73 @@ class BaseApi extends ApiClient {
   }
 }
 
+// Authenticated API client that includes access token
+class AuthenticatedApi extends ApiClient {
+  constructor() {
+    super({ baseUrl: process.env.NEXT_PUBLIC_API_URL });
+  }
+
+  private getAuthHeaders(): Record<string, string> {
+    // Import here to avoid circular dependencies
+    const accessToken = useSessionStore.getState().accessToken;
+
+    return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+  }
+
+  protected override get<T>(
+    url: string,
+    params?: Record<string, string | number>,
+    options?: RequestInit,
+  ) {
+    return super.get<T>(url, params, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...this.getAuthHeaders(),
+      },
+    });
+  }
+
+  protected override post<T>(url: string, body?: any, options?: RequestInit) {
+    return super.post<T>(url, body, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...this.getAuthHeaders(),
+      },
+    });
+  }
+
+  protected override put<T>(url: string, body?: any, options?: RequestInit) {
+    return super.put<T>(url, body, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...this.getAuthHeaders(),
+      },
+    });
+  }
+
+  protected override patch<T>(url: string, body?: any, options?: RequestInit) {
+    return super.patch<T>(url, body, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...this.getAuthHeaders(),
+      },
+    });
+  }
+
+  protected override delete<T>(url: string, options?: RequestInit) {
+    return super.delete<T>(url, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...this.getAuthHeaders(),
+      },
+    });
+  }
+}
+
 export const api = new BaseApi();
+export const authApi = new AuthenticatedApi();
