@@ -1,9 +1,11 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
+  private readonly logger = new Logger(MailService.name);
+
   constructor(
     private readonly mailer: MailerService,
     private readonly config: ConfigService,
@@ -14,6 +16,10 @@ export class MailService {
   }
 
   async sendWelcomeEmail(email: string, username: string) {
+    if (this.config.get('NODE_ENV') === 'test') {
+      this.logger.verbose(`Welcome email sent to ${email} for user ${username}`);
+      return;
+    }
     await this.mailer.sendMail({
       to: email,
       subject: 'Welcome to Matrio!',
@@ -23,6 +29,10 @@ export class MailService {
   }
 
   async sendVerificationEmail(email: string, token: string) {
+    if (this.config.get('NODE_ENV') === 'test') {
+      this.logger.verbose(`Verification email sent to ${email} for token ${token}`);
+      return;
+    }
     await this.mailer.sendMail({
       to: email,
       subject: 'Verify your email',

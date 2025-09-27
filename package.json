@@ -9,6 +9,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "start": "turbo run start",
+    "test": "turbo run test",
+    "testw": "turbo run testw",
     "db:push": "turbo run db:push",
     "db:generate": "turbo run db:generate",
     "db:studio": "turbo run db:studio",

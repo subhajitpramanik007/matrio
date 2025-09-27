@@ -13,7 +13,6 @@ export class HealthController extends BaseController {
   @HttpCode(HttpStatus.OK)
   healthCheck() {
     Logger.debug('Health check', 'HealthController');
-    throw new Error('Health check');
-    // return this.success({ timestamp: Date.now() }, 'OK');
+    return this.success({ timestamp: Date.now() }, 'OK');
   }
 }
