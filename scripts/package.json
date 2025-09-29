@@ -1,8 +1,6 @@
 {
   "name": "scripts",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "bash:setup": "bash ./init_setup.sh",
     "bash:reset": "bash ./reset.sh",
@@ -11,7 +9,12 @@
     "bash:db:test": "bash ./db_test.sh",
     "bash:db:test:clean": "bash ./db_test_clean.sh"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "scriptDescriptions": {
+    "bash:setup": "Setup the project",
+    "bash:reset": "Reset the project",
+    "bash:db:setup": "Setup the database",
+    "bash:db:reset": "Reset the database",
+    "bash:db:test": "Create a test database",
+    "bash:db:test:clean": "Clean the test database"
+  }
 }

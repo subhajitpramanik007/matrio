@@ -11,10 +11,17 @@ echo "ℹ️ Stopping docker containers"
 cd ./infra/docker
 
 # get all docker compose files names and echo them
-for compose_file in *.yml; do
-echo " - Stopping docker containers for $compose_file"
-docker compose -f $compose_file down
-done
+cd ./infra/docker
+shopt -s nullglob
+compose_files=(*.yml)
+if ((${#compose_files[@]} == 0)); then
+  echo " - No docker compose files found"
+else
+  for compose_file in "${compose_files[@]}"; do
+    echo " - Stopping docker containers for $compose_file"
+    docker compose -f "$compose_file" down
+  done
+fi
 
 # remove docker volumes
 echo "ℹ️ Removing docker volumes"
