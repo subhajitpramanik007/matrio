@@ -1,1 +1,1 @@
-console.log("shared");
+export * from "./schemas";

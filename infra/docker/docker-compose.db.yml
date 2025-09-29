@@ -1,5 +1,7 @@
 version: '3.8'
 
+name: matrio
+
 services:
   db:
     container_name: matrio-db
@@ -22,5 +24,3 @@ volumes:
 
 networks:
   matrio-network:
-
-
