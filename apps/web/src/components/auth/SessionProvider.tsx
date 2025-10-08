@@ -6,6 +6,7 @@ import { SessionState } from "@/types/session.type";
 
 import { useGetMe } from "@/hooks/useGetMe";
 import { useRefreshSession } from "@/hooks/auth";
+import { socketClient } from "@/lib/socket";
 
 export const SessionContext = React.createContext<SessionState>(undefined!);
 
@@ -31,8 +32,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         user: data.data?.user,
         status: "authenticated",
       });
+
+      socketClient.connect();
     } else {
       useSessionStore.getState().clear();
+      socketClient.disconnect();
     }
   }, [data, isSuccess]);
 

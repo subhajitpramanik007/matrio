@@ -9,10 +9,13 @@ import { AppLogo } from "@/components/AppLogo";
 import { ThemeToggle } from "./ThemeToggle";
 import { useSession } from "@/hooks/auth";
 import { ShowCoins } from "./ShowCoins";
+import { Container } from "@/components/Container";
+import { useHeaderContext } from "@/components/navigation/header/HeaderProvider";
 
 export const Header: React.FC<{
   children?: React.ReactNode;
 }> = ({ children }) => {
+  const { gameName } = useHeaderContext();
   const { user } = useSession();
 
   return (
@@ -21,7 +24,12 @@ export const Header: React.FC<{
         <div className="flex h-full items-center justify-center">
           <AppLogo className="mb-0" />
         </div>
-        <div className="mx-auto w-full">{children}</div>
+        <div className="mx-auto w-full">
+          <Container className="flex items-center justify-center">
+            <h2 className="text-xl font-bold">{gameName}</h2>
+          </Container>
+          {children}
+        </div>
         <div className="flex items-center space-x-4">
           <ThemeToggle />
           <UnauthorizedLayout>

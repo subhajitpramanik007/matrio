@@ -1,4 +1,5 @@
 import { DisableWindowContext } from "@/components/DisableWindowContext";
+import { Header } from "@/components/navigation/header";
 
 export default function GamesLayout({
   children,
@@ -7,6 +8,7 @@ export default function GamesLayout({
 }>) {
   return (
     <>
+      <Header />
       <DisableWindowContext />
       {children}
     </>

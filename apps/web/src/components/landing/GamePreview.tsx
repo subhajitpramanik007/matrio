@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const GamePreview: React.FC = ({}) => {
   return (
@@ -55,7 +56,7 @@ function TicTacToePreview() {
           ))}
         </div>
         <Button className="group-hover:bg-primary/90 w-full transition-colors">
-          Play Tic-Tac-Toe
+          <Link href="/games/tic-tac-toe">Play Tic-Tac-Toe</Link>
         </Button>
       </CardContent>
     </Card>

@@ -5,6 +5,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Providers } from "@/components/providers";
 import { QueryClientProvider } from "@/components/query-client-provider";
+import { HeaderProvider } from "@/components/navigation/header/HeaderProvider";
+import { ReactScan } from "@/components/react-scan";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,20 +39,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <ReactScan />
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${play.variable} antialiased`}
         cz-shortcut-listen="true"
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryClientProvider>
-            <Providers>{children}</Providers>
-          </QueryClientProvider>
-        </ThemeProvider>
+        <HeaderProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <QueryClientProvider>
+              <Providers>{children}</Providers>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </HeaderProvider>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
-export type EGame = "tic-tac-toe" | "checkers";
+export const GameSlug = ["tic-tac-toe", "checkers"] as const;
+export type EGameSlug = (typeof GameSlug)[number];
 
 export interface IGameStats {
   totalGames: number;
@@ -18,7 +19,7 @@ export interface ISpecificGameStats {
 
 export interface IGameStatsWithGames extends IGameStats {
   games: {
-    [key in EGame]: ISpecificGameStats;
+    [key in EGameSlug]: ISpecificGameStats;
   };
 }
 
@@ -37,9 +38,10 @@ export interface IGameRecentActivity {
   xpGained: number;
 }
 
-// Game Stats
+// Game Name
 export type TGameName = "TIC_TAC_TOE" | "CHECKERS" | "CHESS" | "SUDOKU";
 
+// Game Stats
 export interface IGameStatsData {
   id: string;
   wins: number;
@@ -58,3 +60,20 @@ export interface ISpecificGameStatsData
   extends Omit<IGameStatsData, "specificGameStats" | "userId"> {
   gameName: TGameName;
 }
+
+// Game Mode
+export const GameMode = ["ai", "local", "online"] as const;
+export type GameMode = (typeof GameMode)[number];
+
+export type GameAndMode = `${EGameSlug}::${GameMode}`;
+
+// Game Store
+export type TGameStore = {
+  game: EGameSlug | null;
+  mode: GameMode | null;
+  gameAndMode: GameAndMode | null;
+  status: "idle" | "loading" | "success" | "error";
+  setGame: (game: EGameSlug) => void;
+  setMode: (mode: GameMode) => void;
+  clear: () => void;
+};

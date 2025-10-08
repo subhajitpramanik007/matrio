@@ -20,11 +20,27 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
+    if (
+      isUser &&
+      !user.emailVerified &&
+      pathname !== "/auth/email-verification"
+    ) {
+      return NextResponse.redirect(
+        new URL("/auth/email-verification", req.url),
+      );
+    }
+
     if (isGuest && isProtectedRoute) {
       return NextResponse.redirect(
         new URL(`/auth/signin?callback=${pathname}`, req.url),
       );
     }
+  }
+
+  if (!user && isProtectedRoute) {
+    return NextResponse.redirect(
+      new URL(`/auth/signin?callback=${pathname}`, req.url),
+    );
   }
 
   return NextResponse.next();
