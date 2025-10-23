@@ -89,6 +89,9 @@ export class TicTacToeRoom extends BaseRoom<TicTacToePlayer> {
         player.onGameCompleted(player.id === data.winnerId ? "win" : "lose")
       );
     }
+    this.players.forEach((player) => {
+      player.isReady = false;
+    });
     this.state = RoomState.ENDED;
     this.turn = null;
     this.updateTimestamp();

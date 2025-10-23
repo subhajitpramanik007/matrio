@@ -19,6 +19,7 @@ export enum GameEventsResponse {
   GAME_STARTED = "game_started", // game started
   GAME_RESULT = "game_result", // game result
   ROOM_DELETED = "room_deleted", // room deleted
+  PLAYER_MOVED = "player_moved", // player moved
 }
 
 export enum GameType {

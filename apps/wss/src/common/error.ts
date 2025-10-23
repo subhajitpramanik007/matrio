@@ -1,5 +1,6 @@
 export class SocketError extends Error {
   code?: string;
+  success: boolean = false;
 
   constructor(message: string, code?: string) {
     super(message);

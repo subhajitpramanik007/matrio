@@ -267,17 +267,20 @@ class TicTacToeGateway extends GameGateway {
       this.broadcastToRoomLater(
         GameEventsResponse.GAME_RESULT,
         room.id,
-        new SocketResponse({ result: room.result })
+        new SocketResponse({ result: room.result, room: room.sanitize })
       );
     }
 
     this.broadcastToRoomLater(
-      GameEventsRequest.MAKE_MOVE,
+      GameEventsResponse.PLAYER_MOVED,
       room.id,
-      new SocketResponse({ room: room.sanitize })
+      new SocketResponse({ board: room.sanitize.board, nextTurn: room.turn })
     );
 
-    return new SocketResponse({ room: room.sanitize });
+    return new SocketResponse({
+      board: room.sanitize.board,
+      nextTurn: room.turn,
+    });
   }
 
   endGame(client: Socket, data: any) {
@@ -294,11 +297,20 @@ class TicTacToeGateway extends GameGateway {
     if (!room) throw new RoomNotFoundException();
     room.reset();
 
-    this.broadcastToRoomLater(
-      GameEventsRequest.RESTART_GAME,
-      room.id,
-      new SocketResponse({ room: room.sanitize })
-    );
+    room.players.forEach((player) => {
+      if (player.id === client.user?.id) player.isReady = true;
+      else player.isReady = false;
+    });
+
+    if (room.players.every((player) => player.isReady)) {
+      room.startGame();
+
+      this.broadcastToRoomLater(
+        GameEventsRequest.RESTART_GAME,
+        room.id,
+        new SocketResponse({ room: room.sanitize })
+      );
+    }
 
     return new SocketResponse({ room: room.sanitize });
   }
