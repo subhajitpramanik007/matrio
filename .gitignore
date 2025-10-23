@@ -37,3 +37,4 @@ yarn-error.log*
 .DS_Store
 *.pem
 apps/web/src/app/playground/
+apps/web/src
