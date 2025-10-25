@@ -8,7 +8,6 @@ import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
-import { ThemeProvider } from './components/theme-provider.tsx'
 
 // Create a new router instance
 
@@ -17,6 +16,8 @@ const router = createRouter({
   routeTree,
   context: {
     ...TanStackQueryProviderContext,
+    authContext: undefined!,
+    headerContext: undefined!,
   },
   defaultPreload: 'intent',
   scrollRestoration: true,
@@ -37,9 +38,7 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <RouterProvider router={router} />
     </TanStackQueryProvider.Provider>,
   )
 }
