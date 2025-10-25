@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import toast from 'react-hot-toast'
@@ -13,25 +13,27 @@ import type {
 } from '@/lib/schemas'
 import { EmailVerificationSchema } from '@/lib/schemas'
 
-import { delay } from '@/lib/utils'
+import { authService } from '@/services/auth.service'
 
 const RESEND_VERIFICATION_EMAIL_COOL_DOWN = 10 // seconds
 
 const useEmailVerificationMutation = () => {
+  const queryClient = useQueryClient()
+
   return useMutation({
-    mutationFn: async (data: TEmailVerification) => {
-      await delay(3000)
-      return data
+    mutationKey: ['auth', 'verify-email'],
+    mutationFn: authService.verifyEmail,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['auth', 'session'] })
+      queryClient.invalidateQueries({ queryKey: ['users', 'me'] })
     },
   })
 }
 
 const useResendVerificationEmailMutation = () => {
   return useMutation({
-    mutationFn: async (data: TResendVerificationEmail) => {
-      await delay(3000)
-      return data
-    },
+    mutationKey: ['auth', 'resend-verification-email'],
+    mutationFn: authService.resendVerificationEmail,
   })
 }
 

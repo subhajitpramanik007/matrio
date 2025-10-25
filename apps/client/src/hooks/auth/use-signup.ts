@@ -2,20 +2,24 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import toast from 'react-hot-toast'
 
 import type { TSignupForm } from '@/lib/schemas'
 
-import { delay } from '@/lib/utils'
 import { SignupFormSchema } from '@/lib/schemas'
+import { authService } from '@/services/auth.service'
 
 const useSignupMutation = () => {
+  const queryClient = useQueryClient()
+
   return useMutation({
-    mutationFn: async (data: TSignupForm) => {
-      await delay(3000)
-      return data
+    mutationKey: ['auth', 'signup'],
+    mutationFn: authService.signup,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['auth', 'session'] })
+      queryClient.invalidateQueries({ queryKey: ['users', 'me'] })
     },
   })
 }

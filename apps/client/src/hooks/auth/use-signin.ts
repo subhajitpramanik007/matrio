@@ -1,24 +1,33 @@
 import { useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useNavigate } from '@tanstack/react-router'
+import { useMutation } from '@tanstack/react-query'
 
 import toast from 'react-hot-toast'
 
 import type { TSigninForm } from '@/lib/schemas'
 import { SigninFormSchema } from '@/lib/schemas'
 
+import { authService } from '@/services/auth.service'
 import { delay } from '@/lib/utils'
+import { useRefreshSession, useUserData } from '@/hooks/auth'
 
 const useSigninMutation = () => {
+  const { refetch: refreshSession } = useRefreshSession()
+  const { refetch: refetchUserData } = useUserData()
+
   return useMutation({
-    mutationFn: async (data: TSigninForm) => {
-      await delay(3000)
-      return data
+    mutationKey: ['auth', 'signin'],
+    mutationFn: authService.signin,
+    onSuccess: () => {
+      refreshSession().then(() => refetchUserData())
     },
   })
 }
 
 const useSigninForm = () => {
+  const navigate = useNavigate()
   const signinMutation = useSigninMutation()
 
   const signinForm = useForm<TSigninForm>({
@@ -33,8 +42,10 @@ const useSigninForm = () => {
   function onSubmit(values: TSigninForm) {
     toast.promise(
       signinMutation.mutateAsync(values, {
-        onSuccess: () => {
+        onSuccess: async () => {
           signinForm.reset()
+          await delay(1000)
+          navigate({ to: '/' })
         },
       }),
       {
