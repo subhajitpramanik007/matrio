@@ -11,6 +11,7 @@ import { HeaderContext } from '@/lib/contexts/header-context'
 
 import { Header } from '@/components/header/Header'
 import { SessionLayout } from '@/components/session-layout'
+import { SocketContext } from '@/lib/contexts/socket-context'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -19,24 +20,39 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
-    <HeaderContext.Provider>
-      <SessionLayout>
-        <Header />
-        <Toaster />
-        <Outlet />
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            TanStackQueryDevtools,
-          ]}
-        />
-      </SessionLayout>
-    </HeaderContext.Provider>
+    <RootLayout>
+      <Header />
+      <Toaster />
+      <Outlet />
+
+      <DevTools />
+    </RootLayout>
   ),
 })
+
+function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <HeaderContext.Provider>
+      <SessionLayout>
+        <SocketContext.Provider>{children}</SocketContext.Provider>
+      </SessionLayout>
+    </HeaderContext.Provider>
+  )
+}
+
+function DevTools() {
+  return (
+    <TanStackDevtools
+      config={{
+        position: 'bottom-right',
+      }}
+      plugins={[
+        {
+          name: 'Tanstack Router',
+          render: <TanStackRouterDevtoolsPanel />,
+        },
+        TanStackQueryDevtools,
+      ]}
+    />
+  )
+}
