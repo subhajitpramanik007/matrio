@@ -43,13 +43,12 @@ export const useSocketListener = <TData>(options: ListenerOptions<TData>) => {
     setAborted(false)
 
     function onTimeOut() {
-      if (abortCtrlRef.current?.signal.aborted) {
-        abortCtrlRef.current.abort()
+      if (!abortCtrlRef.current?.signal.aborted) {
+        abortCtrlRef.current?.abort()
         onFailure('Request timed out')
         setAborted(true)
       }
     }
-
     const timeoutId = timeout ? setTimeout(onTimeOut, timeout) : undefined
 
     const handler = (res: TSocketResponse<TData>) => {

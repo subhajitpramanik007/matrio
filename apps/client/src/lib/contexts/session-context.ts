@@ -15,7 +15,7 @@ export const SessionContext = createReactContext(
 
     return {}
   },
-  {
-    name: 'Session',
-  },
+  { name: 'Session' },
 )
+
+export const SessionProvider = SessionContext.Provider

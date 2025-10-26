@@ -7,11 +7,11 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import type { TAuthContext } from '@/types'
 import type { QueryClient } from '@tanstack/react-query'
-import { HeaderContext } from '@/lib/contexts/header-context'
+import { HeaderProvider } from '@/lib/contexts/header-context'
 
 import { Header } from '@/components/header/Header'
 import { SessionLayout } from '@/components/session-layout'
-import { SocketContext } from '@/lib/contexts/socket-context'
+import { SocketProvider } from '@/lib/contexts/socket-context'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -32,11 +32,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <HeaderContext.Provider>
+    <HeaderProvider>
       <SessionLayout>
-        <SocketContext.Provider>{children}</SocketContext.Provider>
+        <SocketProvider>{children}</SocketProvider>
       </SessionLayout>
-    </HeaderContext.Provider>
+    </HeaderProvider>
   )
 }
 

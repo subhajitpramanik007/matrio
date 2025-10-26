@@ -9,3 +9,25 @@ export function cn(...inputs: Array<ClassValue>) {
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+export function getAccessToken(): string | null {
+  try {
+    const stored = localStorage.getItem('__matrio.atk')
+    if (!stored) throw new Error('No access token')
+
+    const parsed = JSON.parse(stored)
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      'accessToken' in parsed &&
+      typeof parsed.accessToken === 'string'
+    ) {
+      return parsed.accessToken
+    }
+
+    throw new Error('Invalid access token')
+  } catch (error) {
+    console.error('Failed to parse access token from localStorage:', error)
+    return null
+  }
+}

@@ -56,3 +56,5 @@ export const AuthContext = createReactContext<TAuthContext>(
   },
   { name: 'Auth' },
 )
+
+export const AuthProvider = AuthContext.Provider

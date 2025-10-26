@@ -38,3 +38,5 @@ export const HeaderContext = createReactContext<THeaderContext>(
   },
   { name: 'Header' },
 )
+
+export const HeaderProvider = HeaderContext.Provider

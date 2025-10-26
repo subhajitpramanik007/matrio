@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import type { Socket } from 'socket.io-client'
 import { createReactContext } from '@/lib/create-react-context'
+import { getAccessToken } from '@/lib/utils'
 
 export const SocketContext = createReactContext(
   () => {
@@ -26,21 +27,17 @@ export const SocketContext = createReactContext(
         return
       }
 
-      const accessToken = JSON.parse(
-        localStorage.getItem('__matrio.atk') || '',
-      )?.accessToken
-
+      const accessToken = getAccessToken()
       if (!accessToken) {
         console.log('No access token')
         return
       }
 
       socket.current = io(import.meta.env.VITE_SOCKET_URL, {
-        transports: ['websocket'],
-        reconnection: true,
-        reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
+        reconnection: true,
+        reconnectionAttempts: 5,
         retries: 5,
         auth: { token: accessToken },
       })
@@ -61,6 +58,14 @@ export const SocketContext = createReactContext(
         console.log('Socket unauthorized', data)
         toast.error('You are not authorized')
       })
+
+      return () => {
+        if (socket.current) {
+          socket.current.off('connect')
+          socket.current.off('disconnect')
+          socket.current.off('unauthorized')
+        }
+      }
     }, [connectToSocket])
 
     return {
@@ -69,7 +74,7 @@ export const SocketContext = createReactContext(
       disconnect: disconnectFromSocket,
     }
   },
-  {
-    name: 'Socket',
-  },
+  { name: 'Socket' },
 )
+
+export const SocketProvider = SocketContext.Provider

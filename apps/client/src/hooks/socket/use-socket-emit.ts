@@ -1,10 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSocket } from './use-socket'
 import type { TSocketEventOptions, TSocketResponse } from '@/types'
 
-type UseSocketEmitOptions<TData> = TSocketEventOptions<TData> & {
-  timeout?: number
-}
+type UseSocketEmitOptions<TData> = TSocketEventOptions<TData> & {}
 type TEventState<TData> = {
   loading: boolean
   error: string | null
@@ -22,33 +20,56 @@ export const useSocketEmit = <TData, TEmitValues = any>({
     data: null,
   })
 
+  const isMountedRef = useRef(true)
+
   const { socket } = useSocket()
 
   const emit = useCallback(
     (data: TEmitValues) => {
       if (!socket) return
 
+      function onInit() {
+        if (!isMountedRef.current) return
+        setState(() => ({ loading: true, data: null, error: null }))
+      }
+
       function onFulfill(resData: TData) {
-        setState((prev) => ({ ...prev, loading: false, data: resData }))
+        if (!isMountedRef.current) return
+        setState(() => ({ loading: false, data: resData, error: null }))
         onSuccess?.(resData)
       }
 
       function onFailure(message: string) {
-        setState((prev) => ({ ...prev, loading: false, error: message }))
+        if (!isMountedRef.current) return
+        setState(() => ({ loading: false, error: message, data: null }))
         onError?.(message)
       }
 
-      setState((prev) => ({ ...prev, loading: true, error: null }))
+      onInit()
 
-      const callback = (res: TSocketResponse<TData>) => {
-        if (res.success) onFulfill(res.data)
-        else onFailure(res.message)
+      try {
+        const callback = (res: TSocketResponse<TData>) => {
+          if (res.success) onFulfill(res.data)
+          else onFailure(res.message)
+        }
+
+        socket.emit(event, data, callback)
+      } catch (err) {
+        if (isMountedRef.current) {
+          const msg =
+            err instanceof Error ? err.message : 'Failed to emit event'
+          onFailure(msg)
+        }
       }
-
-      socket.emit(event, data, callback)
     },
     [socket, event, onSuccess, onError],
   )
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
 
   return {
     ...state,
