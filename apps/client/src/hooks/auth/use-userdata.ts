@@ -18,9 +18,8 @@ export function useUserData(isAuthenticated: boolean = true) {
     if (!userQuery.isSuccess) return
 
     const user = userQuery.data.data.user
-    if (!user) return
 
-    const isGuest = user?.role === 'GUEST'
+    const isGuest = user.role === 'GUEST'
     if (isGuest) onInitAsGuest({ user })
     else onInitAsUser({ user })
   }, [userQuery.data, userQuery.isSuccess])

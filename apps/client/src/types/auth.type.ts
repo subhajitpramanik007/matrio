@@ -1,6 +1,7 @@
 import type { TUser } from './user.types'
 
-export type TAuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
+const AuthStatus = ['loading', 'authenticated', 'unauthenticated', 'error']
+export type TAuthStatus = (typeof AuthStatus)[number]
 
 export enum USER_TYPE {
   USER = 'USER',
@@ -10,7 +11,7 @@ export enum USER_TYPE {
 export type TAuthContextState = {
   user: TUser | null
   token: string | null
-  userType: USER_TYPE
+  userType: USER_TYPE | null
   isAuthenticated: boolean
   isGuest: boolean
   status: TAuthStatus
@@ -23,6 +24,7 @@ export type TAuthContextActions = {
   onInitAsGuest: (payload: TAuthContextUserPayload) => void
   onInitAsUser: (payload: TAuthContextUserPayload) => void
   onLogout: () => void
+  onFailedToInit: () => void
 }
 
 export type TAuthContext = TAuthContextState & TAuthContextActions
@@ -37,3 +39,4 @@ export type TAuthReducerAction =
       payload: Partial<TAuthContextStatePayload> & TAuthContextUserPayload
     }
   | { type: 'LOGOUT' }
+  | { type: 'FAILED' }

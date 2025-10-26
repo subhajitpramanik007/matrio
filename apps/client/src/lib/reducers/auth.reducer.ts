@@ -21,6 +21,12 @@ export function authReducer(
       return { ...state, ...action.payload }
     case 'LOGOUT':
       return { ...INITIAL_STATE_AUTH_REDUCER }
+    case 'FAILED':
+      return {
+        ...state,
+        ...INITIAL_STATE_AUTH_REDUCER,
+        status: 'unauthenticated',
+      }
     default:
       return state
   }

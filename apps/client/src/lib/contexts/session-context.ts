@@ -9,11 +9,11 @@ import { useRefreshSession, useUserData } from '@/hooks/auth'
  */
 export const SessionContext = createReactContext(
   () => {
-    const sessionQuery = useRefreshSession()
+    const { isSuccess } = useRefreshSession()
 
-    useUserData(sessionQuery.isSuccess)
+    useUserData(isSuccess)
 
-    return sessionQuery
+    return {}
   },
   {
     name: 'Session',

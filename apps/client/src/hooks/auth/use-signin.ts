@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useMutation } from '@tanstack/react-query'
 
 import toast from 'react-hot-toast'
@@ -27,6 +27,7 @@ const useSigninMutation = () => {
 }
 
 const useSigninForm = () => {
+  const { latestLocation } = useRouter()
   const navigate = useNavigate()
   const signinMutation = useSigninMutation()
 
@@ -45,6 +46,14 @@ const useSigninForm = () => {
         onSuccess: async () => {
           signinForm.reset()
           await delay(1000)
+
+          const callback = (latestLocation.search as any)?.callback
+
+          if (callback) {
+            navigate({ to: callback })
+            return
+          }
+
           navigate({ to: '/' })
         },
       }),

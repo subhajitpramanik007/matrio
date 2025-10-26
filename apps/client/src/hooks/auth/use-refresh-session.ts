@@ -1,10 +1,13 @@
 import { useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCreateGuest } from '@/hooks/auth'
 import { authService } from '@/services/auth.service'
+import { delay } from '@/lib/utils'
 
 export function useRefreshSession() {
-  const { mutate: createGuest } = useCreateGuest()
+  const queryClient = useQueryClient()
+
+  const { mutateAsync: createGuest } = useCreateGuest()
 
   const sessionQuery = useQuery({
     queryKey: ['auth', 'session'],
@@ -14,8 +17,20 @@ export function useRefreshSession() {
   })
 
   useEffect(() => {
-    if (sessionQuery.isError) createGuest()
-  }, [sessionQuery.isError, createGuest])
+    if (sessionQuery.isError) {
+      createGuest(undefined, {
+        onSuccess: async () => {
+          await delay(1000)
+          sessionQuery.refetch().then(() => {
+            queryClient.invalidateQueries({ queryKey: ['users', 'me'] })
+          })
+        },
+        onError: () => {
+          console.log('Error creating guest')
+        },
+      })
+    }
+  }, [sessionQuery.isError])
 
   // token store in localStorage
   useEffect(() => {

@@ -51,6 +51,7 @@ export const AuthContext = createReactContext<TAuthContext>(
       onInitAsGuest,
       onInitAsUser,
       onLogout,
+      onFailedToInit: () => dispatch({ type: 'FAILED' }),
     }
   },
   { name: 'Auth' },
