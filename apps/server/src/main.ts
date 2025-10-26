@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 import { winstonConfig } from './common/logger/logger.config';
-import { VersioningType } from '@nestjs/common';
+import { Logger, VersioningType } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filter';
 import cookieParser from 'cookie-parser';
 
@@ -16,8 +16,12 @@ async function bootstrap() {
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalFilters(new AllExceptionsFilter(app.get(WINSTON_MODULE_NEST_PROVIDER)));
 
+  const corsOrigins = process.env.CORS_ORIGIN === '*' ? '*' : process.env.CORS_ORIGIN?.split(',');
+  if (!corsOrigins) Logger.error('CORS_ORIGIN is not set');
+  else Logger.log(`${JSON.stringify(corsOrigins)}`, 'CORS_ORIGIN');
+
   app.enableCors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    origin: corsOrigins,
     credentials: true,
   });
 
@@ -38,7 +42,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
   }
 
-  await app.listen(PORT);
+  await app.listen(PORT, '0.0.0.0');
 }
 
 bootstrap();
