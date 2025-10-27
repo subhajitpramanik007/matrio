@@ -12,11 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GamesIndexRouteImport } from './routes/games/index'
+import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
 import { Route as ProtectedProfileRouteImport } from './routes/_protected/profile'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
-import { Route as GamesTicTacToeRouteImport } from './routes/_games/tic-tac-toe'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthSigninRouteImport } from './routes/_auth/signin'
+import { Route as GamesGameIndexRouteImport } from './routes/games/$game/index'
+import { Route as GamesGameLeaderboardRouteImport } from './routes/games/$game/leaderboard'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -31,6 +34,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesIndexRoute = GamesIndexRouteImport.update({
+  id: '/games/',
+  path: '/games/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
 const ProtectedProfileRoute = ProtectedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -40,11 +53,6 @@ const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProtectedRouteRoute,
-} as any)
-const GamesTicTacToeRoute = GamesTicTacToeRouteImport.update({
-  id: '/_games/tic-tac-toe',
-  path: '/tic-tac-toe',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/signup',
@@ -56,22 +64,38 @@ const AuthSigninRoute = AuthSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const GamesGameIndexRoute = GamesGameIndexRouteImport.update({
+  id: '/games/$game/',
+  path: '/games/$game/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesGameLeaderboardRoute = GamesGameLeaderboardRouteImport.update({
+  id: '/games/$game/leaderboard',
+  path: '/games/$game/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
-  '/tic-tac-toe': typeof GamesTicTacToeRoute
   '/dashboard': typeof ProtectedDashboardRoute
   '/profile': typeof ProtectedProfileRoute
+  '/settings': typeof ProtectedSettingsRoute
+  '/games': typeof GamesIndexRoute
+  '/games/$game/leaderboard': typeof GamesGameLeaderboardRoute
+  '/games/$game': typeof GamesGameIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
-  '/tic-tac-toe': typeof GamesTicTacToeRoute
   '/dashboard': typeof ProtectedDashboardRoute
   '/profile': typeof ProtectedProfileRoute
+  '/settings': typeof ProtectedSettingsRoute
+  '/games': typeof GamesIndexRoute
+  '/games/$game/leaderboard': typeof GamesGameLeaderboardRoute
+  '/games/$game': typeof GamesGameIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,9 +104,12 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/_auth/signin': typeof AuthSigninRoute
   '/_auth/signup': typeof AuthSignupRoute
-  '/_games/tic-tac-toe': typeof GamesTicTacToeRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
   '/_protected/profile': typeof ProtectedProfileRoute
+  '/_protected/settings': typeof ProtectedSettingsRoute
+  '/games/': typeof GamesIndexRoute
+  '/games/$game/leaderboard': typeof GamesGameLeaderboardRoute
+  '/games/$game/': typeof GamesGameIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,11 +117,23 @@ export interface FileRouteTypes {
     | '/'
     | '/signin'
     | '/signup'
-    | '/tic-tac-toe'
     | '/dashboard'
     | '/profile'
+    | '/settings'
+    | '/games'
+    | '/games/$game/leaderboard'
+    | '/games/$game'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signin' | '/signup' | '/tic-tac-toe' | '/dashboard' | '/profile'
+  to:
+    | '/'
+    | '/signin'
+    | '/signup'
+    | '/dashboard'
+    | '/profile'
+    | '/settings'
+    | '/games'
+    | '/games/$game/leaderboard'
+    | '/games/$game'
   id:
     | '__root__'
     | '/'
@@ -102,16 +141,21 @@ export interface FileRouteTypes {
     | '/_protected'
     | '/_auth/signin'
     | '/_auth/signup'
-    | '/_games/tic-tac-toe'
     | '/_protected/dashboard'
     | '/_protected/profile'
+    | '/_protected/settings'
+    | '/games/'
+    | '/games/$game/leaderboard'
+    | '/games/$game/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
-  GamesTicTacToeRoute: typeof GamesTicTacToeRoute
+  GamesIndexRoute: typeof GamesIndexRoute
+  GamesGameLeaderboardRoute: typeof GamesGameLeaderboardRoute
+  GamesGameIndexRoute: typeof GamesGameIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -137,6 +181,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games/': {
+      id: '/games/'
+      path: '/games'
+      fullPath: '/games'
+      preLoaderRoute: typeof GamesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected/settings': {
+      id: '/_protected/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ProtectedSettingsRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/profile': {
       id: '/_protected/profile'
       path: '/profile'
@@ -151,13 +209,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_games/tic-tac-toe': {
-      id: '/_games/tic-tac-toe'
-      path: '/tic-tac-toe'
-      fullPath: '/tic-tac-toe'
-      preLoaderRoute: typeof GamesTicTacToeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_auth/signup': {
       id: '/_auth/signup'
       path: '/signup'
@@ -171,6 +222,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/signin'
       preLoaderRoute: typeof AuthSigninRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/games/$game/': {
+      id: '/games/$game/'
+      path: '/games/$game'
+      fullPath: '/games/$game'
+      preLoaderRoute: typeof GamesGameIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/$game/leaderboard': {
+      id: '/games/$game/leaderboard'
+      path: '/games/$game/leaderboard'
+      fullPath: '/games/$game/leaderboard'
+      preLoaderRoute: typeof GamesGameLeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -192,11 +257,13 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface ProtectedRouteRouteChildren {
   ProtectedDashboardRoute: typeof ProtectedDashboardRoute
   ProtectedProfileRoute: typeof ProtectedProfileRoute
+  ProtectedSettingsRoute: typeof ProtectedSettingsRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedDashboardRoute: ProtectedDashboardRoute,
   ProtectedProfileRoute: ProtectedProfileRoute,
+  ProtectedSettingsRoute: ProtectedSettingsRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
@@ -207,7 +274,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
-  GamesTicTacToeRoute: GamesTicTacToeRoute,
+  GamesIndexRoute: GamesIndexRoute,
+  GamesGameLeaderboardRoute: GamesGameLeaderboardRoute,
+  GamesGameIndexRoute: GamesGameIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
