@@ -40,6 +40,7 @@ export const SocketContext = createReactContext(
         reconnectionAttempts: 5,
         retries: 5,
         auth: { token: accessToken },
+        transports: ['websocket'],
       })
 
       socket.current.on('connect', () => {
@@ -58,15 +59,18 @@ export const SocketContext = createReactContext(
         console.log('Socket unauthorized', data)
         toast.error('You are not authorized')
       })
+    }, [connectToSocket])
 
+    useEffect(() => {
       return () => {
         if (socket.current) {
           socket.current.off('connect')
           socket.current.off('disconnect')
           socket.current.off('unauthorized')
+          socket.current.disconnect()
         }
       }
-    }, [connectToSocket])
+    }, [])
 
     return {
       socket: socket.current,
