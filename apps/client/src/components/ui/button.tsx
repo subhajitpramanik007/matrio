@@ -31,7 +31,7 @@ const buttonVariants = cva(
       },
       color: {
         default: '',
-        orange: 'bg-orange-500 text-white hover:bg-orange-500/90',
+        orange: 'bg-orange-600 hover:bg-orange-600/90',
       },
     },
     defaultVariants: {

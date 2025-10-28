@@ -13,7 +13,7 @@ export function Container({ children, className }: ContainerProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className={cn('mx-auto max-w-7xl px-4 sm:px-6 lg:px-8', className)}
+      className={cn('container mx-auto w-full', className)}
     >
       {children}
     </motion.div>
