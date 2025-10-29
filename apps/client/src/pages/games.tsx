@@ -1,3 +1,10 @@
+import { Container } from '@/components/common/container'
+import { GamePreview } from '@/components/landing'
+
 export default function Games() {
-  return <div>Games</div>
+  return (
+    <Container>
+      <GamePreview />
+    </Container>
+  )
 }

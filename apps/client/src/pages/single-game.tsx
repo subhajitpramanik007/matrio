@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { useLoaderData } from '@tanstack/react-router'
+import { useSingleGameLoaderData } from '@/games/hooks'
 
 const SingleGame: React.FC = () => {
-  const { game } = useLoaderData({ from: '/games/$game/' })
+  const { gameSlug } = useSingleGameLoaderData()
 
   return (
     <div>
-      <h1>Single Game: {game}</h1>
+      <h1>Single Game: {gameSlug}</h1>
     </div>
   )
 }
