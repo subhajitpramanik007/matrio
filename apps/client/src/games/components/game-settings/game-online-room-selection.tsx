@@ -16,7 +16,7 @@ import { useOptionsAnimation } from '@/hooks/use-options-animation'
 import { HoverMotion } from '@/components/hover-motion'
 
 const onlineRoomTypeOptionsLabel: Record<TGameOnlineMode, string> = {
-  private: 'Create Private Room',
+  private: 'Play with Friends',
   public: 'Play with Random Players',
 }
 
