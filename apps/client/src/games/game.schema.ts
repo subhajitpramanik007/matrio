@@ -12,3 +12,12 @@ export const gameModeParamSchema = z.object({
 
 export type TGameParamsSchema = z.infer<typeof gameParamSchema>
 export type TGameModeParamsSchema = z.infer<typeof gameModeParamSchema>
+
+// join room
+export const joinRoomSchema = z.object({
+  roomCode: z
+    .string({ error: 'Room code is required' })
+    .length(4, { error: 'Room code must be 4 characters long' }),
+})
+
+export type TJoinRoomSchema = z.infer<typeof joinRoomSchema>
