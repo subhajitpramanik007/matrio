@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card'
 
 export function ErrorPage({
   error = new Error('Something went wrong'),
-  reset = () => {},
+  reset,
 }: {
   error?: Error
   reset?: () => void
@@ -22,8 +22,9 @@ export function ErrorPage({
 
   function onReset() {
     // reload the page
-    router.navigate({ reloadDocument: true })
-    reset()
+
+    if (reset) reset()
+    else router.navigate({ reloadDocument: true })
   }
 
   return (

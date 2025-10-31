@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import type { ChildrenProps } from '@/types'
 import { ErrorPage } from '@/components/error'
 import { LoadingScreen } from '@/components/loading-screen'
@@ -16,13 +16,15 @@ export const SessionLayout: React.FC<ChildrenProps> = ({ children }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {status === 'loading' ? (
-        <LoadingScreen />
-      ) : status === 'authenticated' ? (
-        children
-      ) : (
-        <ErrorPage />
-      )}
+      <AnimatePresence>
+        {status === 'loading' ? (
+          <LoadingScreen />
+        ) : status === 'authenticated' ? (
+          children
+        ) : (
+          <ErrorPage />
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

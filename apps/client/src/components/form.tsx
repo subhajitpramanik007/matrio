@@ -208,17 +208,20 @@ export const FormCheckbox: FormControlFunc = (props) => {
   )
 }
 
-export const SubmitButton: React.FC<{
-  children: React.ReactNode
-  disabled?: boolean
-  isLoading?: boolean
-  className?: string
-}> = ({ children, disabled, className, isLoading }) => {
+export const SubmitButton: React.FC<
+  React.ComponentProps<typeof Button> & {
+    children: React.ReactNode
+    disabled?: boolean
+    isLoading?: boolean
+    className?: string
+  }
+> = ({ children, disabled, className, type, isLoading, ...props }) => {
   return (
     <Button
       type="submit"
       disabled={disabled || isLoading}
       className={cn('w-full', className)}
+      {...props}
     >
       {isLoading && <Spinner className="mr-2" />}
       {children}
