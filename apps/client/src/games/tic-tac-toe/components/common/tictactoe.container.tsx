@@ -1,7 +1,7 @@
 import { useLoaderData, useNavigate } from '@tanstack/react-router'
 import type { ChildrenProps } from '@/types'
 import { Container } from '@/components/common/container'
-import { TTTMenuButton } from '@/games/components/tic-tac-toe/common'
+import { TTTMenuButton } from '@/games/tic-tac-toe/components/common'
 
 interface TicTacToeContainerProps extends ChildrenProps {
   resetGame: () => void

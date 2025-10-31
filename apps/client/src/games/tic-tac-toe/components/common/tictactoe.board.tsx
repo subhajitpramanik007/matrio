@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { RotateCcw } from 'lucide-react'
-import type { TicTacToeSymbol } from '@/games/types'
+import type { TicTacToeSymbol } from '@/games/tic-tac-toe/types'
 import { Button } from '@/components/ui/button'
 
 export function TicTacToeBoard({
