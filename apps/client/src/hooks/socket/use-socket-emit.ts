@@ -1,59 +1,122 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSocket } from './use-socket'
-import type { TSocketEventOptions, TSocketResponse } from '@/types'
+import type {
+  TSocketErrorResponse,
+  TSocketResponse,
+  TSocketSuccessResponse,
+} from '@/types'
+import type {
+  TGameEventRequest,
+  TGameNameSpaceToSocket,
+} from '@/games/types/game.types'
+import { delay } from '@/lib/utils'
 
-type UseSocketEmitOptions<TData> = TSocketEventOptions<TData> & {}
+type UseSocketEmitOptions<
+  TData,
+  TGameNameSpace extends TGameNameSpaceToSocket | undefined = undefined,
+> = {
+  event: TGameNameSpace extends undefined ? string : TGameEventRequest
+  onSuccess?: (data: TSocketSuccessResponse<TData>['data']) => void
+  onError?: (error: TSocketErrorResponse['error']) => void
+  gameNameSpace?: TGameNameSpace
+  errorMsg: string
+}
+
 type TEventState<TData> = {
-  loading: boolean
+  isLoading: boolean
+  isSuccess: boolean
+  isError: boolean
   error: string | null
   data: TData | null
 }
 
-export const useSocketEmit = <TData, TEmitValues = any>({
+export const useSocketEmit = <
+  TData = any,
+  TEmitValues = any,
+  TGameNameSpace extends TGameNameSpaceToSocket | undefined = undefined,
+>({
   event,
+  gameNameSpace,
   onError,
   onSuccess,
-}: UseSocketEmitOptions<TData>) => {
+  errorMsg,
+}: UseSocketEmitOptions<TData, TGameNameSpace>) => {
   const [state, setState] = useState<TEventState<TData>>({
-    loading: false,
+    isLoading: false,
+    isSuccess: false,
+    isError: false,
     error: null,
     data: null,
   })
 
   const isMountedRef = useRef(true)
+  const isEmittingRef = useRef(false)
+  const socket = useSocket()
 
-  const { socket } = useSocket()
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
 
   const emit = useCallback(
-    (data: TEmitValues) => {
-      if (!socket) return
+    async (data?: TEmitValues) => {
+      if (isEmittingRef.current) {
+        console.warn(
+          `[useSocketEmit] Already emitting!, ${event} => ${gameNameSpace}`,
+        )
+        return
+      }
+      isEmittingRef.current = true
+      console.log(`[useSocketEmit] Emitting... ${event} => ${gameNameSpace}`)
 
       function onInit() {
         if (!isMountedRef.current) return
-        setState(() => ({ loading: true, data: null, error: null }))
+        setState(() => ({
+          isLoading: true,
+          isSuccess: false,
+          data: null,
+          isError: false,
+          error: null,
+        }))
       }
 
       function onFulfill(resData: TData) {
         if (!isMountedRef.current) return
-        setState(() => ({ loading: false, data: resData, error: null }))
+        setState(() => ({
+          isLoading: false,
+          isSuccess: true,
+          data: resData,
+          isError: false,
+          error: null,
+        }))
         onSuccess?.(resData)
       }
 
-      function onFailure(message: string) {
+      function onFailure(error: string | null) {
         if (!isMountedRef.current) return
-        setState(() => ({ loading: false, error: message, data: null }))
-        onError?.(message)
+        setState(() => ({
+          isLoading: false,
+          isSuccess: false,
+          isError: true,
+          error,
+          data: null,
+        }))
+        onError?.(error || errorMsg)
       }
 
       onInit()
+      await delay(3000)
 
       try {
         const callback = (res: TSocketResponse<TData>) => {
+          isEmittingRef.current = false
           if (res.success) onFulfill(res.data)
-          else onFailure(res.message)
+          else onFailure(res.error)
         }
 
-        socket.emit(event, data, callback)
+        if (gameNameSpace) socket.emit(event, gameNameSpace, data, callback)
+        else socket.emit(event, data, callback)
       } catch (err) {
         if (isMountedRef.current) {
           const msg =
@@ -62,14 +125,8 @@ export const useSocketEmit = <TData, TEmitValues = any>({
         }
       }
     },
-    [socket, event, onSuccess, onError],
+    [socket, event, gameNameSpace, onSuccess, onError],
   )
-
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false
-    }
-  }, [])
 
   return {
     ...state,

@@ -31,3 +31,11 @@ export function getAccessToken(): string | null {
     return null
   }
 }
+
+// eslint-disable-next-line
+export type Slugify<S extends string, Sep extends string> =
+  Lowercase<S> extends infer L extends string
+    ? L extends `${infer A} ${infer B}`
+      ? `${Slugify<A, Sep>}${Sep}${Slugify<B, Sep>}`
+      : L
+    : never

@@ -6,10 +6,12 @@ type ListenerOptions<TData> = TSocketEventOptions<TData> & {
   timeout?: number | false
 }
 
-export const useSocketListener = <TData>(options: ListenerOptions<TData>) => {
+export const useSocketListener = <TData = any>(
+  options: ListenerOptions<TData>,
+) => {
   const { event, onSuccess, onError, timeout = false } = options
 
-  const { socket } = useSocket()
+  const socket = useSocket()
 
   const [state, setState] = useState<{
     loading: boolean
@@ -22,21 +24,31 @@ export const useSocketListener = <TData>(options: ListenerOptions<TData>) => {
   })
   const [aborted, setAborted] = useState(false)
 
+  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null)
   const abortCtrlRef = useRef<AbortController | null>(null)
+  const onSuccessRef = useRef(onSuccess)
+  const onErrorRef = useRef(onError)
 
   useEffect(() => {
-    if (!socket) return
+    onSuccessRef.current = onSuccess
+    onErrorRef.current = onError
+  }, [onError, onSuccess])
 
+  useEffect(() => {
     abortCtrlRef.current = new AbortController()
 
     function onFulfill(resData: TData) {
       setState((prev) => ({ ...prev, loading: false, data: resData }))
-      onSuccess?.(resData)
+      onSuccessRef.current?.(resData)
+      if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current)
+      timeoutIdRef.current = null
     }
 
     function onFailure(message: string | null = null) {
       setState((prev) => ({ ...prev, loading: false, error: message }))
-      onError?.(message ?? 'Request failed')
+      onErrorRef.current?.(message ?? 'Request failed')
+      if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current)
+      timeoutIdRef.current = null
     }
 
     setState((prev) => ({ ...prev, loading: true, error: null }))
@@ -49,7 +61,10 @@ export const useSocketListener = <TData>(options: ListenerOptions<TData>) => {
         setAborted(true)
       }
     }
-    const timeoutId = timeout ? setTimeout(onTimeOut, timeout) : undefined
+
+    timeoutIdRef.current = timeout
+      ? setTimeout(onTimeOut, timeout * 1000)
+      : null
 
     const handler = (res: TSocketResponse<TData>) => {
       if (abortCtrlRef.current?.signal.aborted) {
@@ -58,18 +73,18 @@ export const useSocketListener = <TData>(options: ListenerOptions<TData>) => {
       }
 
       if (res.success) onFulfill(res.data)
-      else onFailure(res.message)
+      else onFailure(res.error)
     }
 
     socket.on(event, handler)
 
     return () => {
-      clearTimeout(timeoutId)
+      if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current)
       socket.off(event, handler)
       abortCtrlRef.current?.abort()
       setAborted(true)
     }
-  }, [event, socket, onSuccess, onError])
+  }, [event, socket, timeout])
 
   const abort = useCallback(() => {
     abortCtrlRef.current?.abort()
