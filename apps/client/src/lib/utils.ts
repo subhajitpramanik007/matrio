@@ -10,6 +10,10 @@ export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+export async function randomDelay(min: number = 100, max: number = 2000) {
+  return delay(Math.floor(Math.random() * (max - min + 1)) + min)
+}
+
 export function getAccessToken(): string | null {
   try {
     const stored = localStorage.getItem('__matrio.atk')

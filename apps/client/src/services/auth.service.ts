@@ -44,6 +44,12 @@ function refreshSession() {
   return apiClient.post<TAuthResponse>('/auth/refresh')
 }
 
+function checkSession() {
+  return apiClient.post<TApiResponse<{ role: TUser['role'] }>>(
+    '/auth/session/check',
+  )
+}
+
 function getUser() {
   return apiClient.get<TApiResponse<{ user: TUser }>>('/users/me')
 }
@@ -56,5 +62,6 @@ export const authService = {
   signin,
   signout,
   refreshSession,
+  checkSession,
   getUser,
 }
