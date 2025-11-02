@@ -5,5 +5,8 @@ export * from './usePlayerJoinedListener'
 export * from './usePlayerLeftListener'
 export * from './usePlayerMovedListener'
 export * from './useRoomDeletedListener'
+export * from './useGameRestartListener'
 
 export * from './usePlayerMoveEmit'
+export * from './usePlayLeaveEmit'
+export * from './useGameRestartEmit'

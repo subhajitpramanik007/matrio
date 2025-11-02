@@ -11,8 +11,8 @@ import { HeaderProvider } from '@/lib/contexts/header-context'
 
 import { Header } from '@/components/header/Header'
 import { SessionLayout } from '@/components/session-layout'
-import { SocketProvider } from '@/lib/contexts/socket-context'
 import { Toaster as ShadcnToaster } from '@/components/ui/sonner'
+import { SocketProvider } from '@/lib/contexts/socket-context'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -33,8 +33,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootLayout({ children }: { children: React.ReactNode }) {
-  console.log('RootLayout')
-
   return (
     <HeaderProvider>
       <SessionLayout>

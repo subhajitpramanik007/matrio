@@ -2,22 +2,29 @@ import { AnimatePresence, motion } from 'motion/react'
 import { RotateCcw } from 'lucide-react'
 import type { TicTacToeSymbol } from '@/games/tic-tac-toe/types'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export function TicTacToeBoard({
   board,
   handleCellClick,
   isDisabled,
+  winningLine,
 }: {
   board: (string | null)[]
   handleCellClick: (index: number) => void
   isDisabled: (idx: number) => boolean
+  winningLine?: number[]
 }) {
   return (
     <div className="mx-auto mb-6 grid max-w-80 grid-cols-3 gap-4">
       {board.map((cell, index) => (
         <motion.button
           key={index}
-          className="border-border bg-card hover:bg-accent/10 flex aspect-square items-center justify-center rounded-lg border-2 text-4xl font-bold transition-colors disabled:cursor-not-allowed"
+          className={cn(
+            'border-border bg-card hover:bg-accent/10 flex aspect-square items-center justify-center rounded-lg border-2 text-4xl font-bold transition-colors disabled:cursor-not-allowed',
+            winningLine?.includes(index) &&
+              'ring-primary/50 shadow-primary/50 shadow-md ring-2',
+          )}
           onClick={() => handleCellClick(index)}
           disabled={isDisabled(index)}
           whileHover={{ scale: cell ? 1 : 1.05 }}
