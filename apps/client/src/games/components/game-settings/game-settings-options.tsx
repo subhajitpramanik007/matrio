@@ -11,7 +11,7 @@ function GameSettingOptionsTitle({
   return (
     <h1
       className={cn(
-        'text-primary/70 w-full text-start text-xl font-semibold underline',
+        'text-primary/70 w-full pb-8 text-center text-xl font-semibold underline',
         className,
       )}
       {...props}
@@ -65,7 +65,7 @@ function GameSettingOptionsSection({
       transition={{ duration: 0.3 }}
       {...props}
       className={cn(
-        'flex w-full max-w-3xl items-center justify-center',
+        'flex w-full max-w-3xl flex-col items-center justify-center',
         className,
       )}
     />

@@ -24,9 +24,7 @@ export const JoinPrivateRoom: React.FC<
       successText="Room joined successfully. Please wait for the opponent to join..."
       {...rest}
     >
-      <div className="flex w-full gap-3">
-        <JoinRoomForm onSubmit={onJoinRoom} />
-      </div>
+      <JoinRoomForm onSubmit={onJoinRoom} />
     </DisplayRoomSearch>
   )
 }
@@ -45,7 +43,7 @@ function JoinRoomForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-full space-x-4"
+        className="mx-auto flex w-full space-x-4 px-8 md:max-w-md"
       >
         <FieldGroup>
           <FormInput

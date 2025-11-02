@@ -27,7 +27,7 @@ export const GameSettings: React.FC = () => {
           <GamePrivateRoomSelection key="game-private-room-selection" />
           <GameCostSelection key="game-cost-selection" />
         </AnimatePresence>
-        <div className="flex w-full items-center justify-end">
+        <div className="flex w-full items-center justify-center">
           <GameSettingContinueButton />
         </div>
       </div>

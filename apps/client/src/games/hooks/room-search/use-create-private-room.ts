@@ -4,11 +4,11 @@ import type { RoomSearchProps, TGameNameSpaceToSocket } from '@/games/types'
 import { useSocketEmit } from '@/hooks/socket'
 import { showGameErrorNotification } from '@/games/components/show-game-notification'
 
-export const useCreatePrivateRoom = ({
+export const useCreatePrivateRoom = <T extends TGameNameSpaceToSocket>({
   gameNameSpace,
   emitValues = {},
   callback,
-}: RoomSearchProps<TGameNameSpaceToSocket>) => {
+}: RoomSearchProps<T>) => {
   const createRoomRes = useSocketEmit({
     event: 'create_room',
     gameNameSpace,

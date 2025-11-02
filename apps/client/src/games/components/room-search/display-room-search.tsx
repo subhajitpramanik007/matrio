@@ -3,7 +3,7 @@ import { Container } from '@/components/common/container'
 type DisplayRoomSearchProps = {
   isLoading: boolean
   isSuccess: boolean
-  successText: string
+  successText: React.ReactNode
   loadingText: string
   isError: boolean
   error: string | null
@@ -29,16 +29,20 @@ export function DisplayRoomSearch({
 
   if (isError) {
     return (
-      <Container className="mx-auto w-full max-w-3xs">
+      <Container className="mx-auto w-full">
         <div>{error}</div>
       </Container>
     )
   }
 
   if (isSuccess) {
-    const display = children || <div>{successText}</div>
+    return (
+      <Container className="mx-auto w-full max-w-md">{successText}</Container>
+    )
+  }
 
-    return <Container className="mx-auto w-full max-w-3xs">{display}</Container>
+  if (children) {
+    return <Container className="mx-auto w-full">{children}</Container>
   }
 
   return (
