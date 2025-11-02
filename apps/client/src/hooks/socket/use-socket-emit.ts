@@ -9,7 +9,7 @@ import type {
   TGameEventRequest,
   TGameNameSpaceToSocket,
 } from '@/games/types/game.types'
-import { delay } from '@/lib/utils'
+import { randomDelay } from '@/lib/utils'
 
 type UseSocketEmitOptions<
   TData,
@@ -106,7 +106,7 @@ export const useSocketEmit = <
       }
 
       onInit()
-      await delay(3000)
+      await randomDelay(0, 500)
 
       try {
         const callback = (res: TSocketResponse<TData>) => {
