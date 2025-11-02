@@ -125,7 +125,7 @@ export class AuthController extends BaseController {
   @Post('session/check')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAccessGuard)
-  verify() {
-    return this.success('Session is valid');
+  verify(@GetUser('role') role: string) {
+    return this.success({ role }, 'Session is valid');
   }
 }
