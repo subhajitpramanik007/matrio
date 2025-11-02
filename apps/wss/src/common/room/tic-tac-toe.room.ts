@@ -113,6 +113,7 @@ export class TicTacToeRoom extends BaseRoom<TicTacToePlayer> {
   get sanitize() {
     return {
       ...super.sanitize,
+      players: this.players.map((player) => player.sanitize),
       board: this.board,
     };
   }

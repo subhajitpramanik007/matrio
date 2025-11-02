@@ -18,4 +18,11 @@ export class TicTacToePlayer extends BasePlayer {
   is(symbol: TicTacToeSymbol) {
     return this.symbol === symbol;
   }
+
+  get sanitize() {
+    return {
+      ...super.sanitize,
+      symbol: this.symbol,
+    };
+  }
 }

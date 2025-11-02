@@ -93,6 +93,18 @@ class TicTacToeGateway extends GameGateway {
       new SocketResponse({ player: player.sanitize })
     );
 
+    if (room.isFull) {
+      returnAfterComplete(() => {
+        room.startGame();
+        this.broadcastToRoom(
+          GameEventsResponse.GAME_STARTED,
+          room.id,
+          new SocketResponse({ room: room.sanitize })
+        );
+        // TODO: fix this
+      }, 1_000);
+    }
+
     this.broadcastToRoomLater(
       GameEventsResponse.PLAYER_JOINED,
       room.id,
@@ -168,6 +180,7 @@ class TicTacToeGateway extends GameGateway {
 
     client.user.roomId = null;
     client.leave(room.id);
+    if (room.noOfPlayers < 2) this.service.deleteRoom(room.id);
 
     this.broadcastToRoomLater(
       GameEventsResponse.PLAYER_LEFTED,
@@ -290,7 +303,8 @@ class TicTacToeGateway extends GameGateway {
   }
 
   restartGame(client: Socket, data: { roomCode?: string }) {
-    const roomId = data.roomCode || client.user.roomId;
+    this.logger.debug("Restarting game", data, client.user);
+    const roomId = client.user.roomId;
     if (!roomId) throw new BadRequestException("Room id is required");
 
     const room = this.service.getRoom(roomId);
@@ -298,8 +312,7 @@ class TicTacToeGateway extends GameGateway {
     room.reset();
 
     room.players.forEach((player) => {
-      if (player.id === client.user?.id) player.isReady = true;
-      else player.isReady = false;
+      if (player.id === client.id) player.isReady = true;
     });
 
     if (room.players.every((player) => player.isReady)) {
@@ -312,7 +325,7 @@ class TicTacToeGateway extends GameGateway {
       );
     }
 
-    return new SocketResponse({ room: room.sanitize });
+    return new SocketResponse();
   }
 
   result(client: Socket, data: any) {

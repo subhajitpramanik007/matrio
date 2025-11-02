@@ -64,6 +64,10 @@ export class TicTacToeService {
     return this.rooms.get(roomId);
   }
 
+  deleteRoom(roomId: RoomId) {
+    this.rooms.delete(roomId);
+  }
+
   joinRoom(roomId: RoomId, player: TicTacToePlayer) {
     const room = this.getRoom(roomId);
     if (!room) throw new Error("Room not found");
