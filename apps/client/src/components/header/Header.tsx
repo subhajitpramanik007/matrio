@@ -21,7 +21,7 @@ export const Header: React.FC = () => {
         <AppLogo className="mb-0" />
       </div>
       <div className="mx-auto w-full">
-        <h1 className="text-center text-2xl font-bold tracking-wide capitalize">
+        <h1 className="hidden text-center text-2xl font-bold tracking-wide capitalize md:block">
           {title}
         </h1>
       </div>

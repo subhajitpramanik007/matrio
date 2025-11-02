@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useRouter } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
 import { createReactContext } from '../create-react-context'
 
 type TTitle = string | null
@@ -11,7 +11,7 @@ export type THeaderContext = {
 
 export const HeaderContext = createReactContext<THeaderContext>(
   () => {
-    const router = useRouter()
+    const location = useLocation()
     const [title, setTitle] = useState<TTitle>(null)
 
     const updateTitle = useCallback((currentTitle?: TTitle) => {
@@ -19,20 +19,12 @@ export const HeaderContext = createReactContext<THeaderContext>(
     }, [])
 
     useEffect(() => {
-      const handleRouteChange = () => {
-        const currentTitle = router.latestLocation.pathname
-          .split('/')
-          .pop()
-          ?.split('-')
-          .join(' ')
+      const pathname = location.pathname
+      const currentTitle = pathname.split('/').pop()
+      const parsedTitle = currentTitle?.split('-').join(' ')
 
-        updateTitle(currentTitle)
-      }
-
-      handleRouteChange()
-
-      return () => {}
-    }, [router])
+      if (parsedTitle) setTitle(parsedTitle)
+    }, [location.pathname])
 
     return { title, updateTitle }
   },
