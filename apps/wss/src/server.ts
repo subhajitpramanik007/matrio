@@ -1,5 +1,12 @@
 import { httpServer } from "./app";
 import "dotenv/config";
+import { checkEnv } from "./common/constants";
+
+try {
+  checkEnv();
+} catch (error) {
+  console.error(error);
+}
 
 async function bootstrap() {
   httpServer.listen(8001, () => {
