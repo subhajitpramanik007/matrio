@@ -1,13 +1,16 @@
-import { RoomId, RoomState } from "../types/room.type";
+import { RoomCode, RoomId, RoomState } from "../types/room.type";
 
 import { TicTacToeRoom } from "../common/room/tic-tac-toe.room";
 import { TicTacToePlayer } from "../common/player/tic-tac-toe.player";
 import { Logger } from "../common/logger";
 import WebSocketServer from "../socket";
+import { GameType } from "../types";
+
+export type TicTacToeRoomID = RoomId<GameType.TIC_TAC_TOE, RoomCode>;
 
 export class TicTacToeService {
   private logger = new Logger("TicTacToeService");
-  rooms: Map<RoomId, TicTacToeRoom>;
+  rooms: Map<TicTacToeRoomID, TicTacToeRoom>;
 
   constructor() {
     this.logger.log("TicTacToeService initialized");
@@ -60,15 +63,24 @@ export class TicTacToeService {
     return room;
   }
 
-  getRoom(roomId: RoomId) {
+  getRoom(roomId: TicTacToeRoomID) {
     return this.rooms.get(roomId);
   }
 
-  deleteRoom(roomId: RoomId) {
+  roomCodeToRoomId(roomCode?: string): TicTacToeRoomID {
+    return `${GameType.TIC_TAC_TOE}-${roomCode}`;
+  }
+
+  getRoomByCode(roomCode: RoomCode) {
+    const roomId = this.roomCodeToRoomId(roomCode);
+    return this.getRoom(roomId);
+  }
+
+  deleteRoom(roomId: TicTacToeRoomID) {
     this.rooms.delete(roomId);
   }
 
-  joinRoom(roomId: RoomId, player: TicTacToePlayer) {
+  joinRoom(roomId: TicTacToeRoomID, player: TicTacToePlayer) {
     const room = this.getRoom(roomId);
     if (!room) throw new Error("Room not found");
     if (room.isFull) throw new Error("Room is full");

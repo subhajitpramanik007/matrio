@@ -84,7 +84,8 @@ class TicTacToeGateway extends GameGateway {
       symbol: "O",
     });
 
-    const room = this.service.joinRoom(`${this.game}_${data.roomCode}`, player);
+    const roomId = this.service.roomCodeToRoomId(data.roomCode!);
+    const room = this.service.joinRoom(roomId, player);
     client.join(room.id);
     client.user.roomId = room.id;
 
@@ -237,17 +238,25 @@ class TicTacToeGateway extends GameGateway {
     return new SocketResponse();
   }
 
-  makeMove(client: Socket, data: { roomCode?: RoomCode; cell: number }) {
-    const { roomCode, cell } = data;
-    const roomId = `${this.game}_${roomCode}` || client.user?.roomId;
-    if (!roomId) throw new BadRequestException("Room id is required");
-
+  private checkBoardCell(cell: any) {
     if (!cell && typeof cell !== "number") {
       throw new BadRequestException("Cell is required and should be a number");
     }
+
     if (cell < 0 || cell > 8) {
       throw new BadRequestException("Cell is out of range (0-8)");
     }
+  }
+
+  makeMove(client: Socket, data: { roomCode?: RoomCode; cell: number }) {
+    const { roomCode, cell } = data;
+    const roomId = roomCode
+      ? this.service.roomCodeToRoomId(roomCode)
+      : client.user?.roomId;
+    if (!roomId) throw new BadRequestException("Room id is required");
+
+    this.checkBoardCell(cell);
+
     const room = this.service.getRoom(roomId);
     if (!room) throw new RoomNotFoundException();
 

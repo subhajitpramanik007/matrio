@@ -4,13 +4,20 @@ import {
   PlayerId,
   TicTacToeSymbol,
   RoomState,
+  RoomCode,
+  RoomId,
 } from "../../types";
 import { TicTacToePlayer } from "../player/tic-tac-toe.player";
 
 import { BaseRoom } from "./base.room";
 import { TicTacToeWinningLines } from "../constants";
 
-export class TicTacToeRoom extends BaseRoom<TicTacToePlayer> {
+export class TicTacToeRoom extends BaseRoom<
+  TicTacToePlayer,
+  GameType.TIC_TAC_TOE,
+  RoomCode,
+  RoomId<GameType.TIC_TAC_TOE, RoomCode>
+> {
   board: TicTacToeBoard;
 
   result: {
