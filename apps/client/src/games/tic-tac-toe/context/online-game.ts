@@ -159,7 +159,7 @@ function OnlineTicTacToeContextFactory(): TOnlineTicTacToeContext {
 
   useEffect(() => {
     return () => {
-      if (room) playLeaveEmit({ roomCode: room.roomCode })
+      playLeaveEmit({ roomCode: room?.roomCode })
       reset()
     }
   }, [])
