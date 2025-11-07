@@ -6,11 +6,17 @@ import crypto from "crypto";
 import { BasePlayer } from "../player/base.player";
 import { TIC_TAC_TOE_ROOM_CLEANUP_TIMEOUT } from "../constants";
 
-export class BaseRoom<TPlayer extends BasePlayer = BasePlayer> {
-  readonly id: RoomId;
-  readonly roomCode: RoomCode;
-  readonly game: GameType;
+export class BaseRoom<
+  TPlayer extends BasePlayer = BasePlayer,
+  TGameType extends GameType = GameType,
+  TRoomCode extends RoomCode = RoomCode,
+  TRoomID extends RoomId<GameType, TRoomCode> = RoomId<GameType, TRoomCode>,
+> {
+  readonly id: TRoomID;
+  readonly roomCode: TRoomCode;
+  readonly game: TGameType;
   readonly isRandom: boolean;
+  readonly bettingCoins: number;
   players: TPlayer[];
   state: RoomState;
   turn: PlayerId | null;
@@ -27,7 +33,7 @@ export class BaseRoom<TPlayer extends BasePlayer = BasePlayer> {
   updatedAt: number;
 
   constructor(
-    game: GameType,
+    game: TGameType,
     options?: {
       timer?: number;
       maxPlayers?: number;
@@ -35,16 +41,18 @@ export class BaseRoom<TPlayer extends BasePlayer = BasePlayer> {
       state?: RoomState;
       turn?: PlayerId;
       isRandom?: boolean;
+      bettingCoins?: number;
     }
   ) {
     this.game = game;
-    const roomCode = this.generateRoomCode();
-    this.id = `${game}_${roomCode}`;
+    const roomCode = this.generateRoomCode() as TRoomCode;
     this.roomCode = roomCode;
+    this.id = `${game}-${roomCode}` as TRoomID;
     this.players = options?.players || [];
     this.state = options?.state || RoomState.IDLE;
     this.turn = options?.turn || null;
     this.isRandom = options?.isRandom || false;
+    this.bettingCoins = options?.bettingCoins || 0;
 
     this.result = {
       winnerId: null,
@@ -61,7 +69,7 @@ export class BaseRoom<TPlayer extends BasePlayer = BasePlayer> {
     this.updatedAt = Date.now();
   }
 
-  protected generateRoomCode() {
+  protected generateRoomCode(): string {
     return crypto.randomInt(1000, 9999).toString();
   }
 

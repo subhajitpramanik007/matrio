@@ -46,7 +46,11 @@ abstract class GameGateway extends BaseGateway {
     };
 
   // middleware hooks for subclasses to override if needed
-  protected async before(client: Socket, event: string, data: any): Promise<void> {
+  protected async before(
+    client: Socket,
+    event: string,
+    data: any
+  ): Promise<void> {
     // this.logger.debug(`Event: ${event} | Data:`, data);
   }
 
@@ -59,16 +63,75 @@ abstract class GameGateway extends BaseGateway {
     this.logger.debug(result);
   }
 
+  /**
+   * Create Private Room
+   * @param client - Socket instance
+   * @param data - { cost: number }
+   */
   abstract createRoom(client: Socket, data: any): any;
+
+  /**
+   * Join Private Room
+   * @param client - Socket instance
+   * @param data - { roomCode: string }
+   */
   abstract joinRoom(client: Socket, data: any): any;
+
+  /**
+   * Join or Create Random Room
+   * @param client - Socket instance
+   * @param data  - { cost: number }
+   */
   abstract randomRoom(client: Socket, data: any): any;
+
+  /**
+   * Leave Room - Its for cleanup room
+   * @param client - Socket instance
+   * @param data - { roomCode: string }
+   */
   abstract leaveRoom(client: Socket, data: any): any;
+
+  /**
+   * Start Game
+   * @param client
+   * @param data
+   */
   abstract startGame(client: Socket, data: any): any;
+
+  /**
+   * Start Game
+   * @param client
+   * @param data
+   */
   abstract ready(client: Socket, data: any): any;
+
+  /**
+   * Make Move
+   * @param client
+   * @param data
+   */
   abstract makeMove(client: Socket, data: any): any;
+
+  /**
+   * End Game
+   * @param client
+   * @param data
+   */
   abstract endGame(client: Socket, data: any): any;
+
+  /**
+   * Restart Game
+   * @param client
+   * @param data
+   */
   abstract restartGame(client: Socket, data: any): any;
+
   abstract result(client: Socket, data: any): any;
+
+  /**
+   * Disconnect - When client disconnect
+   * @param client
+   */
   abstract onDisconnect(client: Socket): any;
 }
 

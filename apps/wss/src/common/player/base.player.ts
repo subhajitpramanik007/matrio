@@ -4,8 +4,8 @@ export interface InitPlayer {
   id: PlayerId;
   username: string;
   avatar?: string;
-  isReady: boolean;
-  isHost: boolean;
+  isReady?: boolean;
+  isHost?: boolean;
 }
 
 export class BasePlayer {
@@ -24,8 +24,8 @@ export class BasePlayer {
     this.id = id;
     this.username = username;
     this.avatar = avatar;
-    this.isReady = isReady;
-    this.isHost = isHost;
+    this.isReady = isReady || false;
+    this.isHost = isHost || false;
     this.noOfGamesPlayed = 0;
     this.noOfWins = 0;
     this.noOfLosses = 0;
