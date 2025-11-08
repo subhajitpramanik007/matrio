@@ -1,11 +1,7 @@
+import { roomCleaningCronJob } from "../../common/cron-job";
 import { Logger } from "../../common/logger";
 import { InitPlayer } from "../../common/player/base.player";
-import {
-  GameType,
-  PlayerId,
-  TCheckersCellPosition,
-  TCheckersRoomId,
-} from "../../types";
+import { GameType, TCheckersCellPosition, TCheckersRoomId } from "../../types";
 import { CheckersPlayer } from "./checkers.player";
 import { CheckersRoom } from "./checkers.room";
 
@@ -14,6 +10,10 @@ class CheckersRoomManager {
 
   protected rooms: Map<TCheckersRoomId, CheckersRoom> = new Map();
   protected costToRandomRoomIds: Map<number, Set<TCheckersRoomId>> = new Map();
+
+  constructor() {
+    this.logger.log("Checkers Room Manager Initialized");
+  }
 
   getRoom(roomId: TCheckersRoomId): CheckersRoom | null {
     return this.rooms.get(roomId) ?? null;
@@ -56,6 +56,10 @@ class CheckersRoomManager {
     return this.getRoom(randomRoomId) || null;
   }
 
+  get allRooms(): CheckersRoom[] {
+    return Array.from(this.rooms.values());
+  }
+
   private isHasThisCostRoomSet(cost: number): boolean {
     return this.costToRandomRoomIds.has(cost);
   }
@@ -64,6 +68,12 @@ class CheckersRoomManager {
 export class CheckersService {
   private logger = new Logger("Checkers Service");
   protected manager: CheckersRoomManager = new CheckersRoomManager();
+
+  constructor() {
+    this.logger.log("Checkers Service Initialized");
+
+    roomCleaningCronJob(() => this.cleanRoom(), "Checkers Room Clean Cron Job");
+  }
 
   get store() {
     return this.manager;
@@ -119,6 +129,16 @@ export class CheckersService {
     room.makeMove(fromCellPosition, toCellPosition);
 
     return [room.board, room.turn];
+  }
+
+  private cleanRoom() {
+    this.logger.debug("Checkers Room Clean Cron Job Running...");
+    this.store.allRooms.forEach((room) => {
+      if (room.isCanCleanUp) {
+        this.manager.deleteRoom(room.id);
+        this.logger.debug(`Room deleted: ${room.id}`);
+      }
+    });
   }
 }
 

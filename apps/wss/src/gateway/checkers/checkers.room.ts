@@ -16,6 +16,8 @@ import { CheckersBoard } from "./checkers.board";
 import { CheckersPlayer } from "./checkers.player";
 import { Timestamp } from "../../common/timestamp";
 
+const ROOM_CLEAN_TIME = 5 * 60 * 1000;
+
 export class CheckersRoom {
   id: TCheckersRoomId;
   roomCode: RoomCode;
@@ -108,5 +110,15 @@ export class CheckersRoom {
       settings: this.settings.sanitize,
       players: this.players.map((player) => player.sanitize),
     };
+  }
+
+  get isCanCleanUp() {
+    const isRoomIdle = this.state === RoomState.IDLE;
+    const isRoomEmpty = this.noOfPlayers === 0;
+
+    const roomAge = Date.now() - this.timeStamp.updatedAt.getTime();
+    const isRoomOld = roomAge > ROOM_CLEAN_TIME;
+
+    return isRoomOld || (isRoomIdle && isRoomEmpty);
   }
 }

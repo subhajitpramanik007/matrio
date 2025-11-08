@@ -14,10 +14,14 @@ import { CheckersService, checkersService } from "./checkers.service";
 
 import { SocketException } from "../../common/error";
 import { SocketResponse } from "../../common/response";
+import { Logger } from "../../common/logger";
 
 class CheckersGateway extends GameGateway {
+  logger = new Logger("CheckersGateway");
   constructor(private readonly service: CheckersService) {
     super(GameType.CHECKERS);
+
+    this.logger.log("CheckersGateway initialized");
   }
 
   createRoom(client: Socket, data: any) {
