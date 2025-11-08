@@ -13,6 +13,7 @@ app.use(express.json());
 const httpServer = http.createServer(app);
 const wsServer = WebSocketServer.init(httpServer);
 const io = wsServer.io;
+io.sockets.setMaxListeners(20);
 
 import "./gateway/tic-tac-toe.gateway";
 
