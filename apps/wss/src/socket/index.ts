@@ -123,7 +123,7 @@ class WebSocketServer {
   }
 
   /** Clean room data */
-  cleanRoomData(roomId: RoomId) {
+  cleanRoomData(roomId: string) {
     this._server
       .to(roomId)
       .emit(GameEventsResponse.ROOM_DELETED, new SocketResponse());

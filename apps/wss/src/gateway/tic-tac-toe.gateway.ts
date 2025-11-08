@@ -193,7 +193,8 @@ class TicTacToeGateway extends GameGateway {
   }
 
   startGame(client: Socket, data: { roomCode?: RoomCode }) {
-    const room = this.service.getRoom(`${this.game}_${data.roomCode}`);
+    const roomId = this.service.roomCodeToRoomId(data.roomCode!);
+    const room = this.service.getRoom(roomId);
     if (!room) throw new RoomNotFoundException();
 
     room.startGame();
