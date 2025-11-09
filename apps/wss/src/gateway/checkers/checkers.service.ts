@@ -1,69 +1,12 @@
-import { roomCleaningCronJob } from "../../common/cron-job";
 import { Logger } from "../../common/logger";
-import { InitPlayer } from "../../common/player/base.player";
-import { GameType, TCheckersCellPosition, TCheckersRoomId } from "../../types";
-import { CheckersPlayer } from "./checkers.player";
+import { TCheckersCellPosition, TCheckersRoomId } from "../../types";
+
+import { roomCleaningCronJob } from "../../common/cron-job";
+
 import { CheckersRoom } from "./checkers.room";
-
-class CheckersRoomManager {
-  private logger = new Logger("Checkers Room Manager");
-
-  protected rooms: Map<TCheckersRoomId, CheckersRoom> = new Map();
-  protected costToRandomRoomIds: Map<number, Set<TCheckersRoomId>> = new Map();
-
-  constructor() {
-    this.logger.log("Checkers Room Manager Initialized");
-  }
-
-  getRoom(roomId: TCheckersRoomId): CheckersRoom | null {
-    return this.rooms.get(roomId) ?? null;
-  }
-
-  getRoomByCode(roomCode: string): CheckersRoom | null {
-    const id = `${GameType.CHECKERS}-${roomCode}` as TCheckersRoomId;
-
-    return this.getRoom(id);
-  }
-
-  addRoom(room: CheckersRoom) {
-    this.rooms.set(room.id, room);
-
-    this.logger.debug(
-      `New room created: ${room.id} | isRandom: ${room.isRandom}`
-    );
-  }
-
-  deleteRoom(roomId: TCheckersRoomId) {
-    this.rooms.delete(roomId);
-
-    this.logger.debug(`Room deleted: ${roomId}`);
-  }
-
-  addRandomRoom(room: CheckersRoom, cost: number) {
-    const isHasThisCostSet = this.isHasThisCostRoomSet(cost);
-    if (!isHasThisCostSet) this.costToRandomRoomIds.set(cost, new Set()); // new set
-
-    this.costToRandomRoomIds.get(cost)!.add(room.id); // add into existing set
-  }
-
-  findRandomRoom(cost: number): CheckersRoom | null {
-    if (!this.isHasThisCostRoomSet(cost)) return null;
-    const roomIds = this.costToRandomRoomIds.get(cost)!;
-
-    if (roomIds.size === 0) return null;
-    const randomIdx = Math.floor(Math.random() * roomIds.size);
-    const randomRoomId = Array.from(roomIds)[randomIdx];
-    return this.getRoom(randomRoomId) || null;
-  }
-
-  get allRooms(): CheckersRoom[] {
-    return Array.from(this.rooms.values());
-  }
-
-  private isHasThisCostRoomSet(cost: number): boolean {
-    return this.costToRandomRoomIds.has(cost);
-  }
-}
+import { CheckersPlayer } from "./checkers.player";
+import { InitPlayer } from "../../common/player/base.player";
+import { CheckersRoomManager } from "./checkers.room-manger";
 
 export class CheckersService {
   private logger = new Logger("Checkers Service");
@@ -112,7 +55,9 @@ export class CheckersService {
       return this.joinRoom(existingRoom.id, playerData);
     }
 
-    const room = new CheckersRoom({ settings: { bettingCoins: cost } });
+    const room = new CheckersRoom({
+      settings: { bettingCoins: cost, isRandom: true },
+    });
     const playerWithPiece = new CheckersPlayer(playerData, "red");
 
     room.addPlayer(playerWithPiece);
@@ -133,10 +78,10 @@ export class CheckersService {
 
   private cleanRoom() {
     this.logger.debug("Checkers Room Clean Cron Job Running...");
+
     this.store.allRooms.forEach((room) => {
       if (room.isCanCleanUp) {
-        this.manager.deleteRoom(room.id);
-        this.logger.debug(`Room deleted: ${room.id}`);
+        this.manager.cleanRoomDataByRoomId(room.id);
       }
     });
   }

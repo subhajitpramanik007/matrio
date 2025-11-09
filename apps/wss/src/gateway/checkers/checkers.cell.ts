@@ -4,24 +4,27 @@ import { CheckersPiece } from "./checkers.piece";
 export class CheckersCell {
   row: number;
   col: number;
-  isPiecePlaced: boolean = false;
+  isVisited: boolean = false;
   piece: CheckersPiece | null = null;
 
   constructor(row: number, col: number, piece: CheckersPiece | null = null) {
     this.row = row;
     this.col = col;
     if (piece) {
-      this.isPiecePlaced = true;
+      this.isVisited = true;
       this.piece = piece;
     }
   }
 
+  visited() {
+    this.isVisited = true;
+  }
+
   initPiece(color: TCheckersPieceColor) {
-    if (this.isPiecePlaced) throw new Error("Piece already placed");
+    if (this.isVisited) return;
 
     const piece = new CheckersPiece(color, this.position);
     this.piece = piece;
-    this.isPiecePlaced = true;
   }
 
   changePiece(piece: CheckersPiece) {
@@ -44,7 +47,6 @@ export class CheckersCell {
     return {
       row: this.row,
       col: this.col,
-      isPiecePlaced: this.isPiecePlaced,
       piece: this.piece?.sanitize,
     };
   }

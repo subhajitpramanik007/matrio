@@ -2,14 +2,14 @@ import { TCheckersPieceColor } from "../../types/checkers.type";
 import { BasePlayer, InitPlayer } from "../../common/player/base.player";
 
 export class CheckersPlayer extends BasePlayer {
-  piece: TCheckersPieceColor;
+  pieceColor: TCheckersPieceColor;
   noOfCaptures: number;
   noOfMissedTurns: number;
 
-  constructor(player: InitPlayer, piece: TCheckersPieceColor) {
+  constructor(player: InitPlayer, pieceColor: TCheckersPieceColor) {
     super(player);
 
-    this.piece = piece;
+    this.pieceColor = pieceColor;
     this.noOfCaptures = 0;
     this.noOfMissedTurns = 0;
   }
@@ -17,7 +17,9 @@ export class CheckersPlayer extends BasePlayer {
   get sanitize() {
     return {
       ...super.sanitize,
-      piece: this.piece,
+      pieceColor: this.pieceColor,
+      noOfCaptures: this.noOfCaptures,
+      noOfMissedTurns: this.noOfMissedTurns,
     };
   }
 }

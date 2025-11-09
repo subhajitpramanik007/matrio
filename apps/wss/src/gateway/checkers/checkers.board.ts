@@ -132,13 +132,17 @@ export class CheckersBoard {
   private initializePieces() {
     for (let row = 0; row < this.boardSize; row++) {
       for (let col = 0; col < this.boardSize; col++) {
-        if ((row + col) % 2 === 0) continue;
+        if ((row + col) % 2 === 0) {
+          this._grid[row][col].visited();
+          continue;
+        }
 
         if (row < 3) {
           this._grid[row][col].initPiece("black");
         } else if (row >= this.boardSize - 3) {
           this._grid[row][col].initPiece("red");
         }
+        this._grid[row][col].visited();
       }
     }
   }

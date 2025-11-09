@@ -82,6 +82,21 @@ export class CheckersRoom {
     this.timeStamp.update();
   }
 
+  changeTurn() {
+    const idx = this.players.findIndex((player) => player.id === this.turn);
+    this.turn = this.players[(idx + 1) % this.players.length].id;
+
+    this.timeStamp.update();
+  }
+
+  startGame() {
+    this.board.init();
+    this.turn = this.players[0].id;
+    this.state = RoomState.PLAYING;
+
+    this.timeStamp.update();
+  }
+
   makeMove(
     fromCellPosition: TCheckersCellPosition,
     toCellPosition: TCheckersCellPosition
@@ -107,6 +122,7 @@ export class CheckersRoom {
       roomCode: this.roomCode,
       board: this.board.grid.map((row) => row.map((cell) => cell.sanitize)),
       turn: this.turn,
+      state: this.state,
       settings: this.settings.sanitize,
       players: this.players.map((player) => player.sanitize),
     };
