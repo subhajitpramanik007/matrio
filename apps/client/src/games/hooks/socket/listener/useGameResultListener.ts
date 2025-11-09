@@ -1,5 +1,8 @@
 import type { TSocketResponseData } from '@/types'
-import type { TOnlineGameResult, TOnlineTicTacToeRoom } from '../../types'
+import type {
+  TOnlineGameResult,
+  TOnlineTicTacToeRoom,
+} from '../../../tic-tac-toe/types'
 import { useSocketListener } from '@/hooks/socket'
 
 type GameResultData = TSocketResponseData<{

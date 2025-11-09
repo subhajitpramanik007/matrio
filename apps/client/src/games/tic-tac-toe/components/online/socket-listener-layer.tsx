@@ -9,7 +9,7 @@ import {
   usePlayerLeftListener,
   usePlayerMoved,
   useRoomDeleted,
-} from '@/games/tic-tac-toe/hooks/socket'
+} from '@/games/hooks/socket/listener'
 
 interface SocketListenerLayerProps {
   children: React.ReactNode
