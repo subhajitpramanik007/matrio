@@ -74,3 +74,10 @@ export type TOnlineRoom<T extends TGameSlug> = T extends 'tic-tac-toe'
 export type TOnlinePlayer<T extends TGameSlug> = T extends 'tic-tac-toe'
   ? TOnlineTicTacToePlayer
   : any
+
+export enum RoomState {
+  IDLE = 'idle',
+  WAITING = 'waiting',
+  PLAYING = 'playing',
+  ENDED = 'ended',
+}
