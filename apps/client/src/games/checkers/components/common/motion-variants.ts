@@ -1,5 +1,4 @@
 import type { Variants } from 'motion/react'
-import { CHECKERS_BOARD_SIZE } from '@/games/checkers/checkers.constant'
 
 export const boardVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95 },

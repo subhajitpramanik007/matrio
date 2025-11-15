@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import {
   animationLayerVariants,
+  boardVariants,
   borderVariants,
   cellColorVariants,
   cellVariants,
@@ -107,7 +108,7 @@ const CheckersPiece: React.FC<
   React.ComponentProps<typeof motion.div> & { piece: TCheckersPiece }
 > = (props) => {
   const {
-    piece: { isKing, color },
+    piece: { id, isKing, color },
     ...rest
   } = props
 
@@ -130,6 +131,7 @@ const CheckersPiece: React.FC<
 
   return (
     <motion.div
+      layoutId={id}
       data-slot="checkers-piece"
       variants={pieceVariants}
       initial="hidden"
@@ -177,7 +179,7 @@ const CheckersBoardCellsLayer: React.FC<{ board: TCheckersBoard }> = ({ board })
           <CheckersBoardCellColor
             key={`cell-${rowIndex}-${colIndex}`}
             flatIndex={rowIndex * CHECKERS_BOARD_SIZE + colIndex}
-            isDark={cell.isDark}
+            cell={cell}
           />
         )}
       />
@@ -186,15 +188,22 @@ const CheckersBoardCellsLayer: React.FC<{ board: TCheckersBoard }> = ({ board })
 }
 
 const CheckersBoardCellColor: React.FC<
-  React.ComponentProps<typeof motion.div> & { flatIndex: number; isDark: boolean }
-> = ({ className, flatIndex: idx, isDark, ...props }) => (
+  React.ComponentProps<typeof motion.div> & { cell: TCheckersCell; flatIndex: number }
+> = ({ className, flatIndex: idx, cell, ...props }) => (
   <motion.div
     data-slot="checkers-board-cell-color"
     custom={{ idx }}
     variants={cellColorVariants}
     initial="hidden"
     animate="show"
-    className={cn('flex aspect-square', isDark ? 'bg-gray-800' : 'bg-amber-100', className)}
+    className={cn(
+      'flex aspect-square',
+      cell.isDark ? 'bg-gray-800' : 'bg-amber-100',
+      cell.highlightType === 'selected_cell' && 'bg-blue-400',
+      cell.highlightType === 'possible_move' && 'bg-emerald-500',
+      cell.highlightType === 'possible_capture' && 'bg-rose-500',
+      className,
+    )}
     {...props}
   />
 )
@@ -305,8 +314,11 @@ const CheckersBoardAnimationLayer: React.FC<React.ComponentProps<typeof motion.d
   />
 )
 
-const CheckersBoardLayer: React.FC<React.ComponentProps<'div'>> = ({ className, ...props }) => (
-  <div
+const CheckersBoardLayer: React.FC<React.ComponentProps<typeof motion.div>> = ({
+  className,
+  ...props
+}) => (
+  <motion.div
     data-slot="checkers-board-layer"
     className={cn(
       'mx-auto aspect-square w-full max-w-[600px]',
@@ -314,6 +326,9 @@ const CheckersBoardLayer: React.FC<React.ComponentProps<'div'>> = ({ className, 
       'bg-yellow-600 bg-[url("/wood.jpg")] bg-cover bg-center bg-repeat bg-blend-multiply',
       className,
     )}
+    variants={boardVariants}
+    initial="hidden"
+    animate="show"
     {...props}
   />
 )

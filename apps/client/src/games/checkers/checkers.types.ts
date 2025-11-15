@@ -7,7 +7,7 @@ export type TCheckersRoomId = string
 export type TCheckersPiece = {
   id: string
   color: TCheckersPieceColor
-  moveDirection: 'forward' | 'backward'
+  moveDirection: 'forward' | 'backward' | 'both'
   isKing: boolean
 }
 
@@ -16,6 +16,12 @@ export type TCheckersCell = {
   col: number
   isDark: boolean
   piece: TCheckersPiece | null
+  highlightType?:
+    | 'old_selected_cell'
+    | 'selected_cell'
+    | 'possible_move'
+    | 'possible_capture'
+    | 'none'
 }
 
 export type TCheckersBoard = TCheckersCell[][]
