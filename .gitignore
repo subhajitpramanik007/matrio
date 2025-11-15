@@ -39,3 +39,4 @@ yarn-error.log*
 apps/web/src/app/playground/
 apps/web/src
 apps/client/src/routes/playground.tsx
+data/db.sqlite
