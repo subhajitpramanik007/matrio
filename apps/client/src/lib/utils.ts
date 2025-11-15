@@ -43,3 +43,41 @@ export type Slugify<S extends string, Sep extends string> =
       ? `${Slugify<A, Sep>}${Sep}${Slugify<B, Sep>}`
       : L
     : never
+
+type Direction = 'top' | 'bottom' | 'left' | 'right'
+
+export function getSpiralOrderIndices(size: number) {
+  const order: [number, number, Direction][] = []
+  let top = 0
+  let bottom = size - 1
+  let left = 0
+  let right = size - 1
+
+  while (top <= bottom && left <= right) {
+    // left → right
+    for (let i = left; i <= right; i++) order.push([top, i, 'left'])
+    top++
+
+    // top → bottom
+    for (let i = top; i <= bottom; i++) order.push([i, right, 'top'])
+    right--
+
+    // right → left
+    if (top <= bottom) {
+      for (let i = right; i >= left; i--) order.push([bottom, i, 'right'])
+      bottom--
+    }
+
+    // bottom → top
+    if (left <= right) {
+      for (let i = bottom; i >= top; i--) order.push([i, left, 'bottom'])
+      left++
+    }
+  }
+
+  return order
+}
+
+export function deepClone<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj)) as T
+}
