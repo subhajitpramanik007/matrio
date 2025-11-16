@@ -13,7 +13,7 @@ interface ScorecardProps {
 
 export const CheckersScorecard: React.FC<ScorecardProps> = ({ result, currentPlayerColor }) => {
   return (
-    <Card className="h-fit w-full max-w-xs">
+    <Card className="h-fit w-full md:max-w-xs">
       <CardHeader>Score board</CardHeader>
       <CardContent className="space-y-3">
         <PlayerScoreCard

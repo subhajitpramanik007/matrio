@@ -7,7 +7,7 @@ const LocalGameContainer: React.FC = () => {
   const { board, currentPlayerColor, result, handleClickToCell } = useCheckersLocalGame()
 
   return (
-    <div className="flex justify-center">
+    <div className="mx-4 flex flex-col justify-center gap-4 md:flex-row">
       <CheckersBoard board={board} onClick={handleClickToCell} />
       <CheckersScorecard result={result} currentPlayerColor={currentPlayerColor} />
     </div>
