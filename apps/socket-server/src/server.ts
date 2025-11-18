@@ -1,12 +1,9 @@
-import 'dotenv/config'
-
+import { ENV } from './config/env'
 import { httpServer } from './app'
 
-const PORT = process.env.PORT ?? 8002
-
 async function bootstrap() {
-    httpServer.listen(PORT, () => {
-        console.log(`Server started on port ${PORT}`)
+    httpServer.listen(ENV.PORT, () => {
+        console.log(`Server started on port ${ENV.PORT}`)
     })
 
     httpServer.on('error', (error) => {
