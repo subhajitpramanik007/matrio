@@ -13,7 +13,7 @@ const corsOrigins = z
 export const envSchema = z.object({
     PORT: z.string().default('8002'),
     CORS_ORIGIN: corsOrigins.default('*'),
-    JWT_SECRET: z.jwt().default('secret'),
+    JWT_SECRET: z.string().default('secret'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 })
 
