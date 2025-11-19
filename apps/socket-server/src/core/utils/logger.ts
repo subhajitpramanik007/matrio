@@ -61,7 +61,9 @@ export class Logger {
             `${new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: 'numeric' })}`,
         )
         const context = this.colorizeLevel(level)(`[${this.context}]`)
-        const levelTag = this.colorizeLevel(level)(`[${level.toUpperCase()}]`)
+        const currentLabelTag = levelTags[level] ?? levelTags['default']
+
+        const levelTag = this.colorizeLevel(level)(`[${currentLabelTag}]`)
 
         return `${levelTag} ${timestamp} : ${context}`
     }
@@ -80,6 +82,15 @@ export class Logger {
                 return chalk.green.bold
         }
     }
+}
+
+const levelTags: Record<LogLevel | 'default', string> = {
+    error: ' ERROR',
+    warn: ' WARN ',
+    debug: 'DEBUG',
+    verbose: 'VERBO',
+    log: 'INFO ',
+    default: 'INFO ',
 }
 
 export const logger = new Logger('Matrio')
