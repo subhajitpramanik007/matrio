@@ -85,8 +85,8 @@ export class Logger {
 }
 
 const levelTags: Record<LogLevel | 'default', string> = {
-    error: ' ERROR',
-    warn: ' WARN ',
+    error: 'ERROR',
+    warn: 'WARN ',
     debug: 'DEBUG',
     verbose: 'VERBO',
     log: 'INFO ',

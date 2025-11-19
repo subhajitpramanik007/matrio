@@ -4,5 +4,6 @@
       "mode": "auto"
     }
   ],
-  "cSpell.words": ["LEFTED", "tictactoe"]
+  "cSpell.words": ["LEFTED", "tictactoe"],
+  "conventionalCommits.scopes": ["socket"]
 }
