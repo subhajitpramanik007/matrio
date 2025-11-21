@@ -14,19 +14,31 @@ export class Logger {
     }
 
     error(error?: any, ...optionalParams: any[]) {
-        this.print('error', chalk.red(typeof error === 'string' ? error : (error?.message ?? error)))
+        this.print('error', chalk.red(typeof error === 'string' ? error : (error?.message ?? error), ...optionalParams))
     }
 
     warn(message?: any, ...optionalParams: any[]) {
-        this.print('warn', message, ...optionalParams)
+        this.print(
+            'warn',
+            chalk.yellow(typeof message === 'string' ? message : JSON.stringify(message, null, 2)),
+            ...optionalParams,
+        )
     }
 
     debug(message?: any, ...optionalParams: any[]) {
-        this.print('debug', message, ...optionalParams)
+        this.print(
+            'debug',
+            chalk.magenta(typeof message === 'string' ? message : JSON.stringify(message, null, 2)),
+            ...optionalParams,
+        )
     }
 
     verbose(message?: any, ...optionalParams: any[]) {
-        this.print('verbose', message, ...optionalParams)
+        this.print(
+            'verbose',
+            chalk.cyan(typeof message === 'string' ? message : JSON.stringify(message, null, 2)),
+            ...optionalParams,
+        )
     }
 
     private print(level: LogLevel, message?: any, ...optionalParams: any[]) {
