@@ -72,3 +72,9 @@ export class PlayerAlreadyInRoomException extends SocketException {
         super(message, SocketErrorCode.PLAYER_NOT_IN_ROOM)
     }
 }
+
+export class ValidationException extends SocketException {
+    constructor(message: string = 'Validation Error') {
+        super(message, SocketErrorCode.VALIDATION)
+    }
+}
