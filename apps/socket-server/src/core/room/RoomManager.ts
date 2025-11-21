@@ -1,7 +1,7 @@
-import { Logger, RoomId } from '../utils'
+import { Logger } from '../utils'
 import { BaseClass } from '../lifecycle/BaseClass'
 
-import { Room } from './CommonRoom'
+import { RoomId, Room } from './room.type'
 import { PlayerMap } from './PlayerMap'
 
 export class RoomManager extends BaseClass {
@@ -27,7 +27,7 @@ export class RoomManager extends BaseClass {
     remove(roomId: RoomId) {
         const room = this.roomMap.get(roomId)
         if (room) {
-            const playerIds = Array.from(room.players.keys())
+            const playerIds = Array.from(room.players).map((player) => player.id)
             playerIds.forEach((playerId) => this.playerMap.delete(playerId))
 
             this.roomMap.delete(roomId)
