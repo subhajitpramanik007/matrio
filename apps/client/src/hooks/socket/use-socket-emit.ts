@@ -1,14 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSocket } from './use-socket'
-import type {
-  TSocketErrorResponse,
-  TSocketResponse,
-  TSocketSuccessResponse,
-} from '@/types'
-import type {
-  TGameEventRequest,
-  TGameNameSpaceToSocket,
-} from '@/games/types/game.types'
+import type { TSocketErrorResponse, TSocketResponse, TSocketSuccessResponse } from '@/types'
+import type { TGameEventRequest, TGameNameSpaceToSocket } from '@/games/types/game.types'
 import { randomDelay } from '@/lib/utils'
 
 type UseSocketEmitOptions<
@@ -62,9 +55,7 @@ export const useSocketEmit = <
   const emit = useCallback(
     async (data?: TEmitValues) => {
       if (isEmittingRef.current) {
-        console.warn(
-          `[useSocketEmit] Already emitting!, ${event} => ${gameNameSpace}`,
-        )
+        console.warn(`[useSocketEmit] Already emitting!, ${event} => ${gameNameSpace}`)
         return
       }
       isEmittingRef.current = true
@@ -115,12 +106,11 @@ export const useSocketEmit = <
           else onFailure(res.error)
         }
 
-        if (gameNameSpace) socket.emit(event, gameNameSpace, data, callback)
+        if (gameNameSpace) socket.emit(event, { data, gameNameSpace }, callback)
         else socket.emit(event, data, callback)
       } catch (err) {
         if (isMountedRef.current) {
-          const msg =
-            err instanceof Error ? err.message : 'Failed to emit event'
+          const msg = err instanceof Error ? err.message : 'Failed to emit event'
           onFailure(msg)
         }
       }
