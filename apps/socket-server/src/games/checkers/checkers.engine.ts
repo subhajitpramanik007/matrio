@@ -16,10 +16,9 @@ export class CheckersEngine {
     private boardSize: number
 
     constructor(size: number, startingTurn: TCheckersPieceColor) {
-        if (size % 2 !== 0 && size > 6) {
+        if (size % 2 !== 0 || size <= 6) {
             throw new GameRulesException('Board size must be an even number greater than 6')
         }
-
         this.boardSize = size
         this.board = this.createEmptyBoard(size)
         this.initPiecesDefault()
@@ -51,7 +50,12 @@ export class CheckersEngine {
 
     clone(): CheckersEngine {
         const newEngine = new CheckersEngine(this.boardSize, this.turn)
-        newEngine.board = this.board
+        newEngine.board = this.board.map((row) =>
+            row.map((cell) => ({
+                ...cell,
+                piece: cell.piece ? { ...cell.piece } : null,
+            })),
+        )
         return newEngine
     }
 
@@ -342,7 +346,7 @@ export class CheckersEngine {
         let output = ''
         for (const row of this.board) {
             for (const cell of row) {
-                output += cell ? cell.piece?.color[0] : ' '
+                output += cell.piece ? cell.piece.color[0] : ' '
             }
             output += '\n'
         }
