@@ -10,7 +10,7 @@ class WebSocketServer {
     private static instance: WebSocketServer
     private _server: SocketServer
 
-    constructor(private readonly httpServer: HttpServer) {
+    private constructor(private readonly httpServer: HttpServer) {
         this._server = new SocketServer(httpServer, {
             cors: { origin: ENV.CORS_ORIGIN },
             transports: ['websocket'],
@@ -18,11 +18,10 @@ class WebSocketServer {
         })
 
         // Initialize middleware
-        this.initMiddleware(false)
+        this.initMiddleware()
         this.initListeners()
         this.logEventRequest(false)
     }
-
     /** Initialize WebSocketServer */
     static init(httpServer: HttpServer): WebSocketServer {
         if (!this.instance) {

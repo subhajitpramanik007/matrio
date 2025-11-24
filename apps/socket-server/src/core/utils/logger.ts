@@ -14,9 +14,14 @@ export class Logger {
     }
 
     error(error?: any, ...optionalParams: any[]) {
-        this.print('error', chalk.red(typeof error === 'string' ? error : (error?.message ?? error), ...optionalParams))
+        const errorMessage =
+            error instanceof Error
+                ? `${error.message}\n${error.stack}`
+                : typeof error === 'string'
+                  ? error
+                  : JSON.stringify(error, null, 2)
+        this.print('error', chalk.red(errorMessage), ...optionalParams)
     }
-
     warn(message?: any, ...optionalParams: any[]) {
         this.print(
             'warn',
