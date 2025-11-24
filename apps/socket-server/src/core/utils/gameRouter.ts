@@ -28,3 +28,14 @@ export const GameEventRouter: Record<GameEvent, string> = {
 
 // export type GameEvent = keyof typeof GameEventRouter
 export type GameEventMethod = (typeof GameEventRouter)[GameEvent]
+
+export enum GameEventResponse {
+    PLAYER_LEFT = 'player_left',
+    PLAYER_JOINED = 'player_joined',
+    PLAYER_DATA = 'player_data',
+    PLAYER_READY = 'player_ready',
+    GAME_STARTED = 'game_started',
+    GAME_RESULT = 'game_result',
+    ROOM_DELETED = 'room_deleted',
+    PLAYER_MOVED = 'player_moved',
+}

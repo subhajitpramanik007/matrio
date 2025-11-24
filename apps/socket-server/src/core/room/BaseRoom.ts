@@ -53,7 +53,7 @@ export abstract class BaseRoom<
         return crypto.randomInt(1000, 9999).toString()
     }
 
-    protected get isFull() {
+    get isFull() {
         return this.players.length == this.options.maxPlayers
     }
 
@@ -90,8 +90,6 @@ export abstract class BaseRoom<
     }
 
     get serialize() {
-        this.touch()
-
         return {
             id: this.id,
             roomCode: this.roomCode,

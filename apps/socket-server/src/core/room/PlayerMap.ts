@@ -1,4 +1,4 @@
-import { RoomId } from '../utils'
+import { RoomId } from './room.type'
 
 export class PlayerMap {
     private map = new Map<string, RoomId>() // playerId → roomId
@@ -13,5 +13,9 @@ export class PlayerMap {
 
     delete(playerId: string) {
         this.map.delete(playerId)
+    }
+
+    has(playerId: string) {
+        return this.map.has(playerId)
     }
 }

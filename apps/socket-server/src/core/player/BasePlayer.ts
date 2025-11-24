@@ -16,7 +16,7 @@ export class BasePlayer implements Player, PlayerMethods {
         this.username = player.username
         this.avatar = player.avatar
 
-        this.stats = DEFAULT_PLAYER_STATS
+        this.stats = { ...DEFAULT_PLAYER_STATS }
     }
 
     setSocketId(socketId: string) {
@@ -48,7 +48,7 @@ export class BasePlayer implements Player, PlayerMethods {
     }
 
     resetStats() {
-        this.stats = DEFAULT_PLAYER_STATS
+        this.stats = { ...DEFAULT_PLAYER_STATS }
     }
 
     reset() {
