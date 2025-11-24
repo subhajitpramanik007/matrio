@@ -15,14 +15,20 @@ export class GameServiceRegistry extends BaseClass {
 
     register<T extends GameNamespace>(nameSpace: T, service: GameService<T>) {
         if (this.map[nameSpace]) {
-            this.logger.error(`GameServiceRegistry already register for ${nameSpace}`)
-            return
+            const errorMsg = `GameServiceRegistry already registered for ${nameSpace}`
+            this.logger.error(errorMsg)
+            throw new Error(errorMsg)
         }
-        this.logger.log(`GameServiceRegistry register for ${service.constructor.name}`)
         this.map[nameSpace] = service
     }
 
     get<T extends GameNamespace>(nameSpace: T): GameService<T> {
-        return this.map[nameSpace] as GameService<T>
+        const service = this.map[nameSpace]
+        if (!service) {
+            const errorMsg = `No service registered for namespace: ${nameSpace}`
+            this.logger.error(errorMsg)
+            throw new Error(errorMsg)
+        }
+        return service as GameService<T>
     }
 }

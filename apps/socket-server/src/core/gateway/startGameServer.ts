@@ -8,13 +8,13 @@ import { TicTacToeService } from '../../games/tic_tac_toe/TicTacToeService'
 import { GameSocketService } from '../service/GameSocketService'
 import { GameSocketServer } from './GameSocketServer'
 
-export function startGameServer(wss: WebSocketServer) {
+export function startGameServer(wss: WebSocketServer): GameSocketServer {
     // room manager
     const roomManager = new RoomManager()
 
     // game services
     const ticTacToeService = new TicTacToeService(roomManager)
-    const checkersService = new CheckersService(roomManager)
+    const checkersService = new CheckersService(wss.io, roomManager)
 
     // service registry
     const serviceRegistry = new GameServiceRegistry()
@@ -27,5 +27,6 @@ export function startGameServer(wss: WebSocketServer) {
     const gameSocketService = new GameSocketService(roomManager, serviceRegistry)
 
     // start game server
-    new GameSocketServer(wss, gameSocketService)
+    const gameSocketServer = new GameSocketServer(wss, gameSocketService)
+    return gameSocketServer
 }

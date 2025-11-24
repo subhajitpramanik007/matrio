@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io'
-import { Logger, SocketError, SocketErrorCode } from '../utils'
+import { Logger, SocketError, SocketErrorCode, ValidationException } from '../utils'
 
 import { BaseClass } from '../lifecycle/BaseClass'
 import { RoomManager } from '../room/RoomManager'
@@ -23,16 +23,28 @@ export class GameSocketService extends BaseClass {
         const parsed = GameSocketRequestSchema.safeParse(args)
 
         if (!parsed.success) {
-            this.logger.error(parsed.error.message)
             const callback = typeof args[args.length - 1] === 'function' ? args.pop() : null
-            if (callback) callback(new SocketError('Validation error'))
+
+            this.logger.error('Validation error :: ', parsed.error.issues)
+
+            const isGameNamespace = parsed.error.issues.some((issue) => issue.path.includes('gameNamespace'))
+            if (!isGameNamespace) {
+                if (callback)
+                    callback(
+                        new SocketError('Missing namespace or invalid namespace', SocketErrorCode.MISSING_NAMESPACE),
+                    )
+                return
+            }
+            if (callback) callback(new ValidationException(parsed.error.errors[0].message))
             return
         }
 
-        const [event, payload, callback] = parsed.data
+        const { event, payload, callback } = parsed.data
         const result = this.validateEvent(client, event, payload)
         if (callback) callback(result)
     }
+
+    private callback() {}
 
     private validateEvent(client: Socket, event: GameEvent, payload: PayloadSchema) {
         // validate event method
@@ -65,7 +77,8 @@ export class GameSocketService extends BaseClass {
         try {
             return handler.call(svc, client, payload)
         } catch (error) {
-            this.logger.error('Error handling event', error)
+            this.logger.error(error)
+            if (error instanceof SocketError) return error
             return new SocketError('Internal server error')
         }
     }
