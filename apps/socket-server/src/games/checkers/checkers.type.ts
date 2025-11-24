@@ -1,17 +1,20 @@
 import { Player, PlayerID } from '../../core/player'
 import { BaseRoom, RoomId, RoomOptions } from '../../core/room'
 
-import { CheckersPlayer } from './CheckersPlayer'
+import { CheckersPlayer } from './checkers.player'
 
 export type TCheckersPieceColor = 'black' | 'red'
 
 export type TCheckersPieceMoveDirection = 'forward' | 'backward' | 'both'
+
+export type TCheckersPosition = [number, number]
 
 export type TCheckersPiece = {
     id: string
     color: TCheckersPieceColor
     moveDirection: TCheckersPieceMoveDirection
     isKing?: boolean
+    ownerId?: PlayerID
 }
 
 export type TCheckersCell = {
@@ -19,6 +22,13 @@ export type TCheckersCell = {
     col: number
     piece: TCheckersPiece | null
     isDark: boolean
+}
+
+export type TCheckersMove = {
+    from: TCheckersPosition
+    to: TCheckersPosition
+    captures: TCheckersPosition[]
+    isCapture: boolean
 }
 
 export type TCheckersBoard = TCheckersCell[][]
@@ -29,13 +39,18 @@ export type TCheckersPlayer = Player & {
     noOfMissedTurns: number
 }
 
-export type TCheckersGameResult = {
-    winner: TCheckersPlayer
-}
+export type TCheckersGameResult =
+    | {
+          winner: TCheckersPlayer['id']
+          isDraw: false
+      }
+    | {
+          isDraw: true
+      }
 
 export type TCheckersRoomMetadata = {
     readonly boardSize: number
-    board: TCheckersBoard
+    board: TCheckersCell[][]
     turn: PlayerID | null
 
     result: TCheckersGameResult | null

@@ -7,9 +7,10 @@ export enum SocketErrorCode {
     UNAUTHORIZED = 'UNAUTHORIZED',
     ROOM_FULL = 'ROOM_FULL',
     ROOM_NOT_FOUND = 'ROOM_NOT_FOUND',
-    PLAYER_NOT_IN_ROOM = 'PLAYER_NOT_IN_ROOM',
+    PLAYER_IN_ROOM = 'PLAYER_ALREADY_IN_ROOM',
     UNKNOWN_EVENT = 'UNKNOWN_EVENT',
     MISSING_NAMESPACE = 'MISSING_NAMESPACE',
+    GAME_RULES_ERROR = 'GAME_RULES_ERROR',
 }
 
 export class SocketError {
@@ -69,12 +70,18 @@ export class RoomIsFullException extends SocketException {
 
 export class PlayerAlreadyInRoomException extends SocketException {
     constructor(message: string = 'Player Already In Room') {
-        super(message, SocketErrorCode.PLAYER_NOT_IN_ROOM)
+        super(message, SocketErrorCode.PLAYER_IN_ROOM)
     }
 }
 
 export class ValidationException extends SocketException {
     constructor(message: string = 'Validation Error') {
         super(message, SocketErrorCode.VALIDATION)
+    }
+}
+
+export class GameRulesException extends SocketException {
+    constructor(message: string) {
+        super(message, SocketErrorCode.GAME_RULES_ERROR)
     }
 }
