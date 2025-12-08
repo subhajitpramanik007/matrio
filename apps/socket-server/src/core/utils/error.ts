@@ -80,8 +80,12 @@ export class ValidationException extends SocketException {
     }
 }
 
-export class GameRulesException extends SocketException {
-    constructor(message: string) {
-        super(message, SocketErrorCode.GAME_RULES_ERROR)
+export class GameRulesException implements SocketException {
+    error: SocketErrorCode = SocketErrorCode.GAME_RULES_ERROR
+    message: string = 'Game Rules Error'
+    success: boolean = false
+
+    constructor(message?: string) {
+        if (message) this.message = message
     }
 }
