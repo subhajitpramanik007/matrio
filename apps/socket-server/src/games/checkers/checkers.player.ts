@@ -16,6 +16,8 @@ export class CheckersPlayer extends BasePlayer implements TCheckersPlayer {
         return {
             ...super.serialize,
             pieceColor: this.pieceColor,
+            noOfCaptures: this.noOfCaptures,
+            noOfMissedTurns: this.noOfMissedTurns,
         }
     }
 }

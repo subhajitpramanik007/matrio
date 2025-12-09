@@ -7,8 +7,8 @@ export class BasePlayer implements Player, PlayerMethods {
     avatar?: string
     username: string
     stats: PlayerStats
-    isReady?: boolean
-    isHost?: boolean
+    isReady = false
+    isHost = false
 
     constructor(player: InitPlayerData) {
         this.id = player.id
