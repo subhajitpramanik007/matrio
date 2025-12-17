@@ -12,7 +12,13 @@
         "allowImportingTsExtensions": true,
         "allowJs": true,
         "outDir": "./dist",
-        "isolatedModules": true
+        "isolatedModules": true,
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["src/*"],
+            "@checkers/*": ["src/games/checkers/*"],
+            "@tic-tac-toe/*": ["src/games/tic_tac_toe/*"]
+        }
     },
     "include": ["src/**/*", "tests/**/*"]
 }
