@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { GameEvent } from '../../core/utils/gameRouter'
 
 const checkersRoomCodeSchema = z.object({
-    roomCode: z.string().optional(),
+    roomCode: z.string(),
 })
 
 const checkersRoomOptionsSchema = z.object({
@@ -25,13 +25,18 @@ const joinCheckersRoomSchema = checkersRoomOptionsSchema.extend({
     roomCode: z.string(),
 })
 
-const leaveCheckersRoomSchema = checkersRoomCodeSchema
+const leaveCheckersRoomSchema = z.object({
+    roomCode: z.string().optional(),
+})
 
 const startCheckersGameSchema = checkersRoomCodeSchema
 
+const CheckersMovePosition = z.tuple([z.number(), z.number()])
 const makeMoveSchema = checkersRoomCodeSchema.extend({
-    from: z.tuple([z.number(), z.number()]),
-    to: z.tuple([z.number(), z.number()]),
+    from: CheckersMovePosition,
+    to: CheckersMovePosition,
+    captures: z.array(CheckersMovePosition),
+    isCapture: z.boolean(),
 })
 
 export const CheckersSchemaRegistry = {

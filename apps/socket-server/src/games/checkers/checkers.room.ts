@@ -1,6 +1,6 @@
-import { BaseRoom } from '../../core/room'
-import { PlayerID } from '../../core/player'
-import { SocketErrorCode, SocketException } from '../../core/utils'
+import { BaseRoom, RoomState } from '@/core/room'
+import { PlayerID } from '@/core/player'
+import { EGameNamespace, GameRulesException, SocketErrorCode, SocketException } from '@/core/utils'
 
 import type {
     TCheckersBoard,
@@ -10,10 +10,10 @@ import type {
     TCheckersRoom,
     TCheckersRoomMetadata,
     TInitCheckersRoomOptions,
-} from './checkers.type'
-import { CheckersPlayer } from './checkers.player'
-import { DEFAULT_CHECKERS_ROOM_OPTIONS } from './checkers.constant'
-import { CheckersEngine } from './checkers.engine'
+} from '@checkers/checkers.type'
+import { CheckersPlayer } from '@checkers/checkers.player'
+import { CheckersEngine } from '@checkers/checkers.engine'
+import { DEFAULT_CHECKERS_ROOM_OPTIONS } from '@checkers/checkers.constant'
 
 export class CheckersRoom<
         TPlayer extends CheckersPlayer = CheckersPlayer,
@@ -25,7 +25,7 @@ export class CheckersRoom<
     private engine: CheckersEngine
 
     constructor(settings: Partial<TInitCheckersRoomOptions>) {
-        const options = { ...settings, ...DEFAULT_CHECKERS_ROOM_OPTIONS }
+        const options = { ...DEFAULT_CHECKERS_ROOM_OPTIONS, ...settings }
         const board = [] as TCheckersBoard
         const initialMetadata = {
             board,
@@ -35,12 +35,12 @@ export class CheckersRoom<
         } as TMetadata
 
         super({
-            namespace: 'checkers',
+            namespace: EGameNamespace.CHECKERS,
             options,
             meta: initialMetadata,
         })
 
-        this.engine = new CheckersEngine(options.boardSize, 'red')
+        this.engine = new CheckersEngine(options.boardSize)
         this.syncStateFromEngine()
     }
 
@@ -60,18 +60,22 @@ export class CheckersRoom<
     startGame() {
         if (!this.isFull) throw new SocketException('Room is not full', SocketErrorCode.BAD_REQUEST)
 
+        this.setState(RoomState.PLAYING)
         this.meta.turn = this.players[0].id
         this.meta.result = null
         this.touch()
     }
 
     applyMove(playerId: PlayerID, move: TCheckersMove) {
+        // player exists
         const player = this.players.find((p) => p.id === playerId)
-        if (!player) throw new SocketException('Player not found', SocketErrorCode.BAD_REQUEST)
+        if (!player) throw new GameRulesException('Player not found')
 
+        // piece exists
         const piece = this.engine.getPiece(move.from)
-        if (!piece) throw new SocketException('Piece not found', SocketErrorCode.BAD_REQUEST)
-        if (piece.color !== player.pieceColor) throw new SocketException('Not your turn', SocketErrorCode.BAD_REQUEST)
+        if (!piece) throw new GameRulesException('Piece not found')
+        // Piece is your piece
+        if (piece.color !== player.pieceColor) throw new GameRulesException('Not your turn')
 
         const result = this.engine.applyMove(move, player.id)
         this.syncStateFromEngine()
@@ -100,7 +104,16 @@ export class CheckersRoom<
         this.touch()
     }
 
+    setState(state: RoomState) {
+        this.state = state
+        this.touch()
+    }
+
     /** ------------- Getters ------------- */
+    get isAllPlayersReady() {
+        return this.players.every((player) => player.isReady)
+    }
+
     get boardSize() {
         return this.meta.boardSize
     }

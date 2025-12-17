@@ -2,6 +2,7 @@ import { Player, PlayerID } from '../../core/player'
 import { BaseRoom, RoomId, RoomOptions } from '../../core/room'
 
 import { CheckersPlayer } from './checkers.player'
+import { EGameNamespace } from '@/core/utils'
 
 export type TCheckersPieceColor = 'black' | 'red'
 
@@ -58,7 +59,8 @@ export type TCheckersRoomMetadata = {
 
 export type TCheckersRoomOptions = RoomOptions
 
-export type TCheckersRoomID = RoomId<'checkers'>
+export type TCheckersRoomID = RoomId<EGameNamespace.CHECKERS>
+export type TCheckersPrefix = `${EGameNamespace.CHECKERS}_`
 
 export type TCheckersRoom<
     TPlayer extends CheckersPlayer = CheckersPlayer,
@@ -79,4 +81,13 @@ export type TCheckersRoom<
  */
 export type TInitCheckersRoomOptions = Required<TCheckersRoomOptions> & {
     boardSize: number
+}
+
+// Response
+export interface ICheckersPlayerDataResponse {
+    player: CheckersPlayer['serialize']
+}
+
+export interface ICheckersRoomDataResponse {
+    room: TCheckersRoom['serialize']
 }
