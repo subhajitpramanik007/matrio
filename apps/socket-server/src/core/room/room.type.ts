@@ -6,7 +6,7 @@ export type RoomCode = string
 export type RoomId<
     TGameNamespace extends GameNamespace = GameNamespace,
     TRoomCode extends RoomCode = RoomCode,
-> = `${TGameNamespace}:${TRoomCode}`
+> = `${TGameNamespace}_${TRoomCode}`
 
 export type RoomOptions = {
     readonly roomType: 'public' | 'private'

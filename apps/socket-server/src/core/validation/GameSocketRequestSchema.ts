@@ -12,7 +12,13 @@ export const CallbackSchema = z.function().optional()
  *  - payload: { data: any, gameNamespace: string },
  *  - callback: (data: any) => void
  */
-export const GameSocketRequestSchema = z.tuple([GameEventRequest, PayloadSchema, CallbackSchema])
+export const GameSocketRequestSchema = z
+    .union([
+        z.tuple([GameEventRequest]),
+        z.tuple([GameEventRequest, PayloadSchema]),
+        z.tuple([GameEventRequest, PayloadSchema, CallbackSchema]),
+    ])
+    .transform(([event, payload, callback]) => ({ event, payload, callback }))
 
 export type GameSocketRequest = z.infer<typeof GameSocketRequestSchema>
 export type PayloadSchema = z.infer<typeof PayloadSchema>

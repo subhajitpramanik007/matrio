@@ -33,7 +33,7 @@ export abstract class BaseRoom<
     }) {
         const roomCode = this.generateRoomCode
         this.roomCode = roomCode
-        this.id = `${namespace}:${roomCode}`
+        this.id = `${namespace}_${roomCode}`
 
         this.namespace = namespace
         this.state = RoomState.IDLE
@@ -86,6 +86,13 @@ export abstract class BaseRoom<
 
     set updateState(state: RoomState) {
         this.state = state
+        this.touch()
+    }
+
+    setPlayerReady(playerId: string) {
+        const player = this.players.find((p) => p.id === playerId)
+        if (!player) return
+        player.onReady()
         this.touch()
     }
 

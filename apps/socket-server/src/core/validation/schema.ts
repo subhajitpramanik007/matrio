@@ -1,10 +1,10 @@
 import { z } from 'zod/v3'
-import { GameNamespaces } from '../utils/constants'
+import { EGameNamespace } from '../utils'
 
 export const BasePayloadSchema = z
     .object({
         data: z.any().optional(),
-        gameNamespace: z.enum(GameNamespaces),
+        gameNamespace: z.nativeEnum(EGameNamespace),
         roomId: z.string().optional(),
         roomCode: z.string().optional(),
     })
