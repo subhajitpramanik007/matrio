@@ -1,18 +1,18 @@
 import { Socket } from 'socket.io'
-import { GameEvent } from '../utils/gameRouter'
 import { BaseClass } from '../lifecycle/BaseClass'
 import { RoomManager } from '../room'
-import { PlayerAlreadyInRoomException } from '../utils'
+import { EGameNamespace, PlayerAlreadyInRoomException } from '../utils'
 
-export abstract class GameBaseService extends BaseClass {
+export abstract class GameBaseService<T extends EGameNamespace> extends BaseClass {
+    protected readonly namespace: T
+
     constructor(
+        namespace: T,
         protected readonly roomManager: RoomManager,
-        protected readonly schemas: Record<GameEvent, any>,
     ) {
         super()
+        this.namespace = namespace
     }
-
-    protected abstract validateData<T extends GameEvent>(event: T, data: any): any
 
     protected checkPlayerIsAlreadyInRoom(playerId: string) {
         if (this.roomManager.isPlayerInRoom(playerId)) throw new PlayerAlreadyInRoomException()

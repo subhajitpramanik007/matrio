@@ -1,19 +1,15 @@
-import { CheckersService } from '../../games/checkers/CheckersService'
-import { TicTacToeService } from '../../games/tic_tac_toe/TicTacToeService'
 import { BaseClass } from '../lifecycle/BaseClass'
 import { GameNamespace, Logger } from '../utils'
+import { GameBaseService } from './GameBaseService'
 
-type GameService<T extends GameNamespace> = T extends 'tic_tac_toe'
-    ? TicTacToeService
-    : T extends 'checkers'
-      ? CheckersService
-      : never
+type GameService<T extends GameNamespace> = GameBaseService<T>
 
 export class GameServiceRegistry extends BaseClass {
     private logger = new Logger('GameServiceRegistry')
-    private map: Record<string, GameService<GameNamespace>> = {}
+    private map: Record<GameNamespace, GameService<GameNamespace>> = {} as any
 
     register<T extends GameNamespace>(nameSpace: T, service: GameService<T>) {
+        this.logger.verbose(`Registering service for namespace: ${nameSpace}`)
         if (this.map[nameSpace]) {
             const errorMsg = `GameServiceRegistry already registered for ${nameSpace}`
             this.logger.error(errorMsg)

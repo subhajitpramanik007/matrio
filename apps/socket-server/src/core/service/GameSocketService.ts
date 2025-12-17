@@ -28,11 +28,8 @@ export class GameSocketService extends BaseClass {
             this.logger.error('Validation error :: ', parsed.error.issues)
 
             const isGameNamespace = parsed.error.issues.some((issue) => issue.path.includes('gameNamespace'))
-            if (!isGameNamespace) {
-                if (callback)
-                    callback(
-                        new SocketError('Missing namespace or invalid namespace', SocketErrorCode.MISSING_NAMESPACE),
-                    )
+            if (!isGameNamespace && callback) {
+                callback(new SocketError('Missing namespace or invalid namespace', SocketErrorCode.MISSING_NAMESPACE))
                 return
             }
             if (callback) callback(new ValidationException(parsed.error.errors[0].message))
