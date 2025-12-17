@@ -1,15 +1,14 @@
 import { Socket } from 'socket.io'
 
-import { Logger, SocketResponse } from '../../core/utils'
-import { RoomManager } from '../../core/room/RoomManager'
-import { BaseClass } from '../../core/lifecycle/BaseClass'
-import { GameBaseService } from '../../core/service/GameBaseService'
+import { RoomManager } from '@/core/room'
+import { GameBaseService } from '@/core/service/GameBaseService'
+import { EGameNamespace, Logger, SocketResponse } from '@/core/utils'
 
-export class TicTacToeService extends BaseClass implements GameBaseService {
+export class TicTacToeService extends GameBaseService<EGameNamespace> {
     private logger = new Logger('TicTacToeService')
 
-    constructor(private readonly roomManager: RoomManager) {
-        super()
+    constructor(protected readonly roomManager: RoomManager) {
+        super(EGameNamespace.TIC_TAC_TOE, roomManager)
     }
 
     createRoom(client: Socket, data: any) {

@@ -7,6 +7,16 @@ export class TaskScheduler implements ITaskScheduler {
 
     constructor(protected readonly namespace: string) {}
 
+    private addTask(task: Task) {
+        this.tasks.set(task.id, task)
+        this.logger.debug(`Added task :: ${task.id}`)
+    }
+
+    private removeTask(taskId: TaskId) {
+        this.tasks.delete(taskId)
+        this.logger.debug(`Removed task :: ${taskId}`)
+    }
+
     createTimeout(callback: () => void, delay: number): TaskId {
         const id = generateTaskId(this.namespace)
 
@@ -16,7 +26,7 @@ export class TaskScheduler implements ITaskScheduler {
             try {
                 callback()
             } finally {
-                this.tasks.delete(id)
+                this.removeTask(id)
             }
         }, delay)
 
@@ -25,11 +35,11 @@ export class TaskScheduler implements ITaskScheduler {
             type: ETaskType.TIMEOUT,
             cancel: () => {
                 clearTimeout(handle)
-                this.tasks.delete(id)
+                this.removeTask(id)
             },
         }
 
-        this.tasks.set(id, task)
+        this.addTask(task)
         return id
     }
 
@@ -53,11 +63,11 @@ export class TaskScheduler implements ITaskScheduler {
             type: ETaskType.INTERVAL,
             cancel: () => {
                 clearInterval(handle)
-                this.tasks.delete(id)
+                this.removeTask(id)
             },
         }
 
-        this.tasks.set(id, task)
+        this.addTask(task)
         return id
     }
 
@@ -65,7 +75,7 @@ export class TaskScheduler implements ITaskScheduler {
         const id = generateTaskId(this.namespace)
         const handle = setImmediate(() => {
             callback()
-            this.tasks.delete(id)
+            this.removeTask(id)
         })
 
         const task: Task = {
@@ -73,11 +83,11 @@ export class TaskScheduler implements ITaskScheduler {
             type: ETaskType.IMMEDIATE,
             cancel: () => {
                 clearImmediate(handle)
-                this.tasks.delete(id)
+                this.removeTask(id)
             },
         }
 
-        this.tasks.set(id, task)
+        this.addTask(task)
         return id
     }
 
@@ -87,18 +97,18 @@ export class TaskScheduler implements ITaskScheduler {
         const task: Task = {
             id,
             type: ETaskType.MICROTASK,
-            cancel: () => this.tasks.delete(id),
+            cancel: () => this.removeTask(id),
         }
 
         queueMicrotask(() => {
             try {
                 callback()
             } finally {
-                this.tasks.delete(id)
+                this.removeTask(id)
             }
         })
 
-        this.tasks.set(id, task)
+        this.addTask(task)
         return id
     }
 
@@ -107,7 +117,7 @@ export class TaskScheduler implements ITaskScheduler {
         if (!task) return
 
         task.cancel()
-        this.tasks.delete(task.id)
+        this.removeTask(task.id)
     }
 
     cancelAll(): void {

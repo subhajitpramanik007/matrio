@@ -1,11 +1,12 @@
+import { EGameNamespace } from '@/core/utils'
+import { RoomManager } from '@/core/room/RoomManager'
+import { GameSocketService } from '@/core/service/GameSocketService'
+import { GameServiceRegistry } from '@/core/service/GameServiceRegistry'
+
+import { CheckersService } from '@checkers/CheckersService'
+import { TicTacToeService } from '@tic-tac-toe/TicTacToeService'
+
 import WebSocketServer from './WebSocketServer'
-
-import { RoomManager } from '../room/RoomManager'
-import { GameServiceRegistry } from '../service/GameServiceRegistry'
-
-import { CheckersService } from '../../games/checkers/CheckersService'
-import { TicTacToeService } from '../../games/tic_tac_toe/TicTacToeService'
-import { GameSocketService } from '../service/GameSocketService'
 import { GameSocketServer } from './GameSocketServer'
 
 export function startGameServer(wss: WebSocketServer): GameSocketServer {
@@ -20,8 +21,8 @@ export function startGameServer(wss: WebSocketServer): GameSocketServer {
     const serviceRegistry = new GameServiceRegistry()
 
     // register services to registry
-    serviceRegistry.register('tic_tac_toe', ticTacToeService)
-    serviceRegistry.register('checkers', checkersService)
+    serviceRegistry.register(EGameNamespace.TIC_TAC_TOE, ticTacToeService)
+    serviceRegistry.register(EGameNamespace.CHECKERS, checkersService)
 
     // game socket service
     const gameSocketService = new GameSocketService(roomManager, serviceRegistry)

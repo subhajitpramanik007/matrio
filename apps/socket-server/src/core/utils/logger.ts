@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-type LogLevel = 'log' | 'error' | 'warn' | 'debug' | 'verbose'
+export type LogLevel = 'log' | 'error' | 'warn' | 'debug' | 'verbose'
 
 export class Logger {
     constructor(private readonly context: string = 'Logger') {}
