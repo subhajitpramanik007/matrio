@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io'
 
 import { RoomManager, RoomState } from '@/core/room'
-import { GameEventResponse } from '@/core/utils/gameRouter'
+import { GameEventResponse, GameEventRouter } from '@/core/utils/gameRouter'
 import { ZodValidation } from '@/core/validation/zodValidation'
 import { GameBaseService } from '@/core/service/GameBaseService'
 import { EGameNamespace, Logger, RoomNotFoundException, SocketResponse } from '@/core/utils'
@@ -14,7 +14,7 @@ import { CheckersSchemaRegistry } from '@checkers/checkers.schemas'
 import { ICheckersPlayerDataResponse, TCheckersPrefix } from '@checkers/checkers.type'
 
 export class CheckersService extends GameBaseService<EGameNamespace> {
-    private logger = new Logger('CheckersService')
+    protected readonly logger = new Logger('CheckersService')
     private utils = new CheckersServiceUtils(this.roomManager)
     private serverTaskManager = new ServerTaskManger(this.io)
 
@@ -23,6 +23,15 @@ export class CheckersService extends GameBaseService<EGameNamespace> {
         protected readonly roomManager: RoomManager,
     ) {
         super(EGameNamespace.CHECKERS, roomManager)
+
+        this.registerMethod(GameEventRouter.create_room, this.createRoom)
+        this.registerMethod(GameEventRouter.join_room, this.joinRoom)
+        this.registerMethod(GameEventRouter.random_room, this.randomRoom)
+        this.registerMethod(GameEventRouter.make_move, this.makeMove)
+        this.registerMethod(GameEventRouter.leave_room, this.leaveRoom)
+        this.registerMethod(GameEventRouter.restart_game, this.restartGame)
+        this.registerMethod(GameEventRouter.ready, this.ready)
+        this.registerMethod(GameEventRouter.end_game, this.endGame)
     }
 
     static ROOM_PREFIX: TCheckersPrefix = `${EGameNamespace.CHECKERS}_`

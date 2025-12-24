@@ -65,7 +65,7 @@ export class GameSocketService extends BaseClass {
             return new SocketError('No service found for namespace', SocketErrorCode.NOT_FOUND)
         }
 
-        const handler = (svc as any)[methodName]
+        const handler = svc.methods.get(methodName)
         if (!handler) {
             this.logger.warn(`Handler not implemented: ${methodName} for ${namespace}`)
             return new SocketError(`Handler not implemented: ${methodName} for ${namespace}`, SocketErrorCode.NOT_FOUND)
