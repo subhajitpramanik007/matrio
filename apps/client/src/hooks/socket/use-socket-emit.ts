@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSocket } from './use-socket'
 import type { TSocketErrorResponse, TSocketResponse, TSocketSuccessResponse } from '@/types'
-import type { TGameEventRequest, TGameNameSpaceToSocket } from '@/games/types/game.types'
+import type { TGameEventRequest, TGameNamespaceToSocket } from '@/games/types/game.types'
 import { randomDelay } from '@/lib/utils'
 
 type UseSocketEmitOptions<
   TData,
-  TGameNameSpace extends TGameNameSpaceToSocket | undefined = undefined,
+  TGameNamespace extends TGameNamespaceToSocket | undefined = undefined,
 > = {
-  event: TGameNameSpace extends undefined ? string : TGameEventRequest
+  event: TGameNamespace extends undefined ? string : TGameEventRequest
   onSuccess?: (data: TSocketSuccessResponse<TData>['data']) => void
   onError?: (error: TSocketErrorResponse['error']) => void
-  gameNameSpace?: TGameNameSpace
+  gameNamespace?: TGameNamespace
   errorMsg: string
 }
 
@@ -26,14 +26,14 @@ type TEventState<TData> = {
 export const useSocketEmit = <
   TData = any,
   TEmitValues = any,
-  TGameNameSpace extends TGameNameSpaceToSocket | undefined = undefined,
+  TGameNamespace extends TGameNamespaceToSocket | undefined = undefined,
 >({
   event,
-  gameNameSpace,
+  gameNamespace,
   onError,
   onSuccess,
   errorMsg,
-}: UseSocketEmitOptions<TData, TGameNameSpace>) => {
+}: UseSocketEmitOptions<TData, TGameNamespace>) => {
   const [state, setState] = useState<TEventState<TData>>({
     isLoading: false,
     isSuccess: false,
@@ -55,11 +55,11 @@ export const useSocketEmit = <
   const emit = useCallback(
     async (data?: TEmitValues) => {
       if (isEmittingRef.current) {
-        console.warn(`[useSocketEmit] Already emitting!, ${event} => ${gameNameSpace}`)
+        console.warn(`[useSocketEmit] Already emitting!, ${event} => ${gameNamespace}`)
         return
       }
       isEmittingRef.current = true
-      console.log(`[useSocketEmit] Emitting... ${event} => ${gameNameSpace}`)
+      console.log(`[useSocketEmit] Emitting... ${event} => ${gameNamespace}`)
 
       function onInit() {
         if (!isMountedRef.current) return
@@ -106,7 +106,7 @@ export const useSocketEmit = <
           else onFailure(res.error)
         }
 
-        if (gameNameSpace) socket.emit(event, { data, gameNameSpace }, callback)
+        if (gameNamespace) socket.emit(event, { data, gameNamespace }, callback)
         else socket.emit(event, data, callback)
       } catch (err) {
         if (isMountedRef.current) {
@@ -115,7 +115,7 @@ export const useSocketEmit = <
         }
       }
     },
-    [socket, event, gameNameSpace, onSuccess, onError],
+    [socket, event, gameNamespace, onSuccess, onError],
   )
 
   return {

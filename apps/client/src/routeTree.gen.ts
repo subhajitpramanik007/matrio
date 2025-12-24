@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,11 +22,6 @@ import { Route as GamesGameRouteRouteImport } from './routes/games/$game.route'
 import { Route as GamesGameIndexRouteImport } from './routes/games/$game.index'
 import { Route as GamesGameModeRouteImport } from './routes/games/$game.$mode'
 
-const PlaygroundRoute = PlaygroundRouteImport.update({
-  id: '/playground',
-  path: '/playground',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
@@ -89,7 +83,6 @@ const GamesGameModeRoute = GamesGameModeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/playground': typeof PlaygroundRoute
   '/games/$game': typeof GamesGameRouteRouteWithChildren
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
@@ -102,7 +95,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/playground': typeof PlaygroundRoute
   '/signin': typeof AuthSigninRoute
   '/signup': typeof AuthSignupRoute
   '/dashboard': typeof ProtectedDashboardRoute
@@ -117,7 +109,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_protected': typeof ProtectedRouteRouteWithChildren
-  '/playground': typeof PlaygroundRoute
   '/games/$game': typeof GamesGameRouteRouteWithChildren
   '/_auth/signin': typeof AuthSigninRoute
   '/_auth/signup': typeof AuthSignupRoute
@@ -132,7 +123,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/playground'
     | '/games/$game'
     | '/signin'
     | '/signup'
@@ -145,7 +135,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/playground'
     | '/signin'
     | '/signup'
     | '/dashboard'
@@ -159,7 +148,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/_protected'
-    | '/playground'
     | '/games/$game'
     | '/_auth/signin'
     | '/_auth/signup'
@@ -175,20 +163,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
-  PlaygroundRoute: typeof PlaygroundRoute
   GamesGameRouteRoute: typeof GamesGameRouteRouteWithChildren
   GamesIndexRoute: typeof GamesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/playground': {
-      id: '/playground'
-      path: '/playground'
-      fullPath: '/playground'
-      preLoaderRoute: typeof PlaygroundRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_protected': {
       id: '/_protected'
       path: ''
@@ -324,7 +304,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
-  PlaygroundRoute: PlaygroundRoute,
   GamesGameRouteRoute: GamesGameRouteRouteWithChildren,
   GamesIndexRoute: GamesIndexRoute,
 }

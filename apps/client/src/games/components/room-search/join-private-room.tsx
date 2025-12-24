@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import type { TJoinRoomSchema } from '@/games/game.schema'
-import type { RoomSearchProps, TGameNameSpaceToSocket } from '@/games/types'
+import type { RoomSearchProps, TGameNamespaceToSocket } from '@/games/types'
 
 import { joinRoomSchema } from '@/games/game.schema'
 import { useJoinPrivateRoom } from '@/games/hooks/room-search'
@@ -12,9 +12,7 @@ import { FieldGroup } from '@/components/ui/field'
 import { FormInput, SubmitButton } from '@/components/form'
 import { DisplayRoomSearch } from '@/games/components/room-search/display-room-search'
 
-export const JoinPrivateRoom: React.FC<
-  RoomSearchProps<TGameNameSpaceToSocket>
-> = (props) => {
+export const JoinPrivateRoom: React.FC<RoomSearchProps<TGameNamespaceToSocket>> = (props) => {
   const { onJoinRoom, data: _, ...rest } = useJoinPrivateRoom(props)
 
   return (
@@ -29,11 +27,7 @@ export const JoinPrivateRoom: React.FC<
   )
 }
 
-function JoinRoomForm({
-  onSubmit,
-}: {
-  onSubmit: (data: TJoinRoomSchema) => void
-}) {
+function JoinRoomForm({ onSubmit }: { onSubmit: (data: TJoinRoomSchema) => void }) {
   const form = useForm<TJoinRoomSchema>({
     resolver: zodResolver(joinRoomSchema),
     defaultValues: { roomCode: '' },

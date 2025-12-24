@@ -1,17 +1,17 @@
 import { useEffect } from 'react'
-import type { RoomSearchProps, TGameNameSpaceToSocket } from '@/games/types'
+import type { RoomSearchProps, TGameNamespaceToSocket } from '@/games/types'
 
 import { useSocketEmit } from '@/hooks/socket'
 import { showGameErrorNotification } from '@/games/components/show-game-notification'
 
-export const useCreatePrivateRoom = <T extends TGameNameSpaceToSocket>({
-  gameNameSpace,
+export const useCreatePrivateRoom = <T extends TGameNamespaceToSocket>({
+  gameNamespace,
   emitValues = {},
   callback,
 }: RoomSearchProps<T>) => {
   const createRoomRes = useSocketEmit({
     event: 'create_room',
-    gameNameSpace,
+    gameNamespace,
     onSuccess: callback,
     onError: showGameErrorNotification,
     errorMsg: 'Error creating private room',

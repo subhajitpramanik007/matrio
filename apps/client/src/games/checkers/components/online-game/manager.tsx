@@ -44,7 +44,7 @@ function CheckersOnlineRoomSearch({
   const { onlineGameOptions } = useGameSettings()
 
   const props: RoomSearchProps<'checkers'> = {
-    gameNameSpace: 'checkers',
+    gameNamespace: 'checkers',
     callback: (room) => {
       console.log(room)
     },
