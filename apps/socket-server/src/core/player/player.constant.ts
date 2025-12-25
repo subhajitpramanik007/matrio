@@ -1,4 +1,4 @@
-import { PlayerStats } from './player.type'
+import { PlayerStats } from '@matrio/shared/types/player.type'
 
 export const DEFAULT_PLAYER_STATS: PlayerStats = {
     noOfGamesPlayed: 0,

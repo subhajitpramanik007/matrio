@@ -1,5 +1,5 @@
 {
-    "name": "socket",
+    "name": "wss",
     "version": "1.0.0",
     "description": "The socket server for Matrio.",
     "main": "server.js",
@@ -15,6 +15,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@matrio/shared": "workspace:*",
         "chalk": "4.1.2",
         "cors": "^2.8.5",
         "dotenv": "^17.2.2",

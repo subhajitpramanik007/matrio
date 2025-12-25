@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useCheckersOnlineGameData } from '../components/online-game/online-game'
 import { checkersMove } from '../checkers.utils'
-import type { TCheckersBoard, TCheckersCellPosition } from '../checkers.types'
+import type { TCheckersBoard } from '@matrio/shared/checkers/types'
 
 export const useCheckersOnlineGame = () => {
   const {
@@ -20,7 +20,7 @@ export const useCheckersOnlineGame = () => {
       .getAttribute('data-cell')!
       .replace('cell-', '')
       .split('-')
-      .map(Number) as TCheckersCellPosition
+      .map(Number) as any
 
     const currentPlayerColor = players.find((p) => p.id === turn)?.pieceColor
     const [newBoard, moveMade] = checkersMove(board, currentPlayerColor!, position)

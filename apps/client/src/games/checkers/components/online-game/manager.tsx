@@ -45,25 +45,26 @@ function CheckersOnlineRoomSearch({
 
   const props: RoomSearchProps<'checkers'> = {
     gameNamespace: 'checkers',
-    callback: (room) => {
-      console.log(room)
-    },
+    callback: () => {},
     emitValues: { cost: onlineGameOptions.cost },
   }
 
-  switch (combination) {
-    case 'public':
-      return <RandomRoomSearch {...props} />
-    case 'private:join':
-      return <JoinPrivateRoom {...props} />
-    case 'private:create':
-      return <CreatePrivateRoom {...props} />
-    default:
-      return (
-        <ErrorPage
-          error={new Error('Room Type not found. Please try again')}
-          reset={onCombinationError}
-        />
-      )
+  if (!combination) {
+    return (
+      <ErrorPage
+        error={new Error('Room Type not found. Please try again')}
+        reset={onCombinationError}
+      />
+    )
   }
+
+  return RoomSearchComponent(props)[combination]
 }
+
+const RoomSearchComponent = (
+  props: RoomSearchProps<'checkers'>,
+): Record<TOnlineRoomCombination, React.JSX.Element> => ({
+  public: <RandomRoomSearch {...props} />,
+  'private:join': <JoinPrivateRoom {...props} />,
+  'private:create': <CreatePrivateRoom {...props} />,
+})

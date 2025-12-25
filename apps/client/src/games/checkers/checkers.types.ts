@@ -1,44 +1,14 @@
+import type {
+  TCheckersCell as CheckersCell,
+  TCheckersBoard,
+  TCheckersGameResult,
+  TCheckersPlayer,
+} from '@matrio/shared/checkers'
 import type { RoomState } from '../types'
 
-export type TCheckersPieceColor = 'red' | 'black'
-export type TCheckersCellPosition = [row: number, col: number]
-export type TCheckersRoomId = string
+export type TCheckersCell = CheckersCell & {}
 
-export type TCheckersPiece = {
-  id: string
-  color: TCheckersPieceColor
-  moveDirection: 'forward' | 'backward' | 'both'
-  isKing: boolean
-}
-
-export type TCheckersCell = {
-  row: number
-  col: number
-  isDark: boolean
-  piece: TCheckersPiece | null
-  highlightType?:
-    | 'old_selected_cell'
-    | 'selected_cell'
-    | 'possible_move'
-    | 'possible_capture'
-    | 'none'
-}
-
-export type TCheckersBoard = TCheckersCell[][]
-
-export type TCheckersOnlinePlayer = {
-  id: string
-  pieceColor: TCheckersPieceColor
-  username: string
-  isReady: boolean
-  isHost: boolean
-  noOfGamesPlayed: number
-  noOfWins: number
-  noOfLosses: number
-  noOfDraws: number
-  score: number
-}
-
+export type TCheckersOnlinePlayer = TCheckersPlayer
 export type TCheckersOnlineRoomSettings = {
   timer: number
   maxNoOfMissedTurns: number
@@ -49,7 +19,7 @@ export type TCheckersOnlineRoomSettings = {
 }
 
 export type TCheckersRoom = {
-  id: TCheckersRoomId
+  id: string
   roomCode: string
   board: TCheckersBoard
   turn: string | null
@@ -58,6 +28,4 @@ export type TCheckersRoom = {
   settings: TCheckersOnlineRoomSettings
 }
 
-export type TCheckersOnlineGameResult = {
-  winnerId: string
-}
+export type TCheckersOnlineGameResult = TCheckersGameResult

@@ -1,5 +1,6 @@
+import { PlayerStats, Player, InitPlayerData } from '@matrio/shared/types/player.type'
 import { DEFAULT_PLAYER_STATS } from './player.constant'
-import { InitPlayerData, Player, PlayerMethods, PlayerStats } from './player.type'
+import { PlayerMethods } from './player.type'
 
 export class BasePlayer implements Player, PlayerMethods {
     readonly id: string

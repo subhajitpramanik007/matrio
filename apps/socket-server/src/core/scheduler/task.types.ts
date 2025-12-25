@@ -1,5 +1,5 @@
+import { Brand } from '@matrio/shared/types/brand.type'
 import { Server } from 'socket.io'
-import { Brand } from '@/core/utils'
 
 export type TaskId = Brand<string, 'TaskId'>
 export type TaskNamespace<T extends string> = Brand<string, T>

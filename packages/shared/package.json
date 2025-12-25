@@ -24,6 +24,10 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     },
+    "./*": {
+      "import": "./dist/*.js",
+      "require": "./dist/*.js"
+    },
     "./schemas": {
       "import": "./dist/schemas/index.js",
       "require": "./dist/schemas/index.js"
@@ -31,6 +35,14 @@
     "./schemas/*": {
       "import": "./dist/schemas/*.js",
       "require": "./dist/schemas/*.js"
+    },
+    "./checkers": {
+      "import": "./dist/checkers/index.js",
+      "require": "./dist/checkers/index.js"
+    },
+    "./checkers/*": {
+      "import": "./dist/checkers/*.js",
+      "require": "./dist/checkers/*.js"
     }
   }
 }
