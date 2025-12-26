@@ -36,6 +36,16 @@
       "import": "./dist/schemas/*.js",
       "require": "./dist/schemas/*.js"
     },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./types/*": {
+      "import": "./dist/types/*.js",
+      "require": "./dist/types/*.js",
+      "types": "./dist/types/*.d.ts"
+    },
     "./checkers": {
       "import": "./dist/checkers/index.js",
       "require": "./dist/checkers/index.js"
