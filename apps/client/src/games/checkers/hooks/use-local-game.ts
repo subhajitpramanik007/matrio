@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
 import { useEffect, useReducer } from 'react'
-import type { TCheckersBoard, TCheckersPieceColor } from '@/games/checkers/checkers.types'
+import type { TCheckersBoard, TCheckersPieceColor } from '@matrio/shared/checkers/types'
 import {
   calculateWinner,
   checkersMove,

@@ -2,11 +2,11 @@ import { showGameNotification } from '../components/show-game-notification'
 import { CHECKERS_BOARD_SIZE } from './checkers.constant'
 import type {
   TCheckersBoard,
-  TCheckersCell,
-  TCheckersCellPosition,
   TCheckersPiece,
   TCheckersPieceColor,
-} from './checkers.types'
+  TCheckersPosition,
+} from '@matrio/shared/checkers/types'
+import type { TCheckersCell } from './checkers.types'
 import { deepClone } from '@/lib/utils'
 
 export function initialCheckersBoard(): TCheckersBoard {
@@ -69,24 +69,24 @@ const MoveDirectionToOffsets: Record<TCheckersPiece['moveDirection'], number[][]
   ],
 }
 
-export function validatedPosition(position: TCheckersCellPosition): boolean {
+export function validatedPosition(position: TCheckersPosition): boolean {
   const [row, col] = position
   return row >= 0 && row < CHECKERS_BOARD_SIZE && col >= 0 && col < CHECKERS_BOARD_SIZE
 }
 
 // Checkers move
-function getCell(board: TCheckersBoard, position: TCheckersCellPosition): TCheckersCell {
+function getCell(board: TCheckersBoard, position: TCheckersPosition): TCheckersCell {
   const [row, col] = position
   return board[row][col]
 }
 
-function getPositionOfCell(cell: TCheckersCell): TCheckersCellPosition {
+function getPositionOfCell(cell: TCheckersCell): TCheckersPosition {
   return [cell.row, cell.col]
 }
 
 function setCellHighlight(
   board: TCheckersBoard,
-  position: TCheckersCellPosition,
+  position: TCheckersPosition,
   highlightType: TCheckersCell['highlightType'],
 ) {
   showGameNotification(`${highlightType} ${getPositionOfCell(getCell(board, position))}`)
@@ -94,8 +94,8 @@ function setCellHighlight(
   cell.highlightType = highlightType
 }
 
-function getOldSelectedCell(board: TCheckersBoard): TCheckersCellPosition | null {
-  let position: TCheckersCellPosition | null = null
+function getOldSelectedCell(board: TCheckersBoard): TCheckersPosition | null {
+  let position: TCheckersPosition | null = null
   for (const row of board) {
     for (const cell of row) {
       if (cell.highlightType === 'selected_cell') {
@@ -126,11 +126,8 @@ function swapCellPieces(from: TCheckersCell, to: TCheckersCell) {
   to.piece = temp
 }
 
-function calculateAvailableMoves(
-  board: TCheckersBoard,
-  cell: TCheckersCell,
-): TCheckersCellPosition[] {
-  const normalMoves: TCheckersCellPosition[] = []
+function calculateAvailableMoves(board: TCheckersBoard, cell: TCheckersCell): TCheckersPosition[] {
+  const normalMoves: TCheckersPosition[] = []
 
   const piece = cell.piece
   if (!piece) return normalMoves
@@ -157,7 +154,7 @@ function calculateAvailableMoves(
 
 function calculateCaptures(board: TCheckersBoard, cell: TCheckersCell) {
   const piece = cell.piece
-  const captures: { landing: TCheckersCellPosition; jumped: TCheckersCellPosition }[] = []
+  const captures: { landing: TCheckersPosition; jumped: TCheckersPosition }[] = []
 
   if (!piece) return captures
 
@@ -196,7 +193,7 @@ function calculateCaptures(board: TCheckersBoard, cell: TCheckersCell) {
 export function checkersMove(
   board: TCheckersBoard,
   currentPlayerColor: TCheckersPieceColor,
-  clickedPos: TCheckersCellPosition,
+  clickedPos: TCheckersPosition,
 ): [TCheckersBoard, boolean] {
   const newBoard = deepClone(board)
   const prevSelected = getOldSelectedCell(newBoard)

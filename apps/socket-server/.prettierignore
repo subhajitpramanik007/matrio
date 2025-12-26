@@ -1,0 +1,8 @@
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+.prettierrc
+jest.config.ts
+tsconfig.json
+package.json
+.env

@@ -1,17 +1,17 @@
-import type { RoomSearchProps, TGameNameSpaceToSocket } from '@/games/types'
+import type { RoomSearchProps, TGameNamespaceToSocket } from '@/games/types'
 import type { TJoinRoomSchema } from '@/games/game.schema'
 
 import { useSocketEmit } from '@/hooks/socket'
 import { showGameErrorNotification } from '@/games/components/show-game-notification'
 
 export const useJoinPrivateRoom = ({
-  gameNameSpace,
+  gameNamespace,
   emitValues = {},
   callback,
-}: RoomSearchProps<TGameNameSpaceToSocket>) => {
+}: RoomSearchProps<TGameNamespaceToSocket>) => {
   const joinRoomRes = useSocketEmit({
     event: 'join_room',
-    gameNameSpace,
+    gameNamespace,
     onSuccess: callback,
     onError: showGameErrorNotification,
     errorMsg: 'Error while joining room',

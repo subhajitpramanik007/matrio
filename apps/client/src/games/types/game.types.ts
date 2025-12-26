@@ -7,10 +7,7 @@ import type {
   GAME_SLUG,
 } from '@/games/game.constant'
 import type { Slugify } from '@/lib/utils'
-import type {
-  TOnlineTicTacToePlayer,
-  TOnlineTicTacToeRoom,
-} from '../tic-tac-toe/types'
+import type { TOnlineTicTacToePlayer, TOnlineTicTacToeRoom } from '../tic-tac-toe/types'
 
 export type TGameMode = (typeof GAME_MODE)[number]
 export type TGameName = (typeof GAME_NAME)[number]
@@ -26,7 +23,7 @@ export type TOnlineRoomCombination =
   | `${Extract<TGameOnlineMode, 'private'>}:${TGamePrivateRoomAction}`
 
 // tic_tac_toe, checkers, chess
-export type TGameNameSpaceToSocket = Slugify<TGameName, '_'>
+export type TGameNamespaceToSocket = Slugify<TGameName, '_'>
 
 export type TRoomData<T> = { room: T }
 
@@ -55,21 +52,12 @@ export const GameEventsResponse = {
   PLAYER_MOVED: 'player_moved', // player moved
 } as const
 
-export type TGameEventRequest =
-  (typeof GameEventsRequest)[keyof typeof GameEventsRequest]
-export type TGameEventResponse =
-  (typeof GameEventsResponse)[keyof typeof GameEventsResponse]
+export type TGameEventRequest = (typeof GameEventsRequest)[keyof typeof GameEventsRequest]
+export type TGameEventResponse = (typeof GameEventsResponse)[keyof typeof GameEventsResponse]
 
-export type TGameStatus =
-  | 'loading'
-  | 'waiting'
-  | 'playing'
-  | 'finished'
-  | 'deleted'
+export type TGameStatus = 'loading' | 'waiting' | 'playing' | 'finished' | 'deleted'
 
-export type TOnlineRoom<T extends TGameSlug> = T extends 'tic-tac-toe'
-  ? TOnlineTicTacToeRoom
-  : any
+export type TOnlineRoom<T extends TGameSlug> = T extends 'tic-tac-toe' ? TOnlineTicTacToeRoom : any
 
 export type TOnlinePlayer<T extends TGameSlug> = T extends 'tic-tac-toe'
   ? TOnlineTicTacToePlayer

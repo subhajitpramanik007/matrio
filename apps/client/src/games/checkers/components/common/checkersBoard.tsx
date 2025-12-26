@@ -10,7 +10,8 @@ import {
   rowsGridLineVariant,
 } from './motion-variants'
 import type React from 'react'
-import type { TCheckersBoard, TCheckersCell, TCheckersPiece } from '@/games/checkers/checkers.types'
+import type { TCheckersCell } from '@/games/checkers/checkers.types'
+import type { TCheckersBoard, TCheckersPiece } from '@matrio/shared/checkers/types'
 import { CHECKERS_BOARD_SIZE } from '@/games/checkers/checkers.constant'
 import { cn } from '@/lib/utils'
 import { DisplayArray, DisplayArray2D, DisplayThis } from '@/components/display-this'

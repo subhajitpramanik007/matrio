@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import * as React from 'react'
-import type { TCheckersPieceColor } from '../../checkers.types'
+import type { TCheckersPieceColor } from '@matrio/shared/checkers/types'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 

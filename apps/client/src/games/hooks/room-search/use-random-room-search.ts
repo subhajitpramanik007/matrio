@@ -1,17 +1,17 @@
 import { useEffect } from 'react'
-import type { RoomSearchProps, TGameNameSpaceToSocket } from '@/games/types'
+import type { RoomSearchProps, TGameNamespaceToSocket } from '@/games/types'
 
 import { useSocketEmit } from '@/hooks/socket'
 import { showGameErrorNotification } from '@/games/components/show-game-notification'
 
 export const useRandomRoomSearch = ({
   callback,
-  gameNameSpace,
+  gameNamespace,
   emitValues = {},
-}: RoomSearchProps<TGameNameSpaceToSocket>) => {
+}: RoomSearchProps<TGameNamespaceToSocket>) => {
   const randomRoomRes = useSocketEmit({
     event: 'random_room',
-    gameNameSpace,
+    gameNamespace,
     onSuccess: (data) => callback(data.room),
     onError: showGameErrorNotification,
     errorMsg: 'Error getting random room',

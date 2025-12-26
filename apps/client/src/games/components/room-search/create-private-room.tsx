@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CopyIcon, Share2Icon } from 'lucide-react'
 import { useParams, useRouter } from '@tanstack/react-router'
-import type { RoomSearchProps, TGameNameSpaceToSocket } from '@/games/types'
+import type { RoomSearchProps, TGameNamespaceToSocket } from '@/games/types'
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -11,9 +11,7 @@ import { DisplayRoomSearch } from '@/games/components/room-search/display-room-s
 import { useCreatePrivateRoom } from '@/games/hooks/room-search'
 import { showGameNotification } from '@/games/components/show-game-notification'
 
-export const CreatePrivateRoom = <T extends TGameNameSpaceToSocket>(
-  props: RoomSearchProps<T>,
-) => {
+export const CreatePrivateRoom = <T extends TGameNamespaceToSocket>(props: RoomSearchProps<T>) => {
   const { roomCode, data: _, ...rest } = useCreatePrivateRoom<T>(props)
 
   return (
@@ -35,17 +33,11 @@ function DisplayCreateRoom({ roomCode }: { roomCode: string }) {
 
   async function handleCopyRoomCode() {
     await navigator.clipboard.writeText(roomCode)
-    const inputElement = document.getElementById(
-      'created-room-code',
-    ) as HTMLInputElement
+    const inputElement = document.getElementById('created-room-code') as HTMLInputElement
     inputElement.select()
 
     setIsRoomCodeCopied(true)
-    showGameNotification(
-      'Room code copied',
-      'You can share this code with your friends',
-      5000,
-    )
+    showGameNotification('Room code copied', 'You can share this code with your friends', 5000)
     setTimeout(() => {
       setIsRoomCodeCopied(false)
       inputElement.blur()
@@ -59,11 +51,7 @@ function DisplayCreateRoom({ roomCode }: { roomCode: string }) {
     navigator.clipboard.writeText(joinLink)
 
     setIsRoomLinkCopied(true)
-    showGameNotification(
-      'Room link copied',
-      'You can share this link with your friends',
-      5000,
-    )
+    showGameNotification('Room link copied', 'You can share this link with your friends', 5000)
 
     setTimeout(() => setIsRoomLinkCopied(false), 3000)
   }
@@ -72,9 +60,7 @@ function DisplayCreateRoom({ roomCode }: { roomCode: string }) {
     <div className="mx-auto flex w-full flex-col gap-3 px-8 sm:w-md">
       <Field>
         <FieldLabel htmlFor="created-room-code">Your room code</FieldLabel>
-        <FieldDescription>
-          Share this room code with your friends
-        </FieldDescription>
+        <FieldDescription>Share this room code with your friends</FieldDescription>
         <Input
           id="created-room-code"
           readOnly
@@ -92,11 +78,7 @@ function DisplayCreateRoom({ roomCode }: { roomCode: string }) {
           <CopyIcon />
           Copy as Room Code
         </Button>
-        <Button
-          className="basis-1/2"
-          onClick={handleCopyRoomLink}
-          disabled={isRoomLinkCopied}
-        >
+        <Button className="basis-1/2" onClick={handleCopyRoomLink} disabled={isRoomLinkCopied}>
           <Share2Icon />
           Copy as Link
         </Button>

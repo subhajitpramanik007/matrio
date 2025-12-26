@@ -2,10 +2,7 @@ import * as React from 'react'
 import type { RoomSearchProps, TOnlineRoomCombination } from '@/games/types'
 
 import type { ChildrenProps } from '@/types'
-import {
-  useOnlineGame,
-  useOnlineGameManager,
-} from '@/games/tic-tac-toe/hooks/use-online-game'
+import { useOnlineGame, useOnlineGameManager } from '@/games/tic-tac-toe/hooks/use-online-game'
 import {
   CreatePrivateRoom,
   JoinPrivateRoom,
@@ -19,8 +16,7 @@ import { OnlineTicTacToePlayground } from '@/games/tic-tac-toe/components/online
 
 export const OnlineTicTacToeManager: React.FC = () => {
   const { isStarted } = useOnlineGameManager()
-  const { handleCombinationError, onlineRoomCombination } =
-    useOnlineRoomCombination('tic-tac-toe')
+  const { handleCombinationError, onlineRoomCombination } = useOnlineRoomCombination('tic-tac-toe')
 
   if (!isStarted) {
     return (
@@ -49,7 +45,7 @@ function TicTacToeOnlineRoomSearch({
   const { handleUpdateRoom } = useOnlineGameManager()
 
   const props: RoomSearchProps<'tic_tac_toe'> = {
-    gameNameSpace: 'tic_tac_toe',
+    gameNamespace: 'tic_tac_toe',
     callback: handleUpdateRoom,
     emitValues: { cost: onlineGameOptions.cost },
   }
