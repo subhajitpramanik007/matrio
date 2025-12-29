@@ -1,4 +1,5 @@
-import { BasePlayer, InitPlayerData } from '../../core/player'
+import { InitPlayerData } from '@matrio/shared/types/player.type'
+import { BasePlayer } from '../../core/player'
 import { TCheckersPieceColor, TCheckersPlayer } from './checkers.type'
 
 export class CheckersPlayer extends BasePlayer implements TCheckersPlayer {

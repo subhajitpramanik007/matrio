@@ -1,4 +1,5 @@
-import { Player, PlayerID } from '../../core/player'
+import { Player } from '@matrio/shared/types/player.type'
+import { PlayerID } from '../../core/player'
 import { BaseRoom, RoomId, RoomOptions } from '../../core/room'
 
 import { CheckersPlayer } from './checkers.player'

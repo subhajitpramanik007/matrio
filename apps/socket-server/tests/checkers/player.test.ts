@@ -1,4 +1,5 @@
-import { DEFAULT_PLAYER_STATS, InitPlayerData } from '../../src/core/player'
+import { InitPlayerData } from '@matrio/shared/types/player.type'
+import { DEFAULT_PLAYER_STATS } from '../../src/core/player'
 import { CheckersPlayer, TCheckersPieceColor } from '../../src/games/checkers'
 
 const playerData: InitPlayerData & { pieceColor: TCheckersPieceColor } = {
