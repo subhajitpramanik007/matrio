@@ -81,3 +81,42 @@ export function getSpiralOrderIndices(size: number) {
 export function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T
 }
+
+export type SlugToTitle<
+  TSlug extends string,
+  TSeparator extends '-' = '-',
+> = TSlug extends `${infer A}${TSeparator}${infer B}`
+  ? `${Capitalize<A>} ${SlugToTitle<B>}`
+  : Capitalize<TSlug>
+
+export type NestedKeys<T> = {
+  [K in keyof T]: T[K] extends object ? NestedKeys<T[K]> : K
+}[keyof T]
+
+export type NestedKeysOf<T> = T extends object ? NestedKeys<T> : never
+
+export type NestedKeysValue<T extends object, TKey extends string> = T extends {
+  [K in TKey]: infer V
+}
+  ? V
+  : never
+
+export type FlattenedPaths<T> = T extends object
+  ? {
+      [K in keyof T]: K extends string
+        ? T[K] extends object
+          ? `${K}` | `${K}.${FlattenedPaths<T[K]>}`
+          : `${K}`
+        : never
+    }[keyof T]
+  : never
+
+export function slugToTitle<T extends string, TSeparator extends '-' = '-'>(
+  slug: T,
+  separator?: TSeparator,
+): SlugToTitle<T, TSeparator> {
+  return slug
+    .split(separator ?? '-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ') as SlugToTitle<T, TSeparator>
+}
