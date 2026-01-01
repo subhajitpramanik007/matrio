@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useRouter } from '@tanstack/react-router'
 import type { GameSettingsProps } from '../types/game-settings-context.type'
-import { useGame } from '@/hooks/useGame'
 
 export const useGameSettingCanProcess = ({
   gameMode,
@@ -10,7 +9,7 @@ export const useGameSettingCanProcess = ({
   bettingCoins,
 }: GameSettingsProps): boolean => {
   if (gameMode !== 'online') return true // gameMode === 'ai' || gameMode === 'local'
-  if (onlineRoomType == 'public') return !!bettingCoins //
+  if (onlineRoomType == 'random') return !!bettingCoins //
 
   //   for private room
   if (privateRoomType == 'join') return true
@@ -20,16 +19,20 @@ export const useGameSettingCanProcess = ({
 }
 
 export const useGameSettingContinue = (settings: GameSettingsProps) => {
-  const navigate = useNavigate()
-  const { gameSlug } = useGame()
+  const router = useRouter()
 
   function onContinue() {
     const isCanContinue = useGameSettingCanProcess(settings)
-    if (isCanContinue) {
-      localStorage.setItem('gameSettings', JSON.stringify(settings))
+    if (!isCanContinue) return
 
-      navigate({ to: '/games/$game/$mode', params: { game: gameSlug, mode: settings.gameMode! } })
-    }
+    localStorage.setItem('gameSettings', JSON.stringify(settings))
+
+    const { gameMode } = settings
+    const isOnlineGame = gameMode && gameMode === 'online'
+    const pathname = router.latestLocation.pathname
+
+    if (isOnlineGame) router.navigate({ to: `${pathname}/online` })
+    else router.navigate({ to: `${pathname}/${gameMode}/play` })
   }
 
   useEffect(() => {

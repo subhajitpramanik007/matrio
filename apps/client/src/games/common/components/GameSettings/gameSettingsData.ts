@@ -24,7 +24,7 @@ export const GAME_MODES_DATA = [
 
 export const onlineRoomTypeOptionsLabel: Record<GameOnlineRoomType, string> = {
   private: 'Play with Friends',
-  public: 'Play with Random Players',
+  random: 'Play with Random Players',
 }
 
 export const privateRoomTypeOptionsLabel: Record<GamePrivateRoomAction, string> = {

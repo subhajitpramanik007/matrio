@@ -7,7 +7,13 @@ import type {
 } from '@/games/common/constants/game.constant'
 import type { Slugify } from '@/lib/utils'
 
-export type Game = (typeof GAME_NAME)[number]
+export enum EGame {
+  CHECKERS = 'Checkers',
+  TIC_TAC_TOE = 'Tic Tac Toe',
+  CHESS = 'Chess',
+}
+
+export type Game = EGame
 export type GameSlug = Slugify<Game, '-'>
 export type GameNamespaceToSocket = Slugify<Game, '_'>
 

@@ -20,7 +20,7 @@ export const GameBettingCoinsSelection = ({
 }: GameBettingCoinsSelectionProps) => {
   const { currentIdx, onMouseEnter, onMouseLeave } = useOptionsAnimation()
 
-  const isCanDisplay = onlineRoomType === 'public' || privateRoomType === 'create'
+  const isCanDisplay = onlineRoomType === 'random' || privateRoomType === 'create'
 
   return (
     <DisplayThis when={isCanDisplay}>
