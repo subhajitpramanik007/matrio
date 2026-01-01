@@ -20,7 +20,9 @@ import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthSigninRouteImport } from './routes/_auth/signin'
 import { Route as GamesGameRouteRouteImport } from './routes/games/$game.route'
 import { Route as GamesGameIndexRouteImport } from './routes/games/$game.index'
-import { Route as GamesGameModeRouteImport } from './routes/games/$game.$mode'
+import { Route as GamesGameModeRouteRouteImport } from './routes/games/$game.$mode.route'
+import { Route as GamesGameModeIndexRouteImport } from './routes/games/$game.$mode.index'
+import { Route as GamesGameModePlayRouteImport } from './routes/games/$game.$mode.play'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -75,10 +77,20 @@ const GamesGameIndexRoute = GamesGameIndexRouteImport.update({
   path: '/',
   getParentRoute: () => GamesGameRouteRoute,
 } as any)
-const GamesGameModeRoute = GamesGameModeRouteImport.update({
+const GamesGameModeRouteRoute = GamesGameModeRouteRouteImport.update({
   id: '/$mode',
   path: '/$mode',
   getParentRoute: () => GamesGameRouteRoute,
+} as any)
+const GamesGameModeIndexRoute = GamesGameModeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GamesGameModeRouteRoute,
+} as any)
+const GamesGameModePlayRoute = GamesGameModePlayRouteImport.update({
+  id: '/play',
+  path: '/play',
+  getParentRoute: () => GamesGameModeRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -90,8 +102,10 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProtectedProfileRoute
   '/settings': typeof ProtectedSettingsRoute
   '/games': typeof GamesIndexRoute
-  '/games/$game/$mode': typeof GamesGameModeRoute
+  '/games/$game/$mode': typeof GamesGameModeRouteRouteWithChildren
   '/games/$game/': typeof GamesGameIndexRoute
+  '/games/$game/$mode/play': typeof GamesGameModePlayRoute
+  '/games/$game/$mode/': typeof GamesGameModeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -101,8 +115,9 @@ export interface FileRoutesByTo {
   '/profile': typeof ProtectedProfileRoute
   '/settings': typeof ProtectedSettingsRoute
   '/games': typeof GamesIndexRoute
-  '/games/$game/$mode': typeof GamesGameModeRoute
   '/games/$game': typeof GamesGameIndexRoute
+  '/games/$game/$mode/play': typeof GamesGameModePlayRoute
+  '/games/$game/$mode': typeof GamesGameModeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,8 +131,10 @@ export interface FileRoutesById {
   '/_protected/profile': typeof ProtectedProfileRoute
   '/_protected/settings': typeof ProtectedSettingsRoute
   '/games/': typeof GamesIndexRoute
-  '/games/$game/$mode': typeof GamesGameModeRoute
+  '/games/$game/$mode': typeof GamesGameModeRouteRouteWithChildren
   '/games/$game/': typeof GamesGameIndexRoute
+  '/games/$game/$mode/play': typeof GamesGameModePlayRoute
+  '/games/$game/$mode/': typeof GamesGameModeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,6 +149,8 @@ export interface FileRouteTypes {
     | '/games'
     | '/games/$game/$mode'
     | '/games/$game/'
+    | '/games/$game/$mode/play'
+    | '/games/$game/$mode/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -141,8 +160,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/settings'
     | '/games'
-    | '/games/$game/$mode'
     | '/games/$game'
+    | '/games/$game/$mode/play'
+    | '/games/$game/$mode'
   id:
     | '__root__'
     | '/'
@@ -157,6 +177,8 @@ export interface FileRouteTypes {
     | '/games/'
     | '/games/$game/$mode'
     | '/games/$game/'
+    | '/games/$game/$mode/play'
+    | '/games/$game/$mode/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -250,8 +272,22 @@ declare module '@tanstack/react-router' {
       id: '/games/$game/$mode'
       path: '/$mode'
       fullPath: '/games/$game/$mode'
-      preLoaderRoute: typeof GamesGameModeRouteImport
+      preLoaderRoute: typeof GamesGameModeRouteRouteImport
       parentRoute: typeof GamesGameRouteRoute
+    }
+    '/games/$game/$mode/': {
+      id: '/games/$game/$mode/'
+      path: '/'
+      fullPath: '/games/$game/$mode/'
+      preLoaderRoute: typeof GamesGameModeIndexRouteImport
+      parentRoute: typeof GamesGameModeRouteRoute
+    }
+    '/games/$game/$mode/play': {
+      id: '/games/$game/$mode/play'
+      path: '/play'
+      fullPath: '/games/$game/$mode/play'
+      preLoaderRoute: typeof GamesGameModePlayRouteImport
+      parentRoute: typeof GamesGameModeRouteRoute
     }
   }
 }
@@ -286,13 +322,26 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
   ProtectedRouteRouteChildren,
 )
 
+interface GamesGameModeRouteRouteChildren {
+  GamesGameModePlayRoute: typeof GamesGameModePlayRoute
+  GamesGameModeIndexRoute: typeof GamesGameModeIndexRoute
+}
+
+const GamesGameModeRouteRouteChildren: GamesGameModeRouteRouteChildren = {
+  GamesGameModePlayRoute: GamesGameModePlayRoute,
+  GamesGameModeIndexRoute: GamesGameModeIndexRoute,
+}
+
+const GamesGameModeRouteRouteWithChildren =
+  GamesGameModeRouteRoute._addFileChildren(GamesGameModeRouteRouteChildren)
+
 interface GamesGameRouteRouteChildren {
-  GamesGameModeRoute: typeof GamesGameModeRoute
+  GamesGameModeRouteRoute: typeof GamesGameModeRouteRouteWithChildren
   GamesGameIndexRoute: typeof GamesGameIndexRoute
 }
 
 const GamesGameRouteRouteChildren: GamesGameRouteRouteChildren = {
-  GamesGameModeRoute: GamesGameModeRoute,
+  GamesGameModeRouteRoute: GamesGameModeRouteRouteWithChildren,
   GamesGameIndexRoute: GamesGameIndexRoute,
 }
 
