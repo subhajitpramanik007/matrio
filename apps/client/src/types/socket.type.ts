@@ -1,4 +1,4 @@
-import type { TGameEventRequest, TGameEventResponse } from '@/games/types'
+import type { GameEvent, GameEventResponse } from '@/games/common/gameEvent.enum'
 
 export type TSocketSuccessResponse<T> = {
   success: true
@@ -8,18 +8,15 @@ export type TSocketSuccessResponse<T> = {
 export type TSocketErrorResponse = {
   success: false
   error: string
+  message?: string
 }
 
-export type TSocketResponse<T> =
-  | TSocketSuccessResponse<T>
-  | TSocketErrorResponse
+export type TSocketResponse<T> = TSocketSuccessResponse<T> | TSocketErrorResponse
 
 type EventType = 'strict' | 'loose'
 export type TSocketEventOptions<T, TEventType extends EventType = 'strict'> = {
   type?: TEventType
-  event: TEventType extends 'strict'
-    ? TGameEventRequest | TGameEventResponse
-    : string
+  event: TEventType extends 'strict' ? GameEvent | GameEventResponse : string
   onSuccess?: (data: TSocketSuccessResponse<T>['data']) => void
   onError?: (error: TSocketErrorResponse['error']) => void
 }

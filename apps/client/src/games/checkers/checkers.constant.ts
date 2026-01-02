@@ -1,1 +1,0 @@
-export const CHECKERS_BOARD_SIZE = 8

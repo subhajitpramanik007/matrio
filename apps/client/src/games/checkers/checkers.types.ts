@@ -1,31 +1,50 @@
-import type {
-  TCheckersCell as CheckersCell,
-  TCheckersBoard,
-  TCheckersGameResult,
-  TCheckersPlayer,
-} from '@matrio/shared/checkers'
-import type { RoomState } from '../types'
+import type { Player } from '../common/types/player.type'
+import type { CommonRoom, CommonRoomOptions } from '../common/types/room.type'
 
-export type TCheckersCell = CheckersCell & {}
+export interface CheckersRoom
+  extends CommonRoom<CheckersPlayer, CheckersRoomMetaData, CheckersRoomOptions> {}
 
-export type TCheckersOnlinePlayer = TCheckersPlayer
-export type TCheckersOnlineRoomSettings = {
-  timer: number
-  maxNoOfMissedTurns: number
-  multipleCapture: boolean
-  boardSize: number
-  gameType: 'multiplayer' | 'you-vs-ai'
-  bettingCoins: number
-}
+export type CheckersGameResult =
+  | { winner: string; isDraw: false } // if winner
+  | { isDraw: true } // if draw
 
-export type TCheckersRoom = {
-  id: string
-  roomCode: string
-  board: TCheckersBoard
+export interface CheckersRoomMetaData {
+  board: Array<CheckersCell[]>
   turn: string | null
-  state: RoomState
-  players: TCheckersOnlinePlayer[]
-  settings: TCheckersOnlineRoomSettings
+  boardSize: number
+  result: CheckersGameResult | null
 }
 
-export type TCheckersOnlineGameResult = TCheckersGameResult
+export interface CheckersCell {
+  row: number
+  col: number
+  piece: CheckersPiece | null
+  isDark: boolean
+}
+
+export interface CheckersPiece {
+  id: string
+  color: CheckersPieceColor
+  moveDirection: CheckersPieceMoveDirection
+  isKing: boolean
+}
+
+export enum CheckersPieceColor {
+  Black = 'black',
+  Red = 'red',
+}
+
+export enum CheckersPieceMoveDirection {
+  Backward = 'backward',
+  Forward = 'forward',
+}
+
+export interface CheckersRoomOptions extends CommonRoomOptions {
+  boardSize: number
+}
+
+export interface CheckersPlayer extends Player {
+  pieceColor: CheckersPieceColor
+  noOfCaptures: number
+  noOfMissedTurns: number
+}

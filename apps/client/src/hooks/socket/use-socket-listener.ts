@@ -2,13 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSocket } from './use-socket'
 import type { TSocketEventOptions, TSocketResponse } from '@/types'
 
-type ListenerOptions<TData> = TSocketEventOptions<TData> & {
+export type SocketListenerOptions<TData> = TSocketEventOptions<TData> & {
   timeout?: number | false
 }
 
-export const useSocketListener = <TData = any>(
-  options: ListenerOptions<TData>,
-) => {
+export const useSocketListener = <TData = any>(options: SocketListenerOptions<TData>) => {
   const { event, onSuccess, onError, timeout = false } = options
 
   const socket = useSocket()
@@ -62,9 +60,7 @@ export const useSocketListener = <TData = any>(
       }
     }
 
-    timeoutIdRef.current = timeout
-      ? setTimeout(onTimeOut, timeout * 1000)
-      : null
+    timeoutIdRef.current = timeout ? setTimeout(onTimeOut, timeout * 1000) : null
 
     const handler = (res: TSocketResponse<TData>) => {
       if (abortCtrlRef.current?.signal.aborted) {

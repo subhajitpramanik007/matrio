@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSocket } from './use-socket'
 import type { TSocketErrorResponse, TSocketResponse, TSocketSuccessResponse } from '@/types'
-import type { TGameEventRequest, TGameNamespaceToSocket } from '@/games/types/game.types'
+import type { GameNamespaceToSocket } from '@/games/common/types'
+import type { GameEvent } from '@/games/common/gameEvent.enum'
 import { randomDelay } from '@/lib/utils'
 
-type UseSocketEmitOptions<
+export type UseSocketEmitOptions<
   TData,
-  TGameNamespace extends TGameNamespaceToSocket | undefined = undefined,
+  TGameNamespace extends GameNamespaceToSocket | undefined = undefined,
 > = {
-  event: TGameNamespace extends undefined ? string : TGameEventRequest
+  event: TGameNamespace extends undefined ? string : GameEvent
   onSuccess?: (data: TSocketSuccessResponse<TData>['data']) => void
   onError?: (error: TSocketErrorResponse['error']) => void
   gameNamespace?: TGameNamespace
   errorMsg: string
 }
 
-type TEventState<TData> = {
+export type TEventState<TData> = {
   isLoading: boolean
   isSuccess: boolean
   isError: boolean
@@ -26,7 +27,7 @@ type TEventState<TData> = {
 export const useSocketEmit = <
   TData = any,
   TEmitValues = any,
-  TGameNamespace extends TGameNamespaceToSocket | undefined = undefined,
+  TGameNamespace extends GameNamespaceToSocket | undefined = undefined,
 >({
   event,
   gameNamespace,
@@ -103,7 +104,7 @@ export const useSocketEmit = <
         const callback = (res: TSocketResponse<TData>) => {
           isEmittingRef.current = false
           if (res.success) onFulfill(res.data)
-          else onFailure(res.error)
+          else onFailure(res.message ?? res.error)
         }
 
         if (gameNamespace) socket.emit(event, { data, gameNamespace }, callback)
