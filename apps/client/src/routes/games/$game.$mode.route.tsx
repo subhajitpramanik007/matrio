@@ -27,6 +27,7 @@ function validateGameSlug(params: unknown) {
 
 function RouteComponent() {
   useCheckGameSettingsDone()
+
   return (
     <RoomDataContextProvider>
       <Outlet />
