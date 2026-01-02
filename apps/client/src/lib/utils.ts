@@ -84,7 +84,7 @@ export function deepClone<T>(obj: T): T {
 
 export type SlugToTitle<
   TSlug extends string,
-  TSeparator extends '-' = '-',
+  TSeparator extends string = '-',
 > = TSlug extends `${infer A}${TSeparator}${infer B}`
   ? `${Capitalize<A>} ${SlugToTitle<B>}`
   : Capitalize<TSlug>
@@ -119,4 +119,14 @@ export function slugToTitle<T extends string, TSeparator extends '-' = '-'>(
     .split(separator ?? '-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ') as SlugToTitle<T, TSeparator>
+}
+
+export function slugify<T extends string, TSeparator extends string = '-'>(
+  title: T,
+  separator?: TSeparator,
+): Slugify<T, TSeparator> {
+  return title
+    .toLowerCase()
+    .split(' ')
+    .join(separator ?? '-') as Slugify<T, TSeparator>
 }

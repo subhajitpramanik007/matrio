@@ -10,6 +10,9 @@ import {
 } from '@/games/common/components/RoomSearch'
 import { Button } from '@/components/ui/button'
 import { getRoomSearchType } from '@/games/common/hooks/useRoomSearch'
+import { WatchRoomState } from '@/games/common/components/RoomSearch/WatchRoomState'
+import { Container } from '@/components/common/container'
+import { useCleanupGameMode } from '@/games/common/hooks/useCleanupGameMode'
 
 /**
  * Not found game mode
@@ -24,10 +27,12 @@ function NotFoundGameModeSelection() {
   }
 
   return (
-    <div className="flex w-full flex-col justify-center p-4">
+    <div className="flex w-full flex-col items-center justify-center gap-4 p-4 text-center">
       <p className="text-xl">Game setting should not done properly</p>
 
-      <Button onClick={handleGoBack}>Go back to game settings</Button>
+      <Button color="orange" onClick={handleGoBack} className="w-fit">
+        Go back to game settings
+      </Button>
     </div>
   )
 }
@@ -59,12 +64,18 @@ const GameModeManager: React.FC<GameModeManagerProps> = ({
  * Game mode page
  */
 const GameMode: React.FC = () => {
+  useCleanupGameMode()
+
   return (
-    <GameModeManager
-      randomRoomSearch={<RandomRoomSearch />}
-      createPrivateRoomSearch={<CreatePrivateRoomSearch />}
-      joinPrivateRoomSearch={<JoinPrivateRoomSearch />}
-    />
+    <Container className="flex items-center justify-center pt-8">
+      <WatchRoomState>
+        <GameModeManager
+          randomRoomSearch={<RandomRoomSearch />}
+          createPrivateRoomSearch={<CreatePrivateRoomSearch />}
+          joinPrivateRoomSearch={<JoinPrivateRoomSearch />}
+        />
+      </WatchRoomState>
+    </Container>
   )
 }
 

@@ -25,7 +25,7 @@ export const useResetGameSettings = () => {
   const dispatch = useGameSettingsActions()
 
   useEffect(() => {
-    return () => dispatch({ type: 'RESET' })
+    dispatch({ type: 'RESET' })
   }, [])
 }
 
