@@ -1,24 +1,23 @@
-import { Logger, SocketError } from '../utils'
+import { Logger } from '../utils'
 
-import { Socket } from 'socket.io'
-import WebSocketServer from './WebSocketServer'
-import { BaseClass } from '../lifecycle/BaseClass'
+import { Server, Socket } from 'socket.io'
+import { LifecycleBaseClass } from '../lifecycle/BaseClass'
 
 import { GameSocketService } from '../service/GameSocketService'
 
-export class GameSocketServer extends BaseClass {
+export class GameSocketServer extends LifecycleBaseClass {
     private logger = new Logger('GameSocketServer')
 
     constructor(
-        private readonly wss: WebSocketServer,
-        private readonly service: GameSocketService,
+        private readonly _io: Server,
+        private readonly _service: GameSocketService,
     ) {
         super()
 
-        this.wss.io.on('connect', this.onConnect.bind(this))
+        this._io.on('connect', this.onConnect.bind(this))
     }
 
     private onConnect(client: Socket) {
-        client.onAny((...args) => this.service.handleEvent(client, ...args))
+        client.onAny((...args) => this._service.handleEvent(client, ...args))
     }
 }

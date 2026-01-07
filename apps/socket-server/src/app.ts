@@ -4,8 +4,7 @@ import http from 'http'
 import express from 'express'
 import { router } from './routes'
 import { ENV } from './config/env'
-import WebSocketServer from './core/gateway/WebSocketServer'
-import { startGameServer } from './core/gateway/startGameServer'
+import { startSocketServer } from './startSocketServer'
 
 const app = express()
 
@@ -17,7 +16,6 @@ const httpServer = http.createServer(app)
 app.use('/', router)
 
 // Initialize WebSocketServer and start game server
-const wss = WebSocketServer.init(httpServer)
-startGameServer(wss)
+startSocketServer(httpServer)
 
-export { app, wss, httpServer }
+export { app, httpServer }
