@@ -2,6 +2,7 @@ import express from 'express'
 
 export const router = express.Router()
 
+// public routes
 router.get('/', (req, res) => {
     res.json({ message: 'Matrio socket server', version: '1.0.0' })
 })
@@ -9,6 +10,11 @@ router.get('/', (req, res) => {
 router.get('/health', (req, res) => {
     res.json({ message: 'Matrio socket server', version: '1.0.0' })
 })
+
+// admin routes
+import adminRoute from './core/admin/AdminRestRoute'
+
+router.use('/admin', adminRoute)
 
 // error handler
 router.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
