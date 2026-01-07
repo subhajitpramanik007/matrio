@@ -1,45 +1,64 @@
-import { BaseClass } from './BaseClass'
+import { logger } from '@/core/utils'
+import { ILifeCycle } from '@/core/interfaces/lifeCycle.interface'
 
 export class LifecycleManager {
-    private static instances: BaseClass[] = []
+    private static instances: ILifeCycle[] = []
+    private static initializedInstances: ILifeCycle[] = []
     private static initialized = false
 
-    static async register(instance: BaseClass) {
-        this.instances.push(instance)
+    static getLifeCycles() {
+        return LifecycleManager.instances
+    }
+
+    static async register(instance: ILifeCycle) {
+        // If already initialized, do not register
+        if (LifecycleManager.initializedInstances.includes(instance)) return
+
+        LifecycleManager.instances.push(instance)
+        logger.log(`${instance.constructor.name} registered`)
 
         // If init already happened, run immediately
-        if (this.initialized) {
+        if (LifecycleManager.initialized) {
             await instance.onInit()
+            LifecycleManager.initializedInstances.push(instance)
         }
     }
 
     static async initAll() {
-        this.initialized = true
+        if (LifecycleManager.initialized) return
 
-        const initializedInstances: BaseClass[] = []
         try {
-            for (const instance of this.instances) {
+            for (const instance of LifecycleManager.instances) {
                 await instance.onInit()
-                initializedInstances.push(instance)
+                LifecycleManager.initializedInstances.push(instance)
             }
-            this.initialized = true
+            logger.log('All lifeCycles initialized')
+            LifecycleManager.initialized = true
         } catch (error) {
-            // Cleanup partially initialized instances
-            for (const instance of initializedInstances.reverse()) {
-                try {
-                    await instance.onDestroy()
-                } catch (cleanupError) {
-                    // Log but don't throw during cleanup
-                }
-            }
+            logger.error('Failed to initialize all lifeCycles, rolling back', error)
+            await LifecycleManager.rollback()
             throw error
         }
     }
 
-    static async destroyAll() {
-        const reversed = [...this.instances].reverse()
+    static async rollback() {
+        const reversed = [...LifecycleManager.initializedInstances].reverse()
+        for (const instance of reversed) {
+            try {
+                await instance.onDestroy()
+            } catch (error) {
+                logger.error(`${instance.constructor.name} failed to destroy`, error)
+            }
+        }
+        LifecycleManager.initializedInstances = []
+        LifecycleManager.initialized = false
+        logger.log('Rollback completed')
+    }
 
+    static async destroyAll() {
+        const reversed = [...LifecycleManager.instances].reverse()
         const errors: Error[] = []
+
         for (const instance of reversed) {
             try {
                 await instance.onDestroy()
@@ -48,8 +67,20 @@ export class LifecycleManager {
             }
         }
 
+        LifecycleManager.initializedInstances = []
+        LifecycleManager.initialized = false
+
         if (errors.length > 0) {
             throw errors
         }
+
+        logger.log('All lifeCycles destroyed')
+    }
+
+    static _reset() {
+        logger.log('Resetting lifeCycles')
+        LifecycleManager.instances = []
+        LifecycleManager.initializedInstances = []
+        LifecycleManager.initialized = false
     }
 }
