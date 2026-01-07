@@ -1,0 +1,132 @@
+:root {
+    --bg-color: #0d1117;
+    --card-bg: #161b22;
+    --text-primary: #c9d1d9;
+    --accent: #58a6ff;
+    --success: #238636;
+    --error: #da3633;
+    --border: #30363d;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.admin-container {
+    width: 90vw;
+    height: 85vh;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+/* Header Styles */
+.admin-header {
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    letter-spacing: 2px;
+    color: var(--accent);
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+}
+.online {
+    background: #3fb950;
+    box-shadow: 0 0 10px #3fb950;
+}
+.offline {
+    background: var(--error);
+}
+
+/* Log Container */
+.log-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+    background: #090c10;
+}
+
+.log-entry {
+    padding: 6px 10px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    gap: 15px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+}
+
+.timestamp {
+    color: #8b949e;
+    min-width: 90px;
+}
+.message {
+    word-break: break-all;
+}
+
+/* Levels */
+.log-error {
+    border-left-color: var(--error);
+    background: rgba(218, 54, 51, 0.05);
+}
+.log-warn {
+    border-left-color: #d29922;
+}
+
+/* Footer */
+.admin-footer {
+    padding: 10px 25px;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #8b949e;
+}
+
+button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--border);
+}
