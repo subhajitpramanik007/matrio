@@ -1,27 +1,30 @@
-import { PlayerStats, Player, InitPlayerData } from '@matrio/shared/types/player.type'
-import { DEFAULT_PLAYER_STATS } from './player.constant'
-import { PlayerMethods } from './player.type'
+import { DEFAULT_PLAYER_STATS } from '@/core/player/player.constant'
+import { IBasePlayerData, IPlayer, IPlayerStats } from '@/core/interfaces/player.interface'
 
-export class BasePlayer implements Player, PlayerMethods {
+export class BasePlayer implements IPlayer {
     readonly id: string
     socketId: string
     avatar?: string
     username: string
-    stats: PlayerStats
+    stats: IPlayerStats
     isReady = false
     isHost = false
 
-    constructor(player: InitPlayerData) {
-        this.id = player.id
-        this.socketId = player.socketId
-        this.username = player.username
-        this.avatar = player.avatar
+    constructor(data: IBasePlayerData) {
+        this.id = data.id
+        this.socketId = data.socketId
+        this.username = data.username
+        this.avatar = data.avatar
 
         this.stats = { ...DEFAULT_PLAYER_STATS }
     }
 
     setSocketId(socketId: string) {
         this.socketId = socketId
+    }
+
+    onReconnect(socketId: string): void {
+        this.setSocketId(socketId)
     }
 
     onReady() {
