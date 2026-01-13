@@ -5,7 +5,8 @@ export const ZodValidation = <T extends z.ZodTypeAny>(schema: T, data: any): z.i
     const parsed = schema.safeParse(data)
 
     if (!parsed.success) {
-        throw new ValidationException(parsed.error.message)
+        const errors = parsed.error.issues.map((e) => ({ path: e.path, message: e.message }))
+        throw new ValidationException(parsed.error.issues[0].message, errors)
     }
 
     return parsed.data

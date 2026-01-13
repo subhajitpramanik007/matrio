@@ -6,15 +6,16 @@ export function startSocketServer(httpServer: HttpServer) {
     const admin = SocketServerFactory.CreateAdminNamespace()
 
     // create store
-    const { playerManager, roomManager } = SocketServerFactory.CreateStore(admin.monitor)
+    SocketServerFactory.CreateStore(admin.monitor)
 
     // create web socket server
-    const webSocketServer = SocketServerFactory.CreateWebSocketServer(httpServer, playerManager)
+    const webSocketServer = SocketServerFactory.CreateWebSocketServer(httpServer)
+    SocketServerFactory.Init(webSocketServer.io)
 
     // initialize admin namespace
     admin.namespace.init(webSocketServer.io)
     admin.monitor.init(admin.namespace.adminIo)
 
     // initialize game socket server services
-    SocketServerFactory.SetupGameServices(webSocketServer.io)
+    SocketServerFactory.SetupGameServices()
 }

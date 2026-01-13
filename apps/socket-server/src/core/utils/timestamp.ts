@@ -1,4 +1,6 @@
-export class Timestamp {
+import { ITimestamp } from '@/core/interfaces/timestamp.interface'
+
+export class Timestamp implements ITimestamp {
     createdAt: Date
     updatedAt: Date
 

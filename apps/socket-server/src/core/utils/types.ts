@@ -12,3 +12,10 @@ export type User = {
     username: string
     avatar?: string
 }
+
+export type ToPascalCase<
+    T extends string,
+    Separator extends string = '_',
+> = T extends `${infer Left}${Separator}${infer Right}`
+    ? `${Capitalize<Left>}${ToPascalCase<Right, Separator>}`
+    : Capitalize<T>

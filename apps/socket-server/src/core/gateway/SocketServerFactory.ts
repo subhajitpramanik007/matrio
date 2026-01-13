@@ -7,7 +7,6 @@ import { EGameNamespace } from '@/core/utils'
 import { AdminMonitor } from '@/core/admin/AdminMonitor'
 import { AdminNamespace } from '@/core/admin/AdminNamespace'
 
-import { RoomManager } from '@/core/room/RoomManager'
 import { PlayerManager } from '@/core/player/PlayerManager'
 import { IPlayerManager } from '@/core/interfaces/player.interface'
 
@@ -16,23 +15,29 @@ import { GameSocketServer } from '@/core/gateway/GameSocketServer'
 import { GameSocketService } from '@/core/service/GameSocketService'
 import { GameServiceRegistry } from '@/core/service/GameServiceRegistry'
 
-import { CheckersService } from '@/games/checkers'
+import { TicTacToeFactory } from '@/games/tic_tac_toe/TicTacToeFactory'
+
+import { IRoomManagerFactory } from '../interfaces/room.interface'
+import { RoomManagerFactory } from '../room/manager/RoomManagerFactory'
+import { ServerTaskManger } from '../scheduler'
 
 export class SocketServerFactory {
-    private static playerManager: PlayerManager
-    private static roomManager: RoomManager
+    private static _io: IoServer
+    private static playerManager: IPlayerManager
+    private static roomManagerFactory: IRoomManagerFactory
+    private static serverTaskManager: ServerTaskManger
 
     /** Setup game services */
-    static SetupGameServices(io: IoServer) {
+    static SetupGameServices() {
         const registry = new GameServiceRegistry()
 
-        const checkersService = new CheckersService(io, this.playerManager, this.roomManager)
-
-        registry.register(EGameNamespace.CHECKERS, checkersService)
+        // Tic Tac Toe Service
+        TicTacToeFactory.init(this.playerManager, this.roomManagerFactory)
+        registry.register(EGameNamespace.TIC_TAC_TOE, TicTacToeFactory.createService(this.serverTaskManager))
 
         const gameSocketService = new GameSocketService(registry)
 
-        const gameSocketServer = new GameSocketServer(io, gameSocketService)
+        const gameSocketServer = new GameSocketServer(this._io, gameSocketService)
         return gameSocketServer
     }
 
@@ -48,28 +53,23 @@ export class SocketServerFactory {
     }
 
     /** Create web socket server */
-    static CreateWebSocketServer(httpServer: HttpServer, playerManager: PlayerManager) {
-        const webSocketServer = new WebSocketServer(httpServer, playerManager, {
+    static CreateWebSocketServer(httpServer: HttpServer) {
+        const webSocketServer = new WebSocketServer(httpServer, this.playerManager, {
             corsOrigin: ENV.CORS_ORIGIN,
             jwtSecret: ENV.JWT_SECRET,
             authRequired: true,
         })
 
+        this._io = webSocketServer.io
         return webSocketServer
     }
 
     /** Create store */
-    static CreateStore(adminMonitor: AdminMonitor): {
-        playerManager: PlayerManager
-        roomManager: RoomManager
-    } {
-        const playerManager = new PlayerManager(adminMonitor)
-        const roomManager = new RoomManager()
+    static CreateStore(adminMonitor: AdminMonitor) {
+        this.playerManager = new PlayerManager(adminMonitor)
+        this.roomManagerFactory = new RoomManagerFactory(this.playerManager, adminMonitor)
 
-        this.playerManager = playerManager
-        this.roomManager = roomManager
-
-        return { playerManager, roomManager }
+        return { playerManager: this.playerManager, roomManagerFactory: this.roomManagerFactory }
     }
 
     /** Get all players */
@@ -79,5 +79,10 @@ export class SocketServerFactory {
             username: player.username,
             email: player.email,
         }))
+    }
+
+    // Initialize server
+    static Init(io: IoServer) {
+        this.serverTaskManager = new ServerTaskManger(io)
     }
 }

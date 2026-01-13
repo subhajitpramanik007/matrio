@@ -39,10 +39,10 @@ export class AdminMonitor extends EventEmitter {
 
         this.on('system', this.onSystem)
 
-        this.on('rooms:created', (roomId: string, playerId: string) => {
-            this.logger.debug(`Room added to registry: ${roomId} by ${playerId}`)
+        this.on('rooms:created', (payload: { playerId: string; roomId: string }) => {
+            this.logger.debug(`Room added to registry: ${payload.roomId}`)
 
-            this.sendLog(`Room added: ${roomId} by ${playerId}`)
+            this.sendLog(`Room added: ${payload.roomId} by ${payload.playerId}`)
         })
 
         this.on('rooms:deleted', (roomId: string) => {

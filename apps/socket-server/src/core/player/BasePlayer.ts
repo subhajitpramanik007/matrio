@@ -40,7 +40,7 @@ export class BasePlayer implements IPlayer {
         this[result]()
     }
 
-    get serialize() {
+    toJSON() {
         return {
             id: this.id,
             username: this.username,

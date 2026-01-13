@@ -11,16 +11,19 @@ export enum SocketErrorCode {
     UNKNOWN_EVENT = 'UNKNOWN_EVENT',
     MISSING_NAMESPACE = 'MISSING_NAMESPACE',
     GAME_RULES_ERROR = 'GAME_RULES_ERROR',
+    NOT_IMPLEMENT = 'NOT_IMPLEMENT',
 }
 
 export class SocketError {
     success: boolean = false
     message: string
     error: SocketErrorCode = SocketErrorCode.INTERNAL
+    errors?: any
 
-    constructor(message: string, error?: SocketErrorCode) {
+    constructor(message: string, error?: SocketErrorCode, errors?: any) {
         this.message = message
         if (error) this.error = error
+        if (errors) this.errors = errors
 
         Object.setPrototypeOf(this, SocketError.prototype)
     }
@@ -50,6 +53,12 @@ export class NotFoundException extends SocketException {
     }
 }
 
+export class NotImplementException extends SocketException {
+    constructor(message: string = 'Not Implement') {
+        super(message, SocketErrorCode.NOT_IMPLEMENT)
+    }
+}
+
 export class InternalServerError extends SocketException {
     constructor(message: string = 'Internal Server Error') {
         super(message, SocketErrorCode.INTERNAL)
@@ -75,8 +84,9 @@ export class PlayerAlreadyInRoomException extends SocketException {
 }
 
 export class ValidationException extends SocketException {
-    constructor(message: string = 'Validation Error') {
+    constructor(message: string = 'Validation Error', errors?: any) {
         super(message, SocketErrorCode.VALIDATION)
+        this.errors = errors
     }
 }
 

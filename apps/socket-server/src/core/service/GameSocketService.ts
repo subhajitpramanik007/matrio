@@ -2,7 +2,6 @@ import { Socket } from 'socket.io'
 import { Logger, SocketError, SocketErrorCode, ValidationException } from '../utils'
 
 import { BaseClass } from '../lifecycle/BaseClass'
-import { RoomManager } from '../room/RoomManager'
 import { GameServiceRegistry } from './GameServiceRegistry'
 
 import { GameEvent, GameEventRouter } from '../utils/gameRouter'
@@ -11,10 +10,7 @@ import { GameSocketRequestSchema, PayloadSchema } from '../validation/GameSocket
 export class GameSocketService extends BaseClass {
     private logger = new Logger('GameSocketService')
 
-    constructor(
-        private readonly roomManager: RoomManager,
-        private readonly registry: GameServiceRegistry,
-    ) {
+    constructor(private readonly registry: GameServiceRegistry) {
         super()
     }
 
@@ -65,7 +61,7 @@ export class GameSocketService extends BaseClass {
             return new SocketError('No service found for namespace', SocketErrorCode.NOT_FOUND)
         }
 
-        const handler = svc.methods.get(methodName)
+        const handler = svc.eventsRouter.get(methodName)
         if (!handler) {
             this.logger.warn(`Handler not implemented: ${methodName} for ${namespace}`)
             return new SocketError(`Handler not implemented: ${methodName} for ${namespace}`, SocketErrorCode.NOT_FOUND)
