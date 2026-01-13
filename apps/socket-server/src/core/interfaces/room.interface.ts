@@ -1,5 +1,7 @@
 import { RoomState } from '@/core/room'
 import { GameNamespace, Timestamp } from '@/core/utils'
+import { IPlayer, PlayerDTO } from './player.interface'
+import { ITimestamp } from './timestamp.interface'
 
 export type RoomCode = string
 export type RoomId = `${GameNamespace}_${RoomCode}`
@@ -24,30 +26,33 @@ export interface IRoomOptions {
     readonly maxNoOfMissedTurns?: number
 }
 
-export interface IRoomData<TPlayer, TMetadata = Record<string, any>, TRoomOptions extends IRoomOptions = IRoomOptions> {
+export interface IRoomData<TPlayer, TMetadata = Record<string, any>> {
     readonly id: RoomId
     readonly roomCode: RoomCode
     readonly namespace: GameNamespace
-    readonly options: TRoomOptions
-    readonly createdAt: Timestamp
+    readonly options: IRoomOptions
+    readonly timestamp: ITimestamp
 
     state: RoomState
     metadata: TMetadata
-    players: TPlayer[]
+    players: PlayerDTO[]
 }
 
-export type IRoomCreationData<
-    TPlayer,
-    TMetadata = Record<string, any>,
-    TRoomOptions extends IRoomOptions = IRoomOptions,
-> = Omit<IRoomData<TPlayer, TMetadata, TRoomOptions>, 'createdAt'>
+export type IRoomCreationData<TPlayer, TMetadata = Record<string, any>> = Pick<
+    IRoomData<TPlayer, TMetadata>,
+    'options' | 'namespace' | 'metadata' | 'players'
+>
 
 // Specialized manager for Players
-export interface IRoomPlayerManager<TPlayer> {
+export interface IRoomPlayerManager<TPlayer extends IPlayer = IPlayer> {
     /**
      * Add a player to the room
      */
     add(player: TPlayer): void
+    /**
+     * Get a player from the room
+     */
+    get(playerId: string): TPlayer | null
     /**
      * Remove a player from the room
      */
@@ -64,7 +69,7 @@ export interface IRoomPlayerManager<TPlayer> {
     /**
      * Get all players in the room
      */
-    get all(): TPlayer[]
+    get all(): PlayerDTO[]
     /**
      * Get the number of players in the room
      */
@@ -82,9 +87,17 @@ export interface IRoomStateManager {
      */
     set(state: RoomState): void
     /**
+     * Touch the state manager
+     */
+    touch(): void
+    /**
      * The timestamp of the last update of the state
      */
     readonly updatedAt: number
+    /**
+     * The timestamp of the last update of the state
+     */
+    readonly timestamp: ITimestamp
     /**
      * Reset the state manager
      */
@@ -92,34 +105,32 @@ export interface IRoomStateManager {
 }
 
 // Specialized manager for Configuration
-export interface IRoomSettingsManager<TMetadata, TRoomOptions extends IRoomOptions = IRoomOptions> {
-    /**
-     * The current options of the room
-     */
-    readonly options: TRoomOptions
-    /**
-     * The metadata of the room
-     */
-    metadata: TMetadata
+export interface IRoomSettingsManager extends IRoomOptions {
     /**
      * Update the options of the room
      */
-    updateOptions(patch: Partial<TRoomOptions>): void
-    /**
-     * Update the metadata of the room
-     */
-    updateMetadata(patch: Partial<TMetadata>): void
+    updateOptions(patch: Partial<IRoomSettingsManager>): void
+
+    toJSON(): IRoomOptions
     /**
      * Reset the settings manager
      */
     reset(): void
 }
 
-export interface IGameRoom<TPlayer, TMetadata, TRoomOptions extends IRoomOptions> {
+export interface IGameRoom<TPlayer, TMetadata = Record<string, any>> {
     /**
      * The id of the room
      */
     readonly id: RoomId
+    /**
+     * The code of the room
+     */
+    readonly roomCode: RoomCode
+    /**
+     * The namespace of the room
+     */
+    readonly namespace: GameNamespace
     /**
      * The players in the room
      */
@@ -131,7 +142,11 @@ export interface IGameRoom<TPlayer, TMetadata, TRoomOptions extends IRoomOptions
     /**
      * The settings manager of the room
      */
-    readonly settings: IRoomSettingsManager<TMetadata, TRoomOptions>
+    readonly settings: IRoomSettingsManager
+    /**
+     * The metadata of the room
+     */
+    readonly meta: TMetadata
 
     /**
      * Add a player to the room
@@ -150,10 +165,14 @@ export interface IGameRoom<TPlayer, TMetadata, TRoomOptions extends IRoomOptions
     /**
      * Convert the room to a JSON object
      */
-    toJSON(): IRoomData<TPlayer, TMetadata>
+    toJSON(): IRoomData<TPlayer>
 }
 
-export interface IRoomGameEngine<TPlayer, TMetadata, TRoomOptions extends IRoomOptions> {
+export interface IRoomGameEngine<
+    TPlayer,
+    TMetadata = Record<string, any>,
+    TRoomOptions extends IRoomOptions = IRoomOptions,
+> {
     /**
      * Reset the game engine
      */
@@ -161,19 +180,23 @@ export interface IRoomGameEngine<TPlayer, TMetadata, TRoomOptions extends IRoomO
 }
 
 // ROOM MANAGER
-export interface ISingleRoomManager<TPlayer, TMetadata, TRoomOptions extends IRoomOptions> {
+export interface ISingleRoomManager<TGameRoom extends IGameRoom<any, any>> {
     /**
      * Add a room to the manager
      */
-    add(playerId: string, room: IGameRoom<TPlayer, TMetadata, TRoomOptions>): void
+    addRoom(playerId: string, roomId: RoomId, room: TGameRoom): void
+    /**
+     * Get a room from the manager
+     */
+    getRoom(roomId: RoomId): TGameRoom | undefined
     /**
      * Remove a room from the manager
      */
-    remove(playerId: string): void
+    removeRoom(roomId: RoomId): void
     /**
      * Check if a room is in the manager
      */
-    has(playerId: string): boolean
+    has(roomId: RoomId): boolean
     /**
      * Clear all rooms from the manager
      */
@@ -182,7 +205,7 @@ export interface ISingleRoomManager<TPlayer, TMetadata, TRoomOptions extends IRo
     /**
      * Get all rooms in the manager
      */
-    get all(): IGameRoom<TPlayer, TMetadata, TRoomOptions>[]
+    get all(): TGameRoom[]
     /**
      * Get the number of rooms in the manager
      */
@@ -193,30 +216,38 @@ export interface IRoomManagerFactory {
     /**
      * Create a single room manager
      */
-    createSingleRoomManager<TPlayer, TMetadata, TRoomOptions extends IRoomOptions>(
+    createSingleRoomManager<TGameRoom extends IGameRoom<any, any>>(
         namespace: GameNamespace,
-    ): ISingleRoomManager<TPlayer, TMetadata, TRoomOptions>
+    ): ISingleRoomManager<TGameRoom>
 
     /**
      * Get a single room manager
      */
-    getRoomManager<TPlayer, TMetadata, TRoomOptions extends IRoomOptions>(
+    getRoomManager<TGameRoom extends IGameRoom<any, any>>(
         namespace: GameNamespace,
-    ): ISingleRoomManager<TPlayer, TMetadata, TRoomOptions> | null
+    ): ISingleRoomManager<TGameRoom> | null
 
     /**
      * Get a single room manager by player id
      */
-    getRoomManagerByPlayerId<TPlayer, TMetadata, TRoomOptions extends IRoomOptions>(
+    getRoomManagerByPlayerId<TGameRoom extends IGameRoom<any, any>>(
         playerId: string,
-    ): ISingleRoomManager<TPlayer, TMetadata, TRoomOptions> | null
+    ): ISingleRoomManager<TGameRoom> | null
 
     /**
      * Get a single room manager by room id
      */
-    getRoomManagerByRoomId<TPlayer, TMetadata, TRoomOptions extends IRoomOptions>(
-        roomId: RoomId,
-    ): ISingleRoomManager<TPlayer, TMetadata, TRoomOptions> | null
+    getRoomManagerByRoomId<TGameRoom extends IGameRoom<any, any>>(roomId: RoomId): ISingleRoomManager<TGameRoom> | null
+
+    /**
+     * Register a room location
+     */
+    registerRoomLocation(roomId: RoomId, namespace: GameNamespace): void
+
+    /**
+     * Remove a room location
+     */
+    removeRoomLocation(roomId: RoomId): void
 
     /**
      * Get the total number of rooms

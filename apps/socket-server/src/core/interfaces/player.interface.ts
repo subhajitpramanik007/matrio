@@ -1,4 +1,5 @@
 import { InitPlayerData, PlayerStats } from '@matrio/shared/types/player.type'
+import { RoomId } from '../room'
 
 export interface IPlayerStats extends PlayerStats {}
 
@@ -20,7 +21,7 @@ export interface IPlayer extends IPlayerData {
     onGameCompleted: (result: 'win' | 'draw' | 'lose') => void
     onReconnect(socketId: string): void
 
-    readonly serialize: PlayerDTO
+    toJSON(): PlayerDTO
 
     reset(): void
     resetStats(): void
@@ -95,7 +96,7 @@ export interface IPlayerOccupancyTracker {
     /**
      * Get room id by player id
      */
-    getRoomIdByPlayerId(playerId: string): string | undefined
+    getRoomIdByPlayerId(playerId: string): RoomId | undefined
     /**
      * Untrack a player from a room
      */
