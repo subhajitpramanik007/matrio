@@ -1,5 +1,3 @@
-export * from './BaseRoom'
-export * from './PlayerMap'
-export * from './RoomManager'
+export * from './manager/SingleRoomManager'
 export * from './room.type'
 export * from './roomState'
